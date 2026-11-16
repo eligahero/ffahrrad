@@ -50,7 +50,7 @@ async function uploadImageFromUrlToCloudinary(imageUrl: string): Promise<string 
  * Universal helper to extract RankMath and Yoast SEO metadata from WooCommerce products/categories
  * or WordPress pages/posts (supporting meta_data array, meta object, yoast_head_json, and root fields).
  */
-export function extractRankMathSEO(
+function extractRankMathSEO(
   metaSource: any,
   item: {
     name?: string;

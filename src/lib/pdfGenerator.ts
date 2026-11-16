@@ -91,8 +91,8 @@ export async function generateInvoicePDF(order: any): Promise<Buffer> {
     ];
     for (const p of candidatePaths) {
       try {
-        if (fs.existsSync(p)) {
-          logoBuffer = fs.readFileSync(p);
+        if (fs.existsSync(/*turbopackIgnore: true*/ p)) {
+          logoBuffer = fs.readFileSync(/*turbopackIgnore: true*/ p);
           break;
         }
       } catch {}
