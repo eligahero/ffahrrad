@@ -25,9 +25,11 @@ async function uploadImageFromUrlToCloudinary(imageUrl: string): Promise<string 
     const arrayBuffer = await response.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
 
+    const targetFolder = process.env.CLOUDINARY_FOLDER || 'ffahrrad/woocommerce-import';
+
     return new Promise<string>((resolve, reject) => {
       cloudinary.uploader.upload_stream(
-        { folder: 'lenha/woocommerce-import' },
+        { folder: targetFolder },
         (error, result) => {
           if (error || !result) {
             console.error("Cloudinary upload error:", error);
@@ -44,43 +46,98 @@ async function uploadImageFromUrlToCloudinary(imageUrl: string): Promise<string 
   }
 }
 
-
 /**
- * Helper to extract RankMath and Yoast SEO metadata from WooCommerce product/category meta_data
+ * Universal helper to extract RankMath and Yoast SEO metadata from WooCommerce products/categories
+ * or WordPress pages/posts (supporting meta_data array, meta object, yoast_head_json, and root fields).
  */
-function extractRankMathSEO(
-  metaData: any[],
-  item: { name?: string; title?: string; description?: string; short_description?: string; price?: string | number },
-  storeName: string = 'Lenha & Carvão Silva Dias'
+export function extractRankMathSEO(
+  metaSource: any,
+  item: {
+    name?: string;
+    title?: string;
+    description?: string;
+    short_description?: string;
+    price?: string | number;
+  },
+  extraItemContext?: any,
+  customStoreName?: string
 ) {
-  if (!Array.isArray(metaData)) {
-    return { metaTitle: null, metaDescription: null, metaKeywords: null, gtin: null };
-  }
+  const storeName = customStoreName || process.env.NEXT_PUBLIC_STORE_NAME || 'ffahrrad';
 
   let rawTitle: string | null = null;
   let rawDesc: string | null = null;
   let rawKeywords: string | null = null;
   let gtin: string | null = null;
 
-  for (const meta of metaData) {
-    if (!meta || !meta.key) continue;
-    const key = String(meta.key).trim().toLowerCase();
-    const val = typeof meta.value === 'string' ? meta.value.trim() : null;
-    if (!val) continue;
+  // 1. Array of meta (e.g. WooCommerce product / category meta_data)
+  if (Array.isArray(metaSource)) {
+    for (const meta of metaSource) {
+      if (!meta || !meta.key) continue;
+      const key = String(meta.key).trim().toLowerCase();
+      const val = typeof meta.value === 'string' ? meta.value.trim() : (meta.value != null ? String(meta.value).trim() : null);
+      if (!val) continue;
 
-    // RankMath fields
-    if (key === 'rank_math_title') rawTitle = val;
-    if (key === 'rank_math_description') rawDesc = val;
-    if (key === 'rank_math_focus_keyword') rawKeywords = val;
+      // RankMath fields
+      if (key === 'rank_math_title') rawTitle = val;
+      if (key === 'rank_math_description') rawDesc = val;
+      if (key === 'rank_math_focus_keyword') rawKeywords = val;
 
-    // Yoast SEO fallback fields
-    if (!rawTitle && (key === '_yoast_wpseo_title' || key === 'yoast_wpseo_title')) rawTitle = val;
-    if (!rawDesc && (key === '_yoast_wpseo_metadesc' || key === 'yoast_wpseo_metadesc')) rawDesc = val;
-    if (!rawKeywords && (key === '_yoast_wpseo_focuskw' || key === 'yoast_wpseo_focuskw')) rawKeywords = val;
+      // Yoast SEO fallback fields
+      if (!rawTitle && (key === '_yoast_wpseo_title' || key === 'yoast_wpseo_title')) rawTitle = val;
+      if (!rawDesc && (key === '_yoast_wpseo_metadesc' || key === 'yoast_wpseo_metadesc')) rawDesc = val;
+      if (!rawKeywords && (key === '_yoast_wpseo_focuskw' || key === 'yoast_wpseo_focuskw')) rawKeywords = val;
 
-    // GTIN / EAN / Barcode
-    if (!gtin && (key === '_gtin' || key === 'gtin' || key === '_ean' || key === 'ean' || key === '_barcode' || key === 'barcode' || key === 'hwp_gtin' || key === 'hwp_product_gtin')) {
-      gtin = val;
+      // GTIN / EAN / Barcode
+      if (!gtin && (key === '_gtin' || key === 'gtin' || key === '_ean' || key === 'ean' || key === '_barcode' || key === 'barcode' || key === 'hwp_gtin' || key === 'hwp_product_gtin')) {
+        gtin = val;
+      }
+    }
+  } else if (metaSource && typeof metaSource === 'object') {
+    // 2. Object of meta (e.g. WordPress REST API item.meta)
+    const getVal = (k: string) => {
+      const v = metaSource[k];
+      return typeof v === 'string' && v.trim() ? v.trim() : (v != null ? String(v).trim() : null);
+    };
+    rawTitle = getVal('rank_math_title') || getVal('_yoast_wpseo_title') || getVal('yoast_wpseo_title');
+    rawDesc = getVal('rank_math_description') || getVal('_yoast_wpseo_metadesc') || getVal('yoast_wpseo_metadesc');
+    rawKeywords = getVal('rank_math_focus_keyword') || getVal('_yoast_wpseo_focuskw') || getVal('yoast_wpseo_focuskw');
+    gtin = getVal('_gtin') || getVal('gtin') || getVal('_ean') || getVal('ean') || getVal('_barcode') || getVal('barcode');
+  }
+
+  // 3. Inspect extraItemContext or item root (e.g. Yoast head json or RankMath root properties)
+  const ctx = extraItemContext || item;
+  if (ctx && typeof ctx === 'object') {
+    if (!rawTitle && typeof ctx.rank_math_title === 'string' && ctx.rank_math_title.trim()) {
+      rawTitle = ctx.rank_math_title.trim();
+    }
+    if (!rawDesc && typeof ctx.rank_math_description === 'string' && ctx.rank_math_description.trim()) {
+      rawDesc = ctx.rank_math_description.trim();
+    }
+    if (!rawKeywords && typeof ctx.rank_math_focus_keyword === 'string' && ctx.rank_math_focus_keyword.trim()) {
+      rawKeywords = ctx.rank_math_focus_keyword.trim();
+    }
+
+    // Yoast head json
+    if (ctx.yoast_head_json && typeof ctx.yoast_head_json === 'object') {
+      if (!rawTitle) {
+        rawTitle = ctx.yoast_head_json.title || ctx.yoast_head_json.og_title || null;
+      }
+      if (!rawDesc) {
+        rawDesc = ctx.yoast_head_json.description || ctx.yoast_head_json.og_description || null;
+      }
+    }
+
+    // Yoast head HTML tag fallback
+    if ((!rawTitle || !rawDesc) && typeof ctx.yoast_head === 'string') {
+      if (!rawTitle) {
+        const titleMatch = ctx.yoast_head.match(/<title[^>]*>(.*?)<\/title>/i);
+        if (titleMatch && titleMatch[1]) rawTitle = titleMatch[1];
+      }
+      if (!rawDesc) {
+        const descMatch = ctx.yoast_head.match(/<meta[^>]*name=["']description["'][^>]*content=["']([^"']*)["'][^>]*>/i)
+          || ctx.yoast_head.match(/<meta[^>]*property=["']og:description["'][^>]*content=["']([^"']*)["'][^>]*>/i);
+        if (descMatch && descMatch[1]) rawDesc = descMatch[1];
+      }
     }
   }
 
@@ -93,7 +150,7 @@ function extractRankMathSEO(
 
   const replaceVars = (str: string | null) => {
     if (!str) return null;
-    return str
+    return unescapeHtml(str)
       .replace(/%title%/gi, cleanName)
       .replace(/%%title%%/gi, cleanName)
       .replace(/%sep%/gi, '|')
@@ -111,10 +168,13 @@ function extractRankMathSEO(
       .trim();
   };
 
+  const finalTitle = replaceVars(rawTitle) || (cleanName ? `${cleanName} | ${storeName}` : null);
+  const finalDesc = replaceVars(rawDesc) || (cleanExcerpt || null);
+
   return {
-    metaTitle: replaceVars(rawTitle),
-    metaDescription: replaceVars(rawDesc),
-    metaKeywords: rawKeywords,
+    metaTitle: finalTitle,
+    metaDescription: finalDesc,
+    metaKeywords: rawKeywords ? unescapeHtml(rawKeywords).trim() : null,
     gtin
   };
 }
@@ -658,16 +718,22 @@ async function processAndSaveWcProducts(
           try {
             const secureUrl = await uploadImageFromUrlToCloudinary(wcImg.src);
             if (secureUrl) {
-              const imgAlt = wcImg.alt ? unescapeHtml(wcImg.alt) : decodedTitle;
+              const rawImgName = wcImg.name || wcImg.title;
+              const imgTitle = (rawImgName && typeof rawImgName === 'string' && rawImgName.trim())
+                ? unescapeHtml(rawImgName).trim()
+                : decodedTitle;
+              const imgAlt = (wcImg.alt && typeof wcImg.alt === 'string' && wcImg.alt.trim())
+                ? unescapeHtml(wcImg.alt).trim()
+                : imgTitle;
               await prisma.media.upsert({
                 where: { url: secureUrl },
                 update: {
-                  title: decodedTitle,
+                  title: imgTitle,
                   altText: imgAlt,
                 },
                 create: {
                   url: secureUrl,
-                  title: decodedTitle,
+                  title: imgTitle,
                   altText: imgAlt,
                 }
               });
@@ -742,8 +808,14 @@ async function processAndSaveWcProducts(
                     if (secureUrl) {
                       varImage = secureUrl;
                       const varOptions = Object.values(attrMap).filter(Boolean).join(', ');
-                      const varTitle = `${decodedTitle}${varOptions ? ` (${varOptions})` : ''}`;
-                      const varAlt = wcVar.image.alt ? unescapeHtml(wcVar.image.alt) : varTitle;
+                      const defaultVarTitle = `${decodedTitle}${varOptions ? ` (${varOptions})` : ''}`;
+                      const rawVarImgName = wcVar.image.name || wcVar.image.title;
+                      const varTitle = (rawVarImgName && typeof rawVarImgName === 'string' && rawVarImgName.trim())
+                        ? unescapeHtml(rawVarImgName).trim()
+                        : defaultVarTitle;
+                      const varAlt = (wcVar.image.alt && typeof wcVar.image.alt === 'string' && wcVar.image.alt.trim())
+                        ? unescapeHtml(wcVar.image.alt).trim()
+                        : varTitle;
                       await prisma.media.upsert({
                         where: { url: secureUrl },
                         update: {
@@ -1194,7 +1266,7 @@ export async function importWooCommerceOrders(
 }
 
 /**
- * Import WordPress Pages
+ * Import WordPress Pages (with SEO & Featured Media + Alt/Title)
  */
 export async function importWordPressPages(
   url: string,
@@ -1203,7 +1275,7 @@ export async function importWordPressPages(
 ) {
   await requireAdmin();
   const baseUrl = url.replace(/\/$/, '');
-  const apiUrl = `${baseUrl}/wp-json/wp/v2/pages`;
+  const apiUrl = `${baseUrl}/wp-json/wp/v2/pages?_embed=true`;
 
   try {
     let totalImported = 0;
@@ -1211,7 +1283,7 @@ export async function importWordPressPages(
     let hasMore = true;
 
     while (hasMore && page <= 10) {
-      const response = await fetch(`${apiUrl}?per_page=100&page=${page}`, {
+      const response = await fetch(`${apiUrl}&per_page=100&page=${page}`, {
         headers: {
           'Authorization': 'Basic ' + Buffer.from(`${consumerKey}:${consumerSecret}`).toString('base64'),
           'Content-Type': 'application/json'
@@ -1230,9 +1302,57 @@ export async function importWordPressPages(
       }
 
       for (const wpPage of pages) {
-        const title = unescapeHtml(wpPage.title?.rendered || '');
+        const title = unescapeHtml(wpPage.title?.rendered || '').trim();
         const slug = wpPage.slug || slugify(title);
         const content = wpPage.content?.rendered || '';
+        const excerpt = unescapeHtml(wpPage.excerpt?.rendered || '').replace(/<[^>]*>?/gm, '').trim();
+
+        // 1. Process featured image if present & store in Media table with title/alt
+        const featMedia = wpPage._embedded?.['wp:featuredmedia']?.[0];
+        const mediaSource = featMedia?.source_url || featMedia?.media_details?.sizes?.full?.source_url;
+        if (mediaSource) {
+          try {
+            const secureUrl = await uploadImageFromUrlToCloudinary(mediaSource);
+            if (secureUrl) {
+              const rawMediaTitle = featMedia.title?.rendered || featMedia.slug;
+              const mediaTitle = (rawMediaTitle && typeof rawMediaTitle === 'string' && rawMediaTitle.trim())
+                ? unescapeHtml(rawMediaTitle).trim()
+                : title;
+              const rawAlt = featMedia.alt_text || featMedia.caption?.rendered;
+              const mediaAlt = (rawAlt && typeof rawAlt === 'string' && rawAlt.trim())
+                ? unescapeHtml(rawAlt).trim()
+                : mediaTitle;
+              const mediaCaption = unescapeHtml(featMedia.caption?.rendered || '').replace(/<[^>]*>?/gm, '').trim();
+              const mediaDesc = unescapeHtml(featMedia.description?.rendered || '').replace(/<[^>]*>?/gm, '').trim();
+
+              await prisma.media.upsert({
+                where: { url: secureUrl },
+                update: {
+                  title: mediaTitle,
+                  altText: mediaAlt,
+                  legend: mediaCaption || undefined,
+                  description: mediaDesc || undefined
+                },
+                create: {
+                  url: secureUrl,
+                  title: mediaTitle,
+                  altText: mediaAlt,
+                  legend: mediaCaption || undefined,
+                  description: mediaDesc || undefined
+                }
+              });
+            }
+          } catch (mediaErr) {
+            console.warn(`[WordPress Page Import] Could not upload featured image:`, mediaErr);
+          }
+        }
+
+        // 2. Extract RankMath & Yoast SEO
+        const seo = extractRankMathSEO(
+          wpPage.meta_data || wpPage.meta,
+          { title, description: content, short_description: excerpt },
+          wpPage
+        );
 
         await prisma.page.upsert({
           where: { slug },
@@ -1241,8 +1361,9 @@ export async function importWordPressPages(
             desktopContent: content,
             mobileContent: content,
             isPublished: wpPage.status === 'publish',
-            metaTitle: title,
-            metaDescription: unescapeHtml(wpPage.excerpt?.rendered || '').slice(0, 160)
+            metaTitle: seo.metaTitle || title,
+            metaDescription: seo.metaDescription || excerpt.slice(0, 160) || null,
+            metaKeywords: seo.metaKeywords || null
           },
           create: {
             title,
@@ -1250,8 +1371,9 @@ export async function importWordPressPages(
             desktopContent: content,
             mobileContent: content,
             isPublished: wpPage.status === 'publish',
-            metaTitle: title,
-            metaDescription: unescapeHtml(wpPage.excerpt?.rendered || '').slice(0, 160)
+            metaTitle: seo.metaTitle || title,
+            metaDescription: seo.metaDescription || excerpt.slice(0, 160) || null,
+            metaKeywords: seo.metaKeywords || null
           }
         });
         totalImported++;
@@ -1268,7 +1390,7 @@ export async function importWordPressPages(
 }
 
 /**
- * Import WordPress Posts / Blog Articles
+ * Import WordPress Posts / Blog Articles (with Authors, Categories, Tags, SEO & Media with Titles)
  */
 export async function importWordPressArticles(
   url: string,
@@ -1304,16 +1426,82 @@ export async function importWordPressArticles(
       }
 
       for (const wpPost of posts) {
-        const title = unescapeHtml(wpPost.title?.rendered || '');
+        const title = unescapeHtml(wpPost.title?.rendered || '').trim();
         const slug = wpPost.slug || slugify(title);
         const content = wpPost.content?.rendered || '';
-        const excerpt = unescapeHtml(wpPost.excerpt?.rendered || '');
+        const excerpt = unescapeHtml(wpPost.excerpt?.rendered || '').replace(/<[^>]*>?/gm, '').trim();
 
+        // 1. Process featured image & save in prisma.media with its title and altText
         let imageUrl: string | null = null;
-        const mediaSource = wpPost._embedded?.['wp:featuredmedia']?.[0]?.source_url;
+        const featMedia = wpPost._embedded?.['wp:featuredmedia']?.[0];
+        const mediaSource = featMedia?.source_url || featMedia?.media_details?.sizes?.full?.source_url;
         if (mediaSource) {
-          imageUrl = await uploadImageFromUrlToCloudinary(mediaSource);
+          try {
+            imageUrl = await uploadImageFromUrlToCloudinary(mediaSource);
+            if (imageUrl) {
+              const rawMediaTitle = featMedia.title?.rendered || featMedia.slug;
+              const mediaTitle = (rawMediaTitle && typeof rawMediaTitle === 'string' && rawMediaTitle.trim())
+                ? unescapeHtml(rawMediaTitle).trim()
+                : title;
+              const rawAlt = featMedia.alt_text || featMedia.caption?.rendered;
+              const mediaAlt = (rawAlt && typeof rawAlt === 'string' && rawAlt.trim())
+                ? unescapeHtml(rawAlt).trim()
+                : mediaTitle;
+              const mediaCaption = unescapeHtml(featMedia.caption?.rendered || '').replace(/<[^>]*>?/gm, '').trim();
+              const mediaDesc = unescapeHtml(featMedia.description?.rendered || '').replace(/<[^>]*>?/gm, '').trim();
+
+              await prisma.media.upsert({
+                where: { url: imageUrl },
+                update: {
+                  title: mediaTitle,
+                  altText: mediaAlt,
+                  legend: mediaCaption || undefined,
+                  description: mediaDesc || undefined
+                },
+                create: {
+                  url: imageUrl,
+                  title: mediaTitle,
+                  altText: mediaAlt,
+                  legend: mediaCaption || undefined,
+                  description: mediaDesc || undefined
+                }
+              });
+            }
+          } catch (mediaErr) {
+            console.warn(`[WordPress Post Import] Could not upload featured image:`, mediaErr);
+          }
         }
+
+        // 2. Extract Author
+        const authorName = wpPost._embedded?.author?.[0]?.name 
+          ? unescapeHtml(wpPost._embedded.author[0].name).trim() 
+          : null;
+
+        // 3. Extract Category & Tags
+        let categoryName: string | null = null;
+        const tagsList: string[] = [];
+        if (wpPost._embedded?.['wp:term'] && Array.isArray(wpPost._embedded['wp:term'])) {
+          const termsCat = wpPost._embedded['wp:term'][0];
+          if (Array.isArray(termsCat) && termsCat.length > 0) {
+            categoryName = unescapeHtml(termsCat[0].name || '').trim() || null;
+          }
+          const termsTags = wpPost._embedded['wp:term'][1];
+          if (Array.isArray(termsTags)) {
+            termsTags.forEach((t: any) => {
+              if (t?.name) tagsList.push(unescapeHtml(t.name).trim());
+            });
+          }
+        }
+
+        // 4. Extract RankMath & Yoast SEO
+        const seo = extractRankMathSEO(
+          wpPost.meta_data || wpPost.meta,
+          { title, description: content, short_description: excerpt },
+          wpPost
+        );
+
+        const postCreatedAt = new Date(wpPost.date_gmt || wpPost.date || Date.now());
+        const postUpdatedAt = new Date(wpPost.modified_gmt || wpPost.modified || Date.now());
 
         await prisma.article.upsert({
           where: { slug },
@@ -1322,9 +1510,14 @@ export async function importWordPressArticles(
             content,
             excerpt,
             image: imageUrl,
+            category: categoryName,
+            authorName,
+            tags: tagsList,
             isPublished: wpPost.status === 'publish',
-            metaTitle: title,
-            metaDescription: excerpt.slice(0, 160)
+            metaTitle: seo.metaTitle || title,
+            metaDescription: seo.metaDescription || excerpt.slice(0, 160) || null,
+            metaKeywords: seo.metaKeywords || null,
+            updatedAt: postUpdatedAt
           },
           create: {
             title,
@@ -1332,9 +1525,15 @@ export async function importWordPressArticles(
             content,
             excerpt,
             image: imageUrl,
+            category: categoryName,
+            authorName,
+            tags: tagsList,
             isPublished: wpPost.status === 'publish',
-            metaTitle: title,
-            metaDescription: excerpt.slice(0, 160)
+            metaTitle: seo.metaTitle || title,
+            metaDescription: seo.metaDescription || excerpt.slice(0, 160) || null,
+            metaKeywords: seo.metaKeywords || null,
+            createdAt: postCreatedAt,
+            updatedAt: postUpdatedAt
           }
         });
         totalImported++;
@@ -1348,6 +1547,109 @@ export async function importWordPressArticles(
   } catch (error: any) {
     console.error('Error importing WordPress articles:', error);
     return { success: false, message: error.message || 'Erreur lors de l\'import des articles.' };
+  }
+}
+
+/**
+ * Import WordPress Media Library items directly into Prisma Media with their titles, alt text, captions & descriptions
+ */
+export async function importWordPressMedia(
+  url: string,
+  consumerKey: string,
+  consumerSecret: string
+) {
+  await requireAdmin();
+  const baseUrl = url.replace(/\/$/, '');
+  const apiUrl = `${baseUrl}/wp-json/wp/v2/media`;
+
+  try {
+    let totalImported = 0;
+    let page = 1;
+    let hasMore = true;
+
+    while (hasMore && page <= 10) {
+      const response = await fetch(`${apiUrl}?per_page=100&page=${page}`, {
+        headers: {
+          'Authorization': 'Basic ' + Buffer.from(`${consumerKey}:${consumerSecret}`).toString('base64'),
+          'Content-Type': 'application/json'
+        },
+        cache: 'no-store'
+      });
+
+      if (!response.ok) {
+        if (response.status === 401 || response.status === 403 || response.status === 404) {
+          console.warn(`[WordPress Media] Endpoint returned ${response.status}`);
+          break;
+        }
+        throw new Error(`Erreur API WordPress Media: ${response.status} ${response.statusText}`);
+      }
+
+      const mediaItems = await response.json();
+      if (!Array.isArray(mediaItems) || mediaItems.length === 0) {
+        hasMore = false;
+        break;
+      }
+
+      for (const item of mediaItems) {
+        const sourceUrl = item.source_url || item.guid?.rendered;
+        if (!sourceUrl) continue;
+
+        const rawTitle = unescapeHtml(item.title?.rendered || item.slug || '').trim();
+        const rawAlt = unescapeHtml(item.alt_text || '').trim() || rawTitle;
+        const rawCaption = unescapeHtml(item.caption?.rendered || '').replace(/<[^>]*>?/gm, '').trim();
+        const rawDescription = unescapeHtml(item.description?.rendered || '').replace(/<[^>]*>?/gm, '').trim();
+
+        // Check if already in DB
+        const existingMedia = await prisma.media.findUnique({
+          where: { url: sourceUrl }
+        });
+
+        if (existingMedia) {
+          await prisma.media.update({
+            where: { id: existingMedia.id },
+            data: {
+              title: rawTitle || existingMedia.title,
+              altText: rawAlt || existingMedia.altText,
+              legend: rawCaption || existingMedia.legend,
+              description: rawDescription || existingMedia.description,
+            }
+          });
+          totalImported++;
+          continue;
+        }
+
+        // Upload to Cloudinary to preserve asset locally
+        const secureUrl = await uploadImageFromUrlToCloudinary(sourceUrl);
+        const finalUrl = secureUrl || sourceUrl;
+
+        await prisma.media.upsert({
+          where: { url: finalUrl },
+          update: {
+            title: rawTitle,
+            altText: rawAlt,
+            legend: rawCaption || undefined,
+            description: rawDescription || undefined,
+          },
+          create: {
+            url: finalUrl,
+            title: rawTitle,
+            altText: rawAlt,
+            legend: rawCaption || undefined,
+            description: rawDescription || undefined,
+          }
+        });
+
+        totalImported++;
+      }
+
+      page++;
+    }
+
+    revalidatePath('/admin/media');
+    return { success: true, count: totalImported };
+  } catch (error: any) {
+    console.error('Error importing WordPress media:', error);
+    return { success: false, message: error.message || 'Erreur lors de l\'import des médias.' };
   }
 }
 
@@ -1619,16 +1921,102 @@ export async function syncWooCommerceRankMathSEO(
       page++;
     }
 
+    // 3. Sync Pages SEO
+    let updatedPagesCount = 0;
+    try {
+      const pagesResponse = await fetch(`${baseUrl}/wp-json/wp/v2/pages?_embed=true&per_page=100`, {
+        headers: { 'Authorization': authHeader, 'Content-Type': 'application/json' },
+        cache: 'no-store'
+      });
+      if (pagesResponse.ok) {
+        const remotePages = await pagesResponse.json();
+        if (Array.isArray(remotePages)) {
+          for (const wpPage of remotePages) {
+            const cleanTitle = unescapeHtml(wpPage.title?.rendered || '').trim();
+            const pageSlug = wpPage.slug;
+            const pageSeo = extractRankMathSEO(
+              wpPage.meta_data || wpPage.meta,
+              { title: cleanTitle, description: wpPage.content?.rendered, short_description: wpPage.excerpt?.rendered },
+              wpPage
+            );
+            if (pageSeo.metaTitle || pageSeo.metaDescription || pageSeo.metaKeywords) {
+              const localPage = await prisma.page.findFirst({
+                where: { OR: [{ slug: pageSlug }, { title: cleanTitle }] }
+              });
+              if (localPage) {
+                await prisma.page.update({
+                  where: { id: localPage.id },
+                  data: {
+                    ...(pageSeo.metaTitle ? { metaTitle: pageSeo.metaTitle } : {}),
+                    ...(pageSeo.metaDescription ? { metaDescription: pageSeo.metaDescription } : {}),
+                    ...(pageSeo.metaKeywords ? { metaKeywords: pageSeo.metaKeywords } : {}),
+                  }
+                });
+                updatedPagesCount++;
+              }
+            }
+          }
+        }
+      }
+    } catch (pageErr) {
+      console.warn('Warning syncing pages SEO:', pageErr);
+    }
+
+    // 4. Sync Blog Articles SEO
+    let updatedArticlesCount = 0;
+    try {
+      const postsResponse = await fetch(`${baseUrl}/wp-json/wp/v2/posts?_embed=true&per_page=100`, {
+        headers: { 'Authorization': authHeader, 'Content-Type': 'application/json' },
+        cache: 'no-store'
+      });
+      if (postsResponse.ok) {
+        const remotePosts = await postsResponse.json();
+        if (Array.isArray(remotePosts)) {
+          for (const wpPost of remotePosts) {
+            const cleanTitle = unescapeHtml(wpPost.title?.rendered || '').trim();
+            const postSlug = wpPost.slug;
+            const postSeo = extractRankMathSEO(
+              wpPost.meta_data || wpPost.meta,
+              { title: cleanTitle, description: wpPost.content?.rendered, short_description: wpPost.excerpt?.rendered },
+              wpPost
+            );
+            if (postSeo.metaTitle || postSeo.metaDescription || postSeo.metaKeywords) {
+              const localArticle = await prisma.article.findFirst({
+                where: { OR: [{ slug: postSlug }, { title: cleanTitle }] }
+              });
+              if (localArticle) {
+                await prisma.article.update({
+                  where: { id: localArticle.id },
+                  data: {
+                    ...(postSeo.metaTitle ? { metaTitle: postSeo.metaTitle } : {}),
+                    ...(postSeo.metaDescription ? { metaDescription: postSeo.metaDescription } : {}),
+                    ...(postSeo.metaKeywords ? { metaKeywords: postSeo.metaKeywords } : {}),
+                  }
+                });
+                updatedArticlesCount++;
+              }
+            }
+          }
+        }
+      }
+    } catch (artErr) {
+      console.warn('Warning syncing articles SEO:', artErr);
+    }
+
     revalidatePath('/admin/products');
     revalidatePath('/admin/categories');
+    revalidatePath('/admin/pages');
+    revalidatePath('/admin/blogs');
     revalidatePath('/sitemap.xml');
 
     return {
       success: true,
       updatedProductsCount,
       updatedCategoriesCount,
+      updatedPagesCount,
+      updatedArticlesCount,
       totalProductsScanned,
-      message: `Sincronização SEO concluída com sucesso! ${updatedProductsCount} produtos e ${updatedCategoriesCount} categorias atualizados com os dados RankMath.`
+      message: `Sincronização SEO concluída com sucesso! ${updatedProductsCount} produtos, ${updatedCategoriesCount} categorias, ${updatedPagesCount} páginas e ${updatedArticlesCount} artigos atualizados com os dados RankMath / Yoast.`
     };
   } catch (error: any) {
     console.error('Error syncing RankMath SEO:', error);

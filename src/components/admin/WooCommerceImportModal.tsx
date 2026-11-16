@@ -15,6 +15,7 @@ import {
   importWooCommerceOrders,
   importWordPressPages,
   importWordPressArticles,
+  importWordPressMedia,
   importWooCommerceShipping,
   syncWooCommerceRankMathSEO,
   type WcProductImportItemResult
@@ -45,12 +46,14 @@ export default function WooCommerceImportModal() {
   const [includeOrders, setIncludeOrders] = useState(true);
   const [includePages, setIncludePages] = useState(true);
   const [includeArticles, setIncludeArticles] = useState(true);
+  const [includeMedia, setIncludeMedia] = useState(true);
 
   // Additional Imported Stats for Summary
   const [shippingSummary, setShippingSummary] = useState<{ zones: number; methods: number } | null>(null);
   const [ordersImportedCount, setOrdersImportedCount] = useState<number | null>(null);
   const [pagesImportedCount, setPagesImportedCount] = useState<number | null>(null);
   const [articlesImportedCount, setArticlesImportedCount] = useState<number | null>(null);
+  const [mediaImportedCount, setMediaImportedCount] = useState<number | null>(null);
 
   // Categories Selection State
   const [availableCategories, setAvailableCategories] = useState<Array<{ id: number; name: string; count: number; slug: string }>>([]);
@@ -114,6 +117,7 @@ export default function WooCommerceImportModal() {
     setOrdersImportedCount(null);
     setPagesImportedCount(null);
     setArticlesImportedCount(null);
+    setMediaImportedCount(null);
   };
 
   // Step 1: Connect and load categories / products metadata
@@ -290,6 +294,18 @@ export default function WooCommerceImportModal() {
           }
         } catch (artErr) {
           console.error('Erreur import articles:', artErr);
+        }
+      }
+
+      // 0.5 Importer la médiathèque (médias avec leurs titres)
+      if (includeMedia) {
+        try {
+          const medRes = await importWordPressMedia(url, consumerKey, consumerSecret);
+          if (medRes.success) {
+            setMediaImportedCount(medRes.count || 0);
+          }
+        } catch (medErr) {
+          console.error('Erreur import médias:', medErr);
         }
       }
 
@@ -600,9 +616,9 @@ export default function WooCommerceImportModal() {
                 <div className="bg-stone-50 border border-stone-200 rounded-xl p-4 space-y-3">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-bold uppercase tracking-wider text-stone-800">
-                      Dados Adicionais a Importar
+                      Données additionnelles à importer
                     </span>
-                    <span className="text-[10px] text-stone-500">Recuperação integral do site WordPress</span>
+                    <span className="text-[10px] text-stone-500">Récupération intégrale du site WordPress</span>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
@@ -616,10 +632,10 @@ export default function WooCommerceImportModal() {
                       />
                       <div className="text-xs">
                         <span className="font-bold text-stone-900 block flex items-center gap-1.5">
-                          🚚 Zonas & Opções de Envio
+                          🚚 Zones & Options de livraison
                         </span>
                         <span className="text-[11px] text-stone-500 block mt-0.5">
-                          Zonas atendidas, custos por palete e métodos de entrega
+                          Zones desservies, tarifs et méthodes de livraison
                         </span>
                       </div>
                     </label>
@@ -634,10 +650,10 @@ export default function WooCommerceImportModal() {
                       />
                       <div className="text-xs">
                         <span className="font-bold text-stone-900 block flex items-center gap-1.5">
-                          📦 Encomendas & Histórico
+                          📦 Commandes & Historique
                         </span>
                         <span className="text-[11px] text-stone-500 block mt-0.5">
-                          Recuperar encomendas anteriores, clientes e moradas
+                          Récupérer les commandes antérieures, clients et adresses
                         </span>
                       </div>
                     </label>
@@ -652,10 +668,10 @@ export default function WooCommerceImportModal() {
                       />
                       <div className="text-xs">
                         <span className="font-bold text-stone-900 block flex items-center gap-1.5">
-                          📄 Páginas Institucionais
+                          📄 Pages institutionnelles & SEO
                         </span>
                         <span className="text-[11px] text-stone-500 block mt-0.5">
-                          Políticas de devolução, termos e condições, contactos
+                          Pages de contenu avec métadonnées RankMath/Yoast et médias
                         </span>
                       </div>
                     </label>
@@ -670,10 +686,28 @@ export default function WooCommerceImportModal() {
                       />
                       <div className="text-xs">
                         <span className="font-bold text-stone-900 block flex items-center gap-1.5">
-                          📝 Artigos & Dicas de Aquecimento
+                          📝 Articles de blog & SEO
                         </span>
                         <span className="text-[11px] text-stone-500 block mt-0.5">
-                          Guias de biomassa, conselhos de manutenção e artigos
+                          Articles avec auteurs, catégories, tags, SEO et images à la une
+                        </span>
+                      </div>
+                    </label>
+
+                    {/* 5. Media Library */}
+                    <label className={`sm:col-span-2 flex items-start gap-2.5 p-3 rounded-lg border cursor-pointer transition select-none ${includeMedia ? 'bg-red-50/50 border-red-300 ring-1 ring-red-400/20' : 'bg-white border-stone-200 hover:bg-stone-50'}`}>
+                      <input 
+                        type="checkbox"
+                        checked={includeMedia}
+                        onChange={(e) => setIncludeMedia(e.target.checked)}
+                        className="rounded text-red-600 focus:ring-red-500 h-4 w-4 mt-0.5"
+                      />
+                      <div className="text-xs">
+                        <span className="font-bold text-stone-900 block flex items-center gap-1.5">
+                          🖼️ Médiathèque WordPress (Médias avec leurs titres)
+                        </span>
+                        <span className="text-[11px] text-stone-500 block mt-0.5">
+                          Importer les images avec leurs titres d'origine, textes alternatifs, légendes et descriptions
                         </span>
                       </div>
                     </label>
@@ -1080,28 +1114,33 @@ export default function WooCommerceImportModal() {
               )}
 
               {/* Extra Imported Data Badges */}
-              {(shippingSummary || ordersImportedCount !== null || pagesImportedCount !== null || articlesImportedCount !== null) && (
+              {(shippingSummary || ordersImportedCount !== null || pagesImportedCount !== null || articlesImportedCount !== null || mediaImportedCount !== null) && (
                 <div className="bg-stone-50 border border-stone-200 rounded-xl p-3.5 space-y-2 text-xs">
-                  <span className="font-bold text-stone-900 block">Outros dados recuperados com sucesso:</span>
+                  <span className="font-bold text-stone-900 block">Autres données récupérées avec succès :</span>
                   <div className="flex flex-wrap gap-2 text-[11px]">
                     {shippingSummary && (
                       <span className="px-2.5 py-1 bg-emerald-50 text-emerald-800 font-semibold rounded-lg border border-emerald-200 flex items-center gap-1.5 shadow-xs">
-                        🚚 {shippingSummary.zones} Zonas de Envio ({shippingSummary.methods} métodos de entrega)
+                        🚚 {shippingSummary.zones} Zones de livraison ({shippingSummary.methods} méthodes)
                       </span>
                     )}
                     {ordersImportedCount !== null && (
                       <span className="px-2.5 py-1 bg-blue-50 text-blue-800 font-semibold rounded-lg border border-blue-200 flex items-center gap-1.5 shadow-xs">
-                        📦 {ordersImportedCount} Encomendas anteriores
+                        📦 {ordersImportedCount} Commandes antérieures
                       </span>
                     )}
                     {pagesImportedCount !== null && (
                       <span className="px-2.5 py-1 bg-purple-50 text-purple-800 font-semibold rounded-lg border border-purple-200 flex items-center gap-1.5 shadow-xs">
-                        📄 {pagesImportedCount} Páginas institucionais
+                        📄 {pagesImportedCount} Pages institutionnelles (avec SEO)
                       </span>
                     )}
                     {articlesImportedCount !== null && (
                       <span className="px-2.5 py-1 bg-amber-50 text-amber-800 font-semibold rounded-lg border border-amber-200 flex items-center gap-1.5 shadow-xs">
-                        📝 {articlesImportedCount} Artigos de blog
+                        📝 {articlesImportedCount} Articles de blog (avec SEO & tags)
+                      </span>
+                    )}
+                    {mediaImportedCount !== null && (
+                      <span className="px-2.5 py-1 bg-indigo-50 text-indigo-800 font-semibold rounded-lg border border-indigo-200 flex items-center gap-1.5 shadow-xs">
+                        🖼️ {mediaImportedCount} Médias avec leurs titres
                       </span>
                     )}
                   </div>
