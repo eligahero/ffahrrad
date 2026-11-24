@@ -1,13 +1,12 @@
 import Link from 'next/link';
-import prisma from '@/lib/prisma';
+import { getCachedSettings } from '@/lib/cache';
 
 export default async function NotFound() {
-  const settingsDb = await prisma.setting.findMany();
-  const settings = settingsDb.reduce((acc, s) => ({ ...acc, [s.key]: s.value }), {} as Record<string, string>);
+  const settings = await getCachedSettings();
   
-  const title = settings.NOT_FOUND_TITLE || "Oops! Cette page est introuvable.";
-  const text = settings.NOT_FOUND_TEXT || "It seems we cannot find the page you are looking for. It may have been moved or deleted.";
-  const cta = settings.NOT_FOUND_CTA || "Back to Home";
+  const title = settings.NOT_FOUND_TITLE || "Oops! Esta página não foi encontrada.";
+  const text = settings.NOT_FOUND_TEXT || "Não foi possível encontrar a página procurada. Pode ter sido movida ou eliminada.";
+  const cta = settings.NOT_FOUND_CTA || "Voltar à Página Inicial";
   const bgImage = settings.NOT_FOUND_BG_IMAGE || '';
   const bgColor = settings.NOT_FOUND_BG_COLOR || '#000000';
 

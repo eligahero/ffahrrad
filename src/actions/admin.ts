@@ -52,6 +52,8 @@ export async function createBrandAction(formData: FormData, logoUrl?: string) {
   try {
     const brand = await prisma.brand.create({ data: { name, slug, logo: logoUrl || null } });
     revalidatePath('/admin/products');
+    refreshCacheTag('brands');
+    refreshCacheTag('products');
     return { success: true, brand };
   } catch (error) {
     return { error: "Erreur de création de marque" };
@@ -70,6 +72,8 @@ export async function updateBrand(id: string, formData: FormData, logoUrl?: stri
     if (logoUrl !== undefined) data.logo = logoUrl;
     await prisma.brand.update({ where: { id }, data });
     revalidatePath('/admin/brands');
+    refreshCacheTag('brands');
+    refreshCacheTag('products');
     return { success: true };
   } catch (error) {
     return { error: "Erreur de modification" };
@@ -81,6 +85,8 @@ export async function deleteBrand(id: string) {
   try {
     await prisma.brand.delete({ where: { id } });
     revalidatePath('/admin/brands');
+    refreshCacheTag('brands');
+    refreshCacheTag('products');
     return { success: true };
   } catch (error) {
     return { error: "Impossible de supprimer cette marque." };
@@ -92,6 +98,8 @@ export async function bulkDeleteBrands(ids: string[]) {
   try {
     await prisma.brand.deleteMany({ where: { id: { in: ids } } });
     revalidatePath('/admin/brands');
+    refreshCacheTag('brands');
+    refreshCacheTag('products');
     return { success: true };
   } catch (error) {
     return { error: "Erreur lors de la suppression." };
@@ -568,6 +576,8 @@ export async function bulkDeleteProducts(ids: string[]) {
 
     revalidatePath('/admin/products');
     revalidatePath('/');
+    refreshCacheTag('products');
+    refreshCacheTag('homepage');
     return { success: true };
   } catch (error: any) {
     console.error(error);
@@ -614,6 +624,8 @@ export async function duplicateProduct(id: string) {
     });
     revalidatePath('/admin/products');
     revalidatePath('/');
+    refreshCacheTag('products');
+    refreshCacheTag('homepage');
     return { success: true };
   } catch (error: any) {
     console.error(error);
@@ -639,6 +651,8 @@ export async function quickEditProduct(id: string, data: { title: string, catego
     });
     revalidatePath('/admin/products');
     revalidatePath('/');
+    refreshCacheTag('products');
+    refreshCacheTag('homepage');
     return { success: true };
   } catch (error: any) {
     console.error(error);

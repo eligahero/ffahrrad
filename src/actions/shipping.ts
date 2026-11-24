@@ -1,7 +1,7 @@
 'use server';
 
 import prisma from '@/lib/prisma';
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, updateTag } from 'next/cache';
 import { requireAdmin } from '@/lib/auth';
 
 // --- ZONES ---
@@ -31,6 +31,7 @@ export async function createShippingZone(data: { name: string; isActive?: boolea
       data,
     });
     revalidatePath('/admin/shipping');
+    updateTag('shipping');
     return { success: true, zone };
   } catch (error: any) {
     console.error('Error creating shipping zone:', error);
@@ -46,6 +47,7 @@ export async function updateShippingZone(id: string, data: { name?: string; isAc
       data,
     });
     revalidatePath('/admin/shipping');
+    updateTag('shipping');
     return { success: true, zone };
   } catch (error: any) {
     console.error('Error updating shipping zone:', error);
@@ -60,6 +62,7 @@ export async function deleteShippingZone(id: string) {
       where: { id },
     });
     revalidatePath('/admin/shipping');
+    updateTag('shipping');
     return { success: true };
   } catch (error: any) {
     console.error('Error deleting shipping zone:', error);
@@ -82,6 +85,7 @@ export async function addShippingMethod(zoneId: string, data: { type: string; ra
       }
     });
     revalidatePath('/admin/shipping');
+    updateTag('shipping');
     return { success: true, method };
   } catch (error: any) {
     console.error('Error adding shipping method:', error);
@@ -97,6 +101,7 @@ export async function updateShippingMethod(id: string, data: { type?: string; ra
       data,
     });
     revalidatePath('/admin/shipping');
+    updateTag('shipping');
     return { success: true, method };
   } catch (error: any) {
     console.error('Error updating shipping method:', error);
@@ -111,6 +116,7 @@ export async function deleteShippingMethod(id: string) {
       where: { id },
     });
     revalidatePath('/admin/shipping');
+    updateTag('shipping');
     return { success: true };
   } catch (error: any) {
     console.error('Error deleting shipping method:', error);

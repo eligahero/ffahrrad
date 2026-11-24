@@ -18,7 +18,14 @@ export default async function BlogsPage({ searchParams }: { searchParams: Promis
       skip,
       take: limit,
       orderBy: { createdAt: 'desc' },
-      include: {
+      select: {
+        id: true,
+        title: true,
+        slug: true,
+        category: true,
+        isPublished: true,
+        createdAt: true,
+        image: true,
         _count: {
           select: { comments: true }
         }

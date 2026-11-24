@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { getCachedSettings } from '@/lib/cache';
 
+export const revalidate = 3600;
+
 export async function GET() {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://mystore.com';
   
@@ -12,6 +14,15 @@ export async function GET() {
 
   const articles = await prisma.article.findMany({
     where: { isPublished: true },
+    select: {
+      title: true,
+      slug: true,
+      content: true,
+      excerpt: true,
+      authorName: true,
+      image: true,
+      createdAt: true,
+    },
     orderBy: { createdAt: 'desc' },
     take: 20
   });

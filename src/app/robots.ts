@@ -1,63 +1,94 @@
 import { MetadataRoute } from 'next';
-import prisma from '@/lib/prisma';
+import { getCachedSettings } from '@/lib/cache';
 import { SITE_URL } from '@/lib/site';
 
-const DEFAULT_DISALLOW_PATHS = [
-  '/admin/', 
-  '/account/', 
-  '/checkout/', 
-  '/api/', 
-  '/categorie-produit/', 
-  '/produit/',
-  '/*?filter_cat=',
-  '/*?column=',
-  '/*?per_page=',
-  '/*?rating_filter=',
-  '/*?stock_status=',
-  '/*?featured=',
-  '/*?best_seller=',
-  '/*?add-to-cart='
+// Aggressive bots and scrapers that waste Serverless Active CPU quota
+const BLOCKED_SCRAPERS = [
+  'AhrefsBot',
+  'SemrushBot',
+  'DotBot',
+  'MJ12bot',
+  'PetalBot',
+  'Bytespider',
+  'GPTBot',
+  'ChatGPT-User',
+  'CCBot',
+  'anthropic-ai',
+  'ClaudeBot',
+  'Claude-Web',
+  'Baiduspider',
+  'YandexBot',
+  'Sogou',
+  'Barkrowler',
+  'BLEXBot',
+  'SEOkicks',
+];
+
+// Query combinations and internal endpoints that must never be crawled
+const DEFAULT_DISALLOW_PATTERNS = [
+  '/admin/',
+  '/admin/*',
+  '/account/',
+  '/account/*',
+  '/checkout/',
+  '/checkout/*',
+  '/api/',
+  '/api/*',
+  '/_next/',
+  '/search',
+  '/search/*',
+  '/*?*',
+  '/*?sort=*',
+  '/*?page=*',
+  '/*?filter=*',
+  '/*?minPrice=*',
+  '/*?maxPrice=*',
+  '/*?rating=*',
+  '/*?brand=*',
+  '/*?category=*',
+  '/*?q=*',
+  '/*?view=*',
+  '/*?filter_cat=*',
+  '/*?add-to-cart=*',
 ];
 
 export default async function robots(): Promise<MetadataRoute.Robots> {
   const baseUrl = SITE_URL;
 
-  // Read robots settings from the database
-  const settings = await prisma.setting.findMany({
-    where: {
-      key: {
-        in: ['ROBOTS_DISALLOW_PATHS', 'ROBOTS_CRAWL_DELAY'],
-      },
-    },
-  });
+  // Use cached settings to prevent database query on every robots.txt hit
+  const settingsMap = await getCachedSettings();
 
-  const settingsMap = settings.reduce(
-    (acc, s) => ({ ...acc, [s.key]: s.value }),
-    {} as Record<string, string>
-  );
-
-  // Parse disallow paths from DB or use defaults
-  let disallowPaths: string[] = DEFAULT_DISALLOW_PATHS;
+  let disallowPaths: string[] = DEFAULT_DISALLOW_PATTERNS;
   if (settingsMap['ROBOTS_DISALLOW_PATHS']) {
     try {
-      disallowPaths = JSON.parse(settingsMap['ROBOTS_DISALLOW_PATHS']);
+      const customPaths = JSON.parse(settingsMap['ROBOTS_DISALLOW_PATHS']);
+      if (Array.isArray(customPaths)) {
+        disallowPaths = Array.from(new Set([...DEFAULT_DISALLOW_PATTERNS, ...customPaths]));
+      }
     } catch {
-      disallowPaths = DEFAULT_DISALLOW_PATHS;
+      disallowPaths = DEFAULT_DISALLOW_PATTERNS;
     }
   }
 
-  // Parse crawl delay (optional)
   const crawlDelay = settingsMap['ROBOTS_CRAWL_DELAY']
     ? parseInt(settingsMap['ROBOTS_CRAWL_DELAY'], 10)
     : undefined;
 
+  // Build rules array: Block aggressive scrapers entirely + protect general search query space
+  const scraperRules = BLOCKED_SCRAPERS.map(userAgent => ({
+    userAgent,
+    disallow: ['/'],
+  }));
+
+  const standardRule = {
+    userAgent: '*',
+    allow: ['/', '/shop', '/blog', '/produto/*'],
+    disallow: disallowPaths,
+    ...(crawlDelay && !isNaN(crawlDelay) ? { crawlDelay } : {}),
+  };
+
   return {
-    rules: {
-      userAgent: '*',
-      allow: '/',
-      disallow: disallowPaths,
-      ...(crawlDelay && !isNaN(crawlDelay) ? { crawlDelay } : {}),
-    },
+    rules: [standardRule, ...scraperRules],
     sitemap: `${baseUrl}/sitemap.xml`,
   };
 }

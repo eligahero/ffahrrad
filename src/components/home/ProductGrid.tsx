@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { getFilteredProducts } from '@/actions/public';
 import ProductGridCard from './ProductGridCard';
 import DynamicProductGrid from './DynamicProductGrid';
-import prisma from '@/lib/prisma';
+import { getCachedSettings } from '@/lib/cache';
 import { getTranslations } from 'next-intl/server';
 
 type ProductGridProps = {
@@ -37,14 +37,16 @@ export default async function ProductGrid({ config }: ProductGridProps) {
   } = config;
 
   const maxNum = parseInt(maxProducts, 10) || 12;
-  const products = await getFilteredProducts(filterType, categoryId, maxNum, (config as any).productIds);
+  const [products, cachedSettings] = await Promise.all([
+    getFilteredProducts(filterType, categoryId, maxNum, (config as any).productIds),
+    getCachedSettings(),
+  ]);
 
   if (products.length === 0) {
     return null; // Do not render section if no products
   }
 
-  const settingsDb = await prisma.setting.findMany();
-  const settings = settingsDb.reduce((acc: any, s: any) => ({ ...acc, [s.key]: s.value }), {} as Record<string, string>);
+  const settings: Record<string, string> = { ...cachedSettings };
   
   if (config) {
     Object.assign(settings, config);

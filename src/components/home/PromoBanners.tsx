@@ -1,7 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
-
-import prisma from '@/lib/prisma';
+import { getCachedSettings } from '@/lib/cache';
 import { getTranslations } from 'next-intl/server';
 
 export default async function PromoBanners({ config }: { config?: any }) {
@@ -10,8 +9,8 @@ export default async function PromoBanners({ config }: { config?: any }) {
     return null;
   }
 
-  const settingsDb = await prisma.setting.findMany();
-  const settings = settingsDb.reduce((acc: any, s: any) => ({ ...acc, [s.key]: s.value }), {} as Record<string, string>);
+  const cachedSettings = await getCachedSettings();
+  const settings: Record<string, string> = { ...cachedSettings };
   
   if (config) {
     Object.assign(settings, config);

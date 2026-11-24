@@ -2,7 +2,7 @@
 
 import prisma from '@/lib/prisma';
 import { requireAdmin } from '@/lib/auth';
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, updateTag } from 'next/cache';
 import { v2 as cloudinary } from 'cloudinary';
 
 cloudinary.config({
@@ -48,6 +48,8 @@ export async function restoreProduct(id: string) {
     revalidatePath('/admin/media');
     revalidatePath('/admin/trash');
     revalidatePath('/');
+    updateTag('products');
+    updateTag('homepage');
     return { success: true };
   } catch (error: any) {
     console.error('Error restoring product:', error);
@@ -152,6 +154,8 @@ export async function emptyTrash() {
       await permanentlyDeleteMedia(m.id);
     }
     
+    updateTag('products');
+    updateTag('homepage');
     return { success: true };
   } catch (error) {
     console.error('Error emptying trash:', error);

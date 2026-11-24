@@ -1,7 +1,80 @@
 import { unstable_cache } from 'next/cache';
 import prisma from '@/lib/prisma';
 
-// Sensitive secret keys that must NEVER be leaked to public cache or RSC props
+// ============================================================================
+// ZERO-OVERBUDGET MINIMAL PROJECTIONS (Anti-Egress Rule #1)
+// Never query description (heavy HTML), content, or attributes JSON on cards!
+// ============================================================================
+export const CARD_PRODUCT_SELECT = {
+  id: true,
+  title: true,
+  slug: true,
+  price: true,
+  compareAtPrice: true,
+  images: true,
+  discountLabel: true,
+  type: true,
+  isBestSeller: true,
+  isDealOfTheDay: true,
+  gtin: true,
+  createdAt: true,
+  brand: {
+    select: {
+      id: true,
+      name: true,
+      slug: true,
+    },
+  },
+  categories: {
+    select: {
+      id: true,
+      name: true,
+      slug: true,
+    },
+  },
+  reviews: {
+    select: {
+      rating: true,
+    },
+  },
+} as const;
+
+export type CardProduct = {
+  id: string;
+  title: string;
+  slug: string;
+  price: number;
+  compareAtPrice: number | null;
+  images: string[];
+  discountLabel: string | null;
+  type?: string;
+  isBestSeller?: boolean;
+  isDealOfTheDay?: boolean;
+  gtin?: string | null;
+  createdAt?: Date;
+  brand?: { id: string; name: string; slug: string | null } | null;
+  categories: { id: string; name: string; slug: string | null }[];
+  reviews: { rating: number }[];
+};
+
+export const CARD_ARTICLE_SELECT = {
+  id: true,
+  title: true,
+  slug: true,
+  image: true,
+  category: true,
+  excerpt: true,
+  createdAt: true,
+  _count: {
+    select: {
+      comments: { where: { isApproved: true } },
+    },
+  },
+} as const;
+
+// ============================================================================
+// GLOBAL SETTINGS CACHE (Multi-Level Server Caching Rule #3 & Layout Rule #4)
+// ============================================================================
 const HIDDEN_SETTING_KEYS = new Set([
   'STRIPE_SECRET_KEY',
   'PAYPAL_SECRET',
@@ -12,23 +85,27 @@ const HIDDEN_SETTING_KEYS = new Set([
   'SETUP_TOKEN',
 ]);
 
-// Helper to get raw settings (excluding sensitive payment and service credentials)
-async function fetchSettings() {
-  const settingsDb = await prisma.setting.findMany();
+async function fetchSettings(): Promise<Record<string, string>> {
+  const settingsDb = await prisma.setting.findMany({
+    select: {
+      key: true,
+      value: true,
+    },
+  });
   return settingsDb
     .filter(s => !HIDDEN_SETTING_KEYS.has(s.key))
     .reduce((acc, s) => ({ ...acc, [s.key]: s.value }), {} as Record<string, string>);
 }
 
-// Cached version of settings
 export const getCachedSettings = unstable_cache(
   async () => fetchSettings(),
   ['global-settings'],
   { tags: ['settings'], revalidate: 3600 }
 );
 
-// We need a helper for dynamic tags per slug since unstable_cache tags must be statically defined in the wrapper
-// A common pattern is a factory function:
+// ============================================================================
+// SINGLE PRODUCT DETAILS CACHE (Only place heavy fields like description are loaded)
+// ============================================================================
 export const getCachedProductBySlug = async (slug: string) => {
   return unstable_cache(
     async () => {
@@ -64,7 +141,7 @@ export const getCachedProductBySlug = async (slug: string) => {
         }
       });
 
-      // SEO Migration Fallback 1: If not found, check if a product exists with slug matching `${decodedSlug}-*` (suffix appended during WP/WooCommerce import)
+      // SEO Migration Fallback 1: Suffix appended during WP/WooCommerce import
       if (!product) {
         product = await prisma.product.findFirst({
           where: {
@@ -88,7 +165,7 @@ export const getCachedProductBySlug = async (slug: string) => {
         });
       }
 
-      // SEO Migration Fallback 2: If not found and input slug ends with numeric suffix (e.g. `-481`), check without suffix
+      // SEO Migration Fallback 2: Numeric suffix
       if (!product && /-\d+$/.test(decodedSlug)) {
         const strippedSlug = decodedSlug.replace(/-\d+$/, '');
         product = await prisma.product.findFirst({
@@ -134,15 +211,15 @@ export const getCachedProductBySlug = async (slug: string) => {
 };
 
 export const getCachedRelatedProducts = async (categoryIds: string[], excludeProductId: string) => {
-  // Sort IDs so the cache key is consistent
   const sortedIds = [...categoryIds].sort();
   return unstable_cache(
     async () => prisma.product.findMany({
       where: { 
         categories: { some: { id: { in: categoryIds } } }, 
-        id: { not: excludeProductId } 
+        id: { not: excludeProductId },
+        isDeleted: false,
       },
-      include: { categories: true },
+      select: CARD_PRODUCT_SELECT,
       take: 4,
     }),
     ['related-products', sortedIds.join(','), excludeProductId],
@@ -150,30 +227,277 @@ export const getCachedRelatedProducts = async (categoryIds: string[], excludePro
   )();
 };
 
-// Caching for Homepage best sellers
+// ============================================================================
+// BEST SELLERS & LATEST PRODUCTS (Cards only)
+// ============================================================================
 export const getCachedBestSellers = unstable_cache(
   async () => prisma.product.findMany({
     where: { isBestSeller: true, isDeleted: false },
     take: 8,
-    include: { categories: true }
+    select: CARD_PRODUCT_SELECT,
   }),
   ['home-best-sellers'],
   { tags: ['products'], revalidate: 3600 }
 );
 
-// Caching for Homepage latest products
 export const getCachedLatestProducts = unstable_cache(
   async () => prisma.product.findMany({
     where: { isDeleted: false },
     take: 8,
     orderBy: { createdAt: 'desc' },
-    include: { categories: true }
+    select: CARD_PRODUCT_SELECT,
   }),
   ['home-latest-products'],
   { tags: ['products'], revalidate: 3600 }
 );
 
-// Caching categories tree (only categories with >0 products, structured hierarchically)
+// ============================================================================
+// SALE, HOT & NEW ARRIVALS CACHES
+// ============================================================================
+export const getCachedSaleProducts = unstable_cache(
+  async (limit: number = 40) => {
+    return prisma.product.findMany({
+      where: {
+        compareAtPrice: { not: null },
+        isDeleted: false,
+      },
+      select: CARD_PRODUCT_SELECT,
+      orderBy: { updatedAt: 'desc' },
+      take: limit,
+    });
+  },
+  ['catalog-sale-products'],
+  { tags: ['products'], revalidate: 3600 }
+);
+
+export const getCachedHotProducts = unstable_cache(
+  async (limit: number = 40) => {
+    return prisma.product.findMany({
+      where: { isDeleted: false },
+      select: CARD_PRODUCT_SELECT,
+      orderBy: {
+        orderItems: {
+          _count: 'desc',
+        },
+      },
+      take: limit,
+    });
+  },
+  ['catalog-hot-products'],
+  { tags: ['products'], revalidate: 3600 }
+);
+
+export const getCachedNewArrivals = unstable_cache(
+  async (limit: number = 24) => {
+    return prisma.product.findMany({
+      where: { isDeleted: false },
+      select: CARD_PRODUCT_SELECT,
+      orderBy: { createdAt: 'desc' },
+      take: limit,
+    });
+  },
+  ['catalog-new-arrivals'],
+  { tags: ['products'], revalidate: 3600 }
+);
+
+// ============================================================================
+// HOMEPAGE AGGREGATED CACHE (Zero DB Egress on repeat hits)
+// ============================================================================
+export const getCachedHomepageData = unstable_cache(
+  async () => {
+    const allDbProds = await prisma.product.findMany({
+      where: { isDeleted: false },
+      select: {
+        id: true,
+        title: true,
+        slug: true,
+        price: true,
+        compareAtPrice: true,
+        images: true,
+        discountLabel: true,
+        isBestSeller: true,
+        gtin: true,
+        type: true,
+        brand: { select: { name: true } },
+        categories: { select: { name: true, slug: true } },
+        reviews: { select: { rating: true } },
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    const formattedProducts = allDbProds.map(p => ({
+      id: p.id,
+      title: p.title,
+      slug: p.slug,
+      price: p.price,
+      compareAtPrice: p.compareAtPrice,
+      images: p.images || [],
+      discountLabel: p.discountLabel || (p.compareAtPrice && p.compareAtPrice > p.price ? `-${Math.round(((p.compareAtPrice - p.price) / p.compareAtPrice) * 100)}%` : null),
+      categorySlug: p.categories[0]?.slug || '',
+      categoryName: p.categories[0]?.name || '',
+      categories: p.categories.map(c => ({ name: c.name, slug: c.slug || '' })),
+      allCategories: p.categories.map(c => `${c.name} ${c.slug}`).join(' '),
+      type: p.type,
+      reviews: p.reviews,
+    }));
+
+    const promoProducts = formattedProducts.filter(p =>
+      (p.compareAtPrice && p.compareAtPrice > p.price) ||
+      (p.discountLabel && p.discountLabel.trim() !== '')
+    );
+
+    const classify = (p: any) => {
+      const t = p.title.toLowerCase();
+      if (
+        t.includes('salamandra') ||
+        t.includes('recuperador') ||
+        t.includes('lareira') ||
+        t.includes('fogão') ||
+        t.includes('fogao') ||
+        t.includes('forno') ||
+        t.includes('aquecedor') ||
+        t.includes('radiador') ||
+        t.includes('caldeira') ||
+        t.includes('cozinha') ||
+        t.includes('estufa')
+      ) {
+        return 'fireplaces';
+      }
+      if (
+        t.includes('ar condicionado') ||
+        t.includes('split') ||
+        t.includes('climatiz') ||
+        t.includes('desumidificador') ||
+        t.includes('ventilador') ||
+        t.includes('termoacumulador')
+      ) {
+        return 'climate';
+      }
+      if (
+        t.includes('palete') ||
+        t.includes('palet') ||
+        t.includes('pellet') ||
+        t.includes('lenha') ||
+        t.includes('big bag') ||
+        t.includes('aparas') ||
+        t.includes('carvão') ||
+        t.includes('carvao') ||
+        t.includes('bioetanol') ||
+        t.includes('combust')
+      ) {
+        return 'pallets';
+      }
+      return 'fireplaces';
+    };
+
+    const simulatorProducts = {
+      pallets: [] as any[],
+      fireplaces: [] as any[],
+      climate: [] as any[],
+    };
+
+    for (const p of allDbProds) {
+      const type = classify(p);
+      simulatorProducts[type].push({
+        id: p.id,
+        title: p.title,
+        slug: p.slug,
+        price: p.price,
+        image: p.images?.[0] || '',
+        categoryName: p.categories?.[0]?.name || '',
+        brand: p.brand?.name || undefined,
+        sku: p.gtin || undefined,
+      });
+    }
+
+    const heroShowcaseProducts = formattedProducts
+      .filter(p => p.images && p.images.length > 0)
+      .slice(0, 8)
+      .map(p => {
+        const savings = p.compareAtPrice && p.compareAtPrice > p.price ? p.compareAtPrice - p.price : 0;
+        const discountPct = p.compareAtPrice && p.compareAtPrice > p.price
+          ? Math.round(((p.compareAtPrice - p.price) / p.compareAtPrice) * 100)
+          : null;
+        return {
+          id: p.id,
+          title: p.title,
+          subtitle: p.categoryName ? `${p.categoryName} • Alta Eficiência EcoDesign` : 'Qualidade Garantida Silva Dias',
+          price: p.price,
+          compareAtPrice: p.compareAtPrice,
+          image: p.images[0],
+          badge: discountPct ? `POUPANÇA -${discountPct}%` : 'TOP VENDAS',
+          badgeTech: p.categoryName ? `🔥 ${p.categoryName}` : '🔥 Alto Rendimento',
+          badgeTech2: savings > 0 ? `Poupe ${savings.toFixed(2).replace('.', ',')} €` : 'Stock Garantido',
+          categoryName: p.categoryName || '',
+        };
+      });
+
+    return {
+      formattedProducts,
+      promoProducts,
+      simulatorProducts,
+      heroShowcaseProducts,
+    };
+  },
+  ['homepage-data'],
+  { tags: ['products', 'homepage'], revalidate: 3600 }
+);
+
+// ============================================================================
+// SHOP FILTERS METADATA CACHE (Categories with count, Brands with count, Price bounds)
+// ============================================================================
+export const getCachedShopFilterMetadata = unstable_cache(
+  async () => {
+    const [categories, brands, priceAgg] = await Promise.all([
+      prisma.category.findMany({
+        where: {
+          products: { some: { isDeleted: false } },
+        },
+        select: {
+          id: true,
+          name: true,
+          slug: true,
+          _count: {
+            select: { products: { where: { isDeleted: false } } },
+          },
+        },
+        orderBy: { name: 'asc' },
+      }),
+      prisma.brand.findMany({
+        where: {
+          products: { some: { isDeleted: false } },
+        },
+        select: {
+          id: true,
+          name: true,
+          slug: true,
+          _count: {
+            select: { products: { where: { isDeleted: false } } },
+          },
+        },
+        orderBy: { name: 'asc' },
+      }),
+      prisma.product.aggregate({
+        where: { isDeleted: false },
+        _min: { price: true },
+        _max: { price: true },
+      }),
+    ]);
+
+    return {
+      categories,
+      brands,
+      minPrice: Math.floor(priceAgg._min?.price || 0),
+      maxPrice: Math.ceil(priceAgg._max?.price || 1000),
+    };
+  },
+  ['shop-filter-metadata'],
+  { tags: ['categories', 'brands', 'products'], revalidate: 3600 }
+);
+
+// ============================================================================
+// CATEGORIES HIERARCHY TREE CACHE (Header menu)
+// ============================================================================
 export const getCachedCategoriesTree = unstable_cache(
   async () => {
     const allCategories = await prisma.category.findMany({
@@ -189,10 +513,7 @@ export const getCachedCategoriesTree = unstable_cache(
       orderBy: { name: 'asc' }
     });
 
-    // Only keep categories that have at least 1 product
     const withProducts = allCategories.filter(c => c._count.products > 0);
-
-    // Organize hierarchically: roots first, followed by their children
     const roots = withProducts.filter(c => !c.parentId);
     const children = withProducts.filter(c => c.parentId);
 
@@ -231,7 +552,6 @@ export const getCachedCategoriesTree = unstable_cache(
       addChildren(root.id);
     }
 
-    // Include any remaining child category whose root had 0 direct products
     for (const ch of children) {
       if (!result.find(r => r.id === ch.id)) {
         result.push({
@@ -249,15 +569,57 @@ export const getCachedCategoriesTree = unstable_cache(
   { tags: ['categories', 'products'], revalidate: 3600 }
 );
 
+// ============================================================================
+// PRODUCT COUNTS CACHE
+// ============================================================================
 export const getCachedProductCounts = unstable_cache(
   async () => {
     const [newCount, hotCount, saleCount] = await Promise.all([
-      prisma.product.count(),
-      prisma.product.count({ where: { orderItems: { some: {} } } }),
-      prisma.product.count({ where: { compareAtPrice: { not: null } } })
+      prisma.product.count({ where: { isDeleted: false } }),
+      prisma.product.count({ where: { isDeleted: false, orderItems: { some: {} } } }),
+      prisma.product.count({ where: { isDeleted: false, compareAtPrice: { not: null } } }),
     ]);
     return { newCount, hotCount, saleCount };
   },
   ['layout-product-counts'],
   { tags: ['products'], revalidate: 3600 }
 );
+
+// ============================================================================
+// HEATING GUIDE BLOGS CACHE (Homepage articles with minimal projection)
+// ============================================================================
+export const getCachedHeatingGuideBlogs = unstable_cache(
+  async (limit: number = 3) => {
+    return prisma.article.findMany({
+      where: { isPublished: true },
+      select: CARD_ARTICLE_SELECT,
+      orderBy: { createdAt: 'desc' },
+      take: limit,
+    });
+  },
+  ['home-heating-guide-blogs'],
+  { tags: ['articles'], revalidate: 3600 }
+);
+
+// ============================================================================
+// DEFAULT SHIPPING RATE CACHE (Used on single product pages)
+// ============================================================================
+export const getCachedDefaultShippingRate = unstable_cache(
+  async () => {
+    const ptZone = await prisma.shippingZone.findFirst({
+      where: { name: { in: ['PT', 'Portugal', 'DE'] }, isActive: true },
+      select: {
+        methods: {
+          where: { isActive: true },
+          orderBy: { rate: 'asc' },
+          select: { rate: true },
+          take: 1,
+        },
+      },
+    });
+    return ptZone?.methods?.[0]?.rate ?? 0;
+  },
+  ['default-shipping-rate'],
+  { tags: ['shipping'], revalidate: 3600 }
+);
+

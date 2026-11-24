@@ -3,16 +3,16 @@ import prisma from '@/lib/prisma';
 import BlogSidebar from '@/components/blog/BlogSidebar';
 import { getRecentComments } from '@/actions/blog';
 import { getTranslations, getLocale } from 'next-intl/server';
+import { CARD_ARTICLE_SELECT } from '@/lib/cache';
 import Image from "next/image";
-
-export const dynamic = 'force-dynamic';
 
 export default async function BlogIndexPage({
   searchParams,
 }: {
-  searchParams: { q?: string }
+  searchParams: Promise<{ q?: string }>
 }) {
-  const query = searchParams.q || '';
+  const resolvedParams = await searchParams;
+  const query = resolvedParams?.q || '';
   const t = await getTranslations('Blog');
   const locale = await getLocale();
   
@@ -22,7 +22,8 @@ export default async function BlogIndexPage({
       ...(query ? { title: { contains: query, mode: 'insensitive' } } : {})
     },
     orderBy: { createdAt: 'desc' },
-    include: { _count: { select: { comments: { where: { isApproved: true } } } } }
+    select: CARD_ARTICLE_SELECT,
+    take: 12, // Bounded SQL query
   });
 
   const recentArticles = await prisma.article.findMany({
@@ -79,7 +80,7 @@ export default async function BlogIndexPage({
                       </span>
                     </div>
                     <p className="text-sm text-gray-600 line-clamp-3 mb-4 flex-1">
-                      {article.excerpt || article.content.replace(/<[^>]*>?/gm, '').replace(/&nbsp;/g, ' ').substring(0, 150) + '...'}
+                      {article.excerpt || ''}
                     </p>
                     <Link href={`/blog/${article.slug}`} className="inline-block mt-auto bg-orange-600 hover:bg-orange-700 text-white font-bold py-2 px-6 rounded transition self-start">
                       {t('read_more')}

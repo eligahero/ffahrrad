@@ -1,7 +1,7 @@
 'use server';
 
 import prisma from '@/lib/prisma';
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, updateTag } from 'next/cache';
 import { requireAuth, requireAdmin } from '@/lib/auth';
 
 const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -90,6 +90,7 @@ export async function toggleReviewApproval(reviewId: string, isApproved: boolean
   revalidatePath('/admin/reviews');
   revalidatePath(`/produto/[slug]`, 'page');
   revalidatePath(`/product/[slug]`, 'page');
+  updateTag('products');
 }
 
 export async function updateReview(reviewId: string, rating: number, comment: string, createdAtStr: string) {
@@ -110,6 +111,7 @@ export async function updateReview(reviewId: string, rating: number, comment: st
   revalidatePath('/admin/reviews');
   revalidatePath(`/produto/[slug]`, 'page');
   revalidatePath(`/product/[slug]`, 'page');
+  updateTag('products');
 }
 
 export async function deleteReview(reviewId: string) {
@@ -123,4 +125,5 @@ export async function deleteReview(reviewId: string) {
   revalidatePath('/admin/reviews');
   revalidatePath(`/produto/[slug]`, 'page');
   revalidatePath(`/product/[slug]`, 'page');
+  updateTag('products');
 }

@@ -24,6 +24,14 @@ export default async function AdminPagesList({ searchParams }: { searchParams: P
       prisma.page.findMany({
         skip,
         take: limit,
+        select: {
+          id: true,
+          title: true,
+          slug: true,
+          isPublished: true,
+          createdAt: true,
+          updatedAt: true,
+        },
         orderBy: { createdAt: 'desc' }
       }),
       prisma.page.count()

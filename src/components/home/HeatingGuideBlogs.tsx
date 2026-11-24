@@ -1,16 +1,12 @@
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import prisma from '@/lib/prisma';
+import { getCachedHeatingGuideBlogs } from '@/lib/cache';
 
 export default async function HeatingGuideBlogs() {
   let articles: any[] = [];
   try {
-    articles = await prisma.article.findMany({
-      where: { isPublished: true },
-      orderBy: { createdAt: 'desc' },
-      take: 3
-    });
+    articles = await getCachedHeatingGuideBlogs(3);
   } catch (e) {
     console.error('Error fetching articles for HeatingGuideBlogs', e);
   }

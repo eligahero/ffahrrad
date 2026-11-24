@@ -1,4 +1,3 @@
-import prisma from '@/lib/prisma';
 import { notFound, permanentRedirect } from 'next/navigation';
 import { getCategoryCanonicalPath, getCachedAllCategories } from '@/lib/categories';
 
@@ -16,26 +15,20 @@ export default async function ProductCategoryPage({
   const rawSlug = resolvedParams.slug;
   const decodedSlug = decodeURIComponent(rawSlug);
 
-  const orConditions: any[] = [
-    { slug: decodedSlug },
-    { slug: rawSlug },
-  ];
-  if (isUuid(rawSlug)) {
-    orConditions.push({ id: rawSlug });
-  }
-
-  const category = await prisma.category.findFirst({
-    where: {
-      OR: orConditions,
-    },
-  });
+  // Multi-Level Caching (Rule #3): Resolve category from in-memory cached hierarchy
+  const allCats = await getCachedAllCategories();
+  const category = allCats.find(c => 
+    c.slug === decodedSlug || 
+    c.slug === rawSlug || 
+    (isUuid(rawSlug) && c.id === rawSlug)
+  );
 
   if (!category) {
     notFound();
   }
 
   // Option B: Redirect /product-category/[slug] to the clean root-level path (e.g. /combustiveis/lenha-e-pellets)
-  const canonicalPath = await getCategoryCanonicalPath(category);
+  const canonicalPath = await getCategoryCanonicalPath(category, allCats);
   const resolvedSearchParams = await searchParams;
   const queryParams = new URLSearchParams();
   for (const [key, value] of Object.entries(resolvedSearchParams)) {
