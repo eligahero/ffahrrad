@@ -126,10 +126,10 @@ export default function ProductGallery({
 
   return (
     <>
-      <div className="w-full lg:w-7/12 flex flex-col gap-4 lg:sticky lg:top-8 self-start">
+      <div className="w-full h-full flex flex-col justify-between gap-3 sm:gap-4">
 
-        {/* MAIN LARGE IMAGE CONTAINER WITH SIDE CHEVRONS */}
-        <div className="w-full border border-gray-200/90 rounded-2xl relative overflow-hidden flex items-center justify-center bg-white aspect-square shadow-xs group">
+        {/* MAIN LARGE IMAGE CONTAINER WITH SIDE CHEVRONS (Auto-adjusts height to sibling column) */}
+        <div className="w-full flex-1 aspect-[4/3] sm:aspect-square lg:aspect-auto min-h-[300px] sm:min-h-[360px] lg:min-h-0 border border-gray-200/90 rounded-2xl relative overflow-hidden flex items-center justify-center bg-white shadow-xs group">
           {discountLabel && compareAtPrice && price && compareAtPrice > price && (
             <span className="absolute top-4 left-4 bg-[#F28611] text-white text-[11px] sm:text-xs font-black uppercase tracking-wider px-3 py-1 rounded-full z-10 shadow-sm pointer-events-none">
               {discountLabel}
@@ -228,7 +228,7 @@ export default function ProductGallery({
 
         {/* HORIZONTAL THUMBNAILS STRIP WITH CHEVRONS (Exactly like the reference image) */}
         {hasImages && images.length > 1 && (
-          <div className="flex items-center justify-center gap-2 sm:gap-3 w-full py-1">
+          <div className="flex items-center justify-center gap-2 sm:gap-3 w-full shrink-0 pt-1">
             {/* Left Scroll Arrow */}
             <button
               type="button"
@@ -253,8 +253,8 @@ export default function ProductGallery({
                     onClick={() => handleSelectThumbnail(idx)}
                     aria-label={`Bild ${idx + 1} auswählen`}
                     className={`h-16 w-16 sm:h-20 sm:w-20 rounded-xl bg-white p-1.5 flex items-center justify-center transition-all cursor-pointer shrink-0 overflow-hidden ${isSelected
-                        ? 'border-2 border-[#F28611] ring-2 ring-[#F28611]/25 shadow-xs scale-102'
-                        : 'border border-gray-200 hover:border-gray-400 opacity-75 hover:opacity-100'
+                      ? 'border-2 border-[#F28611] ring-2 ring-[#F28611]/25 shadow-xs scale-102'
+                      : 'border border-gray-200 hover:border-gray-400 opacity-75 hover:opacity-100'
                       }`}
                   >
                     <Image

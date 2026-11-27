@@ -86,20 +86,22 @@ export default function ProductPageClient({
         )}
       </div>
 
-      {/* 2. Hero 2-Column Section: Gallery on Left, Buy Box Card on Right */}
-      <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 items-start">
-        {/* Gallery */}
-        <ProductGallery
-          images={product.images}
-          title={product.title}
-          discountLabel={product.discountLabel}
-          compareAtPrice={product.compareAtPrice}
-          price={product.price}
-          activeVariationImage={variationImage}
-        />
+      {/* 2. Hero 2-Column Section: Gallery on Left, Buy Box Card on Right (Synchronized Height) */}
+      <div className="flex flex-col lg:flex-row gap-6 lg:gap-10 lg:items-stretch">
+        {/* Left Column: Gallery */}
+        <div className="w-full lg:w-7/12 flex flex-col">
+          <ProductGallery
+            images={product.images}
+            title={product.title}
+            discountLabel={product.discountLabel}
+            compareAtPrice={product.compareAtPrice}
+            price={product.price}
+            activeVariationImage={variationImage}
+          />
+        </div>
 
-        {/* Right Buy Box */}
-        <div className="w-full lg:w-5/12">
+        {/* Right Column: Buy Box Card */}
+        <div className="w-full lg:w-5/12 flex flex-col">
           <ProductActions
             product={product as any}
             enableBuyNow={enableBuyNow}

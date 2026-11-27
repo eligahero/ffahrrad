@@ -272,7 +272,7 @@ export default function ProductActions({
   const currentTickerItem = REASSURANCE_ITEMS[tickerIndex];
 
   return (
-    <div className="w-full flex flex-col">
+    <div className="w-full h-full flex flex-col">
       {/* Toast notifications */}
       {addedItemName && notificationPortal && createPortal(
         <div className="bg-[#16A34A] text-white px-6 py-4 mb-6 flex flex-col sm:flex-row items-center justify-between shadow-md rounded-xl animate-in fade-in slide-in-from-top-2">
@@ -303,7 +303,7 @@ export default function ProductActions({
       {/* =========================================================================
           BUY BOX CARD — MATCHING CAPTURE 2 EXACT LAYOUT
           ========================================================================= */}
-      <div className="bg-white border border-gray-200 rounded-2xl p-6 sm:p-7 shadow-xs flex flex-col">
+      <div className="bg-white border border-gray-200 rounded-2xl p-6 sm:p-7 shadow-xs flex flex-col h-full justify-between">
         
         {/* 1. Brand Header */}
         <div className="flex justify-center items-center mb-2.5">
