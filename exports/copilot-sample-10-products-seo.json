@@ -1,0 +1,370 @@
+{
+  "exportedAt": "2026-11-27T09:05:11.691Z",
+  "totalProducts": 10,
+  "scope": "read-only:10-active-products-sample",
+  "securityGuarantee": "Zero customer accounts, zero orders, zero reviews, zero credentials.",
+  "products": [
+    {
+      "id": "870be004-802d-4193-af4a-689ec01b30dc",
+      "title": "Shimano Pedale PD-EH500 SPD",
+      "slug": "shimano-pedale-pd-eh500-spd",
+      "price": 49.9,
+      "compareAtPrice": null,
+      "stock": null,
+      "gtin": null,
+      "discountLabel": null,
+      "type": "SIMPLE",
+      "shortDescription": "<p>Das Shimano PD-EH500 SPD-Kombipedal zeichnet sich durch seine schlichte Ästhetik, seine hohe Funktionalität und seinen breiten Einsatzbereich aus. Dank der profilierten Plattformseite, der mitgelieferten und auswechselbaren Pins und des bewährten SPD-Klicksystems lassen sich die Shimano-Pedale sowohl auf der Straße als auch im Gelände einsetzen.</p>\n",
+      "description": "<p>Das Shimano PD-EH500 verbindet ein SPD-Klicksystem mit einer griffigen Plattformseite. So eignet sich das Kombipedal für sportliche Fahrten ebenso wie für den Alltag. Die Auslösehärte lässt sich einstellen; austauschbare Pins unterstützen den Halt auf der Plattformseite.</p><h2>Eigenschaften</h2><ul><li>Kombipedal mit SPD- und Plattformseite</li><li>Einstellbare Auslösehärte</li><li>Gedichtete, wartungsarme Konuslager</li><li>Acht austauschbare Pins je Pedal</li><li>Pedalkörper aus Aluminium, Achse aus Chrom-Molybdän-Stahl</li><li>Gewicht: 386 g pro Paar (Herstellerangabe)</li></ul><h2>Lieferumfang</h2><p>Ein Paar Shimano PD-EH500, ein Paar SM-SH56-Schuhplatten und 16 Pins. SM-SH51-Schuhplatten und Reflektoren sind optional und nicht enthalten.</p>",
+      "metaTitle": "Shimano PD-EH500 SPD-Kombipedale | Fahrrad Franke",
+      "metaDescription": "Shimano PD-EH500 mit Klicksystem und Plattformseite. Einstellbare Auslösehärte, SM-SH56-Schuhplatten und austauschbare Pins – für Alltag, MTB und Schotterwege.",
+      "attributes": null,
+      "variations": null,
+      "images": [
+        "https://res.cloudinary.com/ih3hdf0k/image/upload/v1794846619/ffahrrad/woocommerce-import/qf3rtyjgs4994faery1h.jpg",
+        "https://res.cloudinary.com/ih3hdf0k/image/upload/v1794846619/ffahrrad/woocommerce-import/shxjt6uhwsh8zwpuvndg.jpg",
+        "https://res.cloudinary.com/ih3hdf0k/image/upload/v1794846619/ffahrrad/woocommerce-import/a9vgh39hvcyuo0evpfcb.jpg",
+        "https://res.cloudinary.com/ih3hdf0k/image/upload/v1794846619/ffahrrad/woocommerce-import/in3iwngmxkegf9aomqea.jpg",
+        "https://res.cloudinary.com/ih3hdf0k/image/upload/v1794846619/ffahrrad/woocommerce-import/mpkogzofvy5ypbfet7ui.jpg",
+        "https://res.cloudinary.com/ih3hdf0k/image/upload/v1794846619/ffahrrad/woocommerce-import/ohp5wtitx7jnsisixctu.jpg",
+        "https://res.cloudinary.com/ih3hdf0k/image/upload/v1794846619/ffahrrad/woocommerce-import/qxwk42c0hll8ox2mizf8.jpg"
+      ],
+      "brand": null,
+      "categories": [
+        {
+          "name": "Pedale",
+          "slug": "pedale"
+        }
+      ],
+      "createdAt": "2026-11-16T16:30:21.342Z",
+      "updatedAt": "2026-11-16T16:30:21.342Z"
+    },
+    {
+      "id": "ead93d7e-2365-4cfd-b398-f8c8e9f33665",
+      "title": "Shimano Plattformpedale PD-GR500 - Schwarz",
+      "slug": "shimano-plattformpedale-pd-gr500-schwarz",
+      "price": 40.55,
+      "compareAtPrice": null,
+      "stock": null,
+      "gtin": null,
+      "discountLabel": null,
+      "type": "SIMPLE",
+      "shortDescription": "<div class=\"content--title\"><strong>Shimano</strong> PD-GR500 Plattformpedale</div>\n<div class=\"product--description\">Das Plattformpedal PD-GR500 von Shimano ist für den Trail- und All Mountain-Einsatz entwickelt worden und hat ein hervorragendes Preis-Leistungsverhältnis. Es hat neun höhenverstellbare und auswechselbare Pins pro Seite und bietet zusammen mit der konkaven Oberfläche sehr guten Grip und einen tollen Komfort auf und abseits befestigter Wege.</div>\n",
+      "description": "<p>Die schwarzen Shimano PD-GR500 Plattformpedale besitzen eine konkave Trittfläche, die den Fuß stabil auf dem Pedal positioniert. Höhenverstellbare und austauschbare Pins lassen sich an den gewünschten Halt anpassen. Gedichtete Kompaktlager und eine Achse aus Chrom-Molybdän-Stahl ergänzen die Ausstattung für Fahrten mit dem Mountainbike.</p><h2>Eigenschaften</h2><ul><li>Für MTB, All Mountain, Trail, Enduro und BMX</li><li>Konkave Trittfläche</li><li>Neun höhenverstellbare, austauschbare Pins</li><li>Gedichtete Kompaktlager</li><li>Achse aus Chrom-Molybdän-Stahl</li><li>Farbe: Schwarz</li></ul>",
+      "metaTitle": "Shimano PD-GR500 Plattformpedale Schwarz | Fahrrad Franke",
+      "metaDescription": "Schwarze Shimano PD-GR500 Plattformpedale mit konkaver Trittfläche, höhenverstellbaren Pins und Chrom-Molybdän-Stahlachse. Für MTB, Trail und Enduro.",
+      "attributes": null,
+      "variations": null,
+      "images": [
+        "https://res.cloudinary.com/ih3hdf0k/image/upload/v1794846615/ffahrrad/woocommerce-import/jipjzredlcvhq7qh4jvq.jpg",
+        "https://res.cloudinary.com/ih3hdf0k/image/upload/v1794846615/ffahrrad/woocommerce-import/z9ao40qdt7ji5w4vbl6s.jpg"
+      ],
+      "brand": null,
+      "categories": [
+        {
+          "name": "Pedale",
+          "slug": "pedale"
+        }
+      ],
+      "createdAt": "2026-11-16T16:30:16.321Z",
+      "updatedAt": "2026-11-16T16:30:16.321Z"
+    },
+    {
+      "id": "e64302cf-9a9d-4f82-886e-b4920907c71c",
+      "title": "Shimano Plattformpedale PD-GR500 - Silber",
+      "slug": "shimano-plattformpedale-pd-gr500-silber",
+      "price": 40.55,
+      "compareAtPrice": null,
+      "stock": null,
+      "gtin": null,
+      "discountLabel": null,
+      "type": "SIMPLE",
+      "shortDescription": "<div class=\"content--title\"><strong>Shimano</strong> PD-GR500 Plattformpedale</div>\n<div class=\"product--description\">Das Plattformpedal PD-GR500 von Shimano ist für den Trail- und All Mountain-Einsatz entwickelt worden und hat ein hervorragendes Preis-Leistungsverhältnis. Es hat neun höhenverstellbare und auswechselbare Pins pro Seite und bietet zusammen mit der konkaven Oberfläche sehr guten Grip und einen tollen Komfort auf und abseits befestigter Wege.</div>\n",
+      "description": "<p>Die silbernen Shimano PD-GR500 Plattformpedale verbinden eine konkave Trittfläche mit anpassbaren Pins für einen stabilen Stand auf dem Pedal. Die Pins sind höhenverstellbar und austauschbar. Gedichtete Kompaktlager und eine Achse aus Chrom-Molybdän-Stahl runden die Ausstattung für Mountainbike-Fahrten ab.</p><h2>Eigenschaften</h2><ul><li>Für MTB, All Mountain, Trail, Enduro und BMX</li><li>Konkave Trittfläche</li><li>Neun höhenverstellbare, austauschbare Pins</li><li>Gedichtete Kompaktlager</li><li>Achse aus Chrom-Molybdän-Stahl</li><li>Farbe: Silber</li></ul>",
+      "metaTitle": "Shimano PD-GR500 Plattformpedale Silber | Fahrrad Franke",
+      "metaDescription": "Silberne Shimano PD-GR500 Plattformpedale mit konkaver Trittfläche, höhenverstellbaren Pins und Chrom-Molybdän-Stahlachse. Für MTB, Trail und Enduro.",
+      "attributes": null,
+      "variations": null,
+      "images": [
+        "https://res.cloudinary.com/ih3hdf0k/image/upload/v1794846608/ffahrrad/woocommerce-import/nljwobovoubmfi7izme4.jpg",
+        "https://res.cloudinary.com/ih3hdf0k/image/upload/v1794846608/ffahrrad/woocommerce-import/emx6bswjt9hmmyhtvrfi.jpg"
+      ],
+      "brand": null,
+      "categories": [
+        {
+          "name": "Pedale",
+          "slug": "pedale"
+        }
+      ],
+      "createdAt": "2026-11-16T16:30:09.750Z",
+      "updatedAt": "2026-11-16T16:30:09.750Z"
+    },
+    {
+      "id": "3a9d8a06-8a89-428a-a53f-78d6c1259feb",
+      "title": "Garmin Edge 130 Plus MTB- Bundle - GPS Fahrradcomputer",
+      "slug": "garmin-edge-130-plus-mtb-bundle-gps-fahrradcomputer",
+      "price": 202.89,
+      "compareAtPrice": null,
+      "stock": null,
+      "gtin": null,
+      "discountLabel": null,
+      "type": "SIMPLE",
+      "shortDescription": "<p><strong>Design</strong><br />\nExtrem leichtes und kompaktes Design (33g) mit sehr gut ablesbaren und kontrastreichen 1,8“ Display und Tastenbedienung.<br />\n<strong>Performance Auswertung</strong><br />\nVerbessere deine Fitness mit der Auswertung und Analyse deiner VO2max und Herzfrequenz Werte.<br />\n<strong>Trainingsplanung</strong><br />\nNutze deine Indoor oder Outdoor Trainingspläne von Garmin Connect oder synchronisiere Trainingspläne von Anbietern wie TrainingPeaks oder TrainerRoad.</p>\n",
+      "description": "<p>Der Garmin Edge 130 Plus ist ein kompakter Fahrradcomputer für Touren und Fahrten mit dem Mountainbike. Das 1,8 Zoll große Display zeigt Fahrtdaten und Abbiegehinweise an. Mit ClimbPro lassen sich Informationen zu Steigung, Entfernung und Höhenmetern während eines Anstiegs abrufen. Zusätzlich erfasst das Gerät MTB-Daten wie Grit, Flow und Airtime. Verbunden mit einem Smartphone unterstützt es Funktionen wie Benachrichtigungen, Wetterinformationen und LiveTrack.</p><h2>Eigenschaften</h2><ul><li>1,8-Zoll-Display</li><li>Gewicht: 33 g</li><li>Navigation mit Abbiegehinweisen</li><li>ClimbPro und MTB Dynamics</li><li>Smartphone-Verbindung mit LiveTrack</li></ul>",
+      "metaTitle": "Garmin Edge 130 Plus MTB-Set | Fahrradcomputer",
+      "metaDescription": "Kompakter Garmin Edge 130 Plus für MTB-Touren: Abbiegehinweise, ClimbPro und MTB Dynamics auf einem 1,8-Zoll-Display. Nur 33 g leicht.",
+      "attributes": null,
+      "variations": null,
+      "images": [
+        "https://res.cloudinary.com/ih3hdf0k/image/upload/v1794846603/ffahrrad/woocommerce-import/lrgy4xoosbcezlmxyex3.jpg",
+        "https://res.cloudinary.com/ih3hdf0k/image/upload/v1794846603/ffahrrad/woocommerce-import/mwbbdjf4n9p7xaaozn2f.jpg",
+        "https://res.cloudinary.com/ih3hdf0k/image/upload/v1794846604/ffahrrad/woocommerce-import/lkfegllje04oj2wrl1uq.jpg",
+        "https://res.cloudinary.com/ih3hdf0k/image/upload/v1794846604/ffahrrad/woocommerce-import/hk1ga2tnymql7ji86889.jpg",
+        "https://res.cloudinary.com/ih3hdf0k/image/upload/v1794846604/ffahrrad/woocommerce-import/g3u35vxat8fcqo9vwfa8.jpg",
+        "https://res.cloudinary.com/ih3hdf0k/image/upload/v1794846604/ffahrrad/woocommerce-import/rlj7h3qrlkppxtwxpmrm.jpg",
+        "https://res.cloudinary.com/ih3hdf0k/image/upload/v1794846604/ffahrrad/woocommerce-import/hwej3rap7cwrzzhnf3ug.jpg",
+        "https://res.cloudinary.com/ih3hdf0k/image/upload/v1794846604/ffahrrad/woocommerce-import/bkerzdnakpsniybvk7cw.jpg",
+        "https://res.cloudinary.com/ih3hdf0k/image/upload/v1794846604/ffahrrad/woocommerce-import/pv7105yikglk6mc3zfxj.jpg"
+      ],
+      "brand": {
+        "name": "GARMIN",
+        "slug": "garmin"
+      },
+      "categories": [
+        {
+          "name": "Fahrradcomputer",
+          "slug": "fahrradcomputer"
+        }
+      ],
+      "createdAt": "2026-11-16T16:30:05.617Z",
+      "updatedAt": "2026-11-16T16:30:05.617Z"
+    },
+    {
+      "id": "4236a382-fca4-4099-878f-0169d90197a1",
+      "title": "Garmin Edge Explore 2 - GPS Fahrradcomputer",
+      "slug": "garmin-edge-explore-2-gps-fahrradcomputer",
+      "price": 200.99,
+      "compareAtPrice": null,
+      "stock": null,
+      "gtin": null,
+      "discountLabel": null,
+      "type": "SIMPLE",
+      "shortDescription": "<p><strong>DESIGN</strong><br />\nModernes Design mit reaktionsschnellem, immer gut lesbaren, 3‘‘ Touchdisplay.<br />\n<strong>LANGE AKKULAUFZEIT</strong><br />\nBis zu 16 Stunden GPS-Akkulaufzeit bei gekoppelten Sensoren und aktiver Navigation für lange Radtouren.<br />\n<strong>MULTI-GNSS</strong><br />\nNutze mehrere globale Navigationssatellitensysteme (GPS, GLONASS, Galileo, BeiDou), um in schwierigeren Umgebungen eine bessere Positionsfindung als bei ausschließlicher Verwendung von GPS zu erhalten.</p>\n",
+      "description": "<p>Der Garmin Edge Explore 2 unterstützt die Navigation auf Fahrradtouren und E-Bike-Ausflügen. Sein 3-Zoll-Touchdisplay und die vorinstallierte Fahrradkarte für Europa erleichtern die Routenplanung unterwegs. Die Routenführung kann stark befahrene Straßen meiden. Für E-Bikes berücksichtigt die Routenplanung verfügbare Reichweiteninformationen. ClimbPro zeigt Angaben zu bevorstehenden Anstiegen. Die Akkulaufzeit beträgt laut Hersteller unter bestimmten Nutzungsbedingungen bis zu 16 Stunden.</p><h2>Eigenschaften</h2><ul><li>3-Zoll-Touchdisplay</li><li>Vorinstallierte Fahrradkarte für Europa</li><li>Routenführung für Fahrräder und E-Bikes</li><li>ClimbPro</li><li>Bis zu 16 Stunden Akkulaufzeit laut Hersteller</li></ul>",
+      "metaTitle": "Garmin Edge Explore 2 Fahrradcomputer | Fahrrad Franke",
+      "metaDescription": "Garmin Edge Explore 2 mit 3-Zoll-Touchdisplay, Europa-Fahrradkarte und E-Bike-Routenführung. Entdecke Touren und navigiere auf Rad und E-Bike.",
+      "attributes": null,
+      "variations": null,
+      "images": [
+        "https://res.cloudinary.com/ih3hdf0k/image/upload/v1794846595/ffahrrad/woocommerce-import/qyc4os12epworldn9g8p.jpg",
+        "https://res.cloudinary.com/ih3hdf0k/image/upload/v1794846595/ffahrrad/woocommerce-import/qqvg7ve1oakbghz9tdxb.jpg",
+        "https://res.cloudinary.com/ih3hdf0k/image/upload/v1794846595/ffahrrad/woocommerce-import/yfyig8tbcpa6mtzd0yd0.jpg",
+        "https://res.cloudinary.com/ih3hdf0k/image/upload/v1794846595/ffahrrad/woocommerce-import/gfumjgwmxy1maonmqrxg.jpg",
+        "https://res.cloudinary.com/ih3hdf0k/image/upload/v1794846595/ffahrrad/woocommerce-import/cm0hkkxyxrxtty258nur.jpg",
+        "https://res.cloudinary.com/ih3hdf0k/image/upload/v1794846595/ffahrrad/woocommerce-import/oqxsavvkwm1ch8yfqwdd.jpg",
+        "https://res.cloudinary.com/ih3hdf0k/image/upload/v1794846595/ffahrrad/woocommerce-import/lcwdewn5ispnhaczc52w.jpg"
+      ],
+      "brand": {
+        "name": "GARMIN",
+        "slug": "garmin"
+      },
+      "categories": [
+        {
+          "name": "Fahrradcomputer",
+          "slug": "fahrradcomputer"
+        }
+      ],
+      "createdAt": "2026-11-16T16:29:57.255Z",
+      "updatedAt": "2026-11-16T16:29:57.255Z"
+    },
+    {
+      "id": "033e4c3a-c69e-4e18-aac7-36d2a10da209",
+      "title": "SKS Schutzblechset Velo 65 Mountain",
+      "slug": "sks-schutzblechset-velo-65-mountain",
+      "price": 25.9,
+      "compareAtPrice": null,
+      "stock": null,
+      "gtin": null,
+      "discountLabel": null,
+      "type": "SIMPLE",
+      "shortDescription": "",
+      "description": "<p>Das schwarze SKS Velo 65 Mountain Schutzblechset ist für Mountainbikes mit 26- oder 27,5-Zoll-Rädern vorgesehen. Die Steckschutzbleche lassen sich mit der Universalbefestigung an vielen Rahmenrohren anbringen. Das vordere Schutzblech ist 605 mm, das hintere 850 mm lang. Das Set wiegt 263 g.</p><p>Bitte prüfe vor dem Kauf die Freigängigkeit am Fahrradrahmen und zwischen Reifen und Schutzblech. Unterlaufstreben sind optional erhältlich.</p>",
+      "metaTitle": "SKS Velo 65 Mountain Steckschutzblechset | Fahrrad Franke",
+      "metaDescription": "Schwarze SKS Velo 65 Mountain Steckschutzbleche für 26- und 27,5-Zoll-Räder. Mit Befestigung an vielen Rahmenrohren; das Set wiegt 263 g.",
+      "attributes": null,
+      "variations": null,
+      "images": [
+        "https://res.cloudinary.com/ih3hdf0k/image/upload/v1794846587/ffahrrad/woocommerce-import/kneeciucf5z8tjf7zcci.jpg"
+      ],
+      "brand": null,
+      "categories": [
+        {
+          "name": "Schutzbleche",
+          "slug": "schutzbleche"
+        }
+      ],
+      "createdAt": "2026-11-16T16:29:48.981Z",
+      "updatedAt": "2026-11-16T16:29:48.981Z"
+    },
+    {
+      "id": "df8b7d48-ecb7-467f-987c-6b090e60b028",
+      "title": "ROLAND Jumbo Tiefdeichsel Transportanhänger - 175 L",
+      "slug": "roland-jumbo-tiefdeichsel-transportanhaenger-175-l",
+      "price": 448.89,
+      "compareAtPrice": null,
+      "stock": null,
+      "gtin": null,
+      "discountLabel": null,
+      "type": "SIMPLE",
+      "shortDescription": "<table>\n<tbody>\n<tr>\n<td width=\"302\">Farbe</td>\n<td width=\"302\">Braun</td>\n</tr>\n<tr>\n<td width=\"302\">Geschlecht</td>\n<td width=\"302\">Unisex</td>\n</tr>\n<tr>\n<td width=\"302\">Marke</td>\n<td width=\"302\">ROLAND</td>\n</tr>\n<tr>\n<td width=\"302\">Saison</td>\n<td width=\"302\">2025</td>\n</tr>\n</tbody>\n</table>\n",
+      "description": "<p>Der ROLAND Jumbo ist ein Fahrrad-Lastenanhänger mit einer 175-l-Transportbox aus witterungsbeständigem Birkenholz. Aluminium-Kantenprofile und Eckschutzkappen ergänzen die robuste Box. Die Tiefdeichsel mit WEBER E-Kupplung lässt sich über den Schnellwechselmechanismus in der Höhe anpassen. Ein integrierter Federstützfuß erleichtert das Be- und Entladen. Ein Deckel ist optional erhältlich.</p><h2>Eigenschaften</h2><ul><li>Transportbox aus Birkenholz, Fassungsvermögen: 175 l</li><li>Tiefdeichsel mit WEBER E-Kupplung</li><li>20-Zoll-Speichenräder mit verstärkter Achse</li><li>Stahlrohrrahmen</li><li>Federstützfuß</li><li>Deckel optional erhältlich</li></ul>",
+      "metaTitle": "ROLAND Jumbo Fahrradanhänger 175 l mit Tiefdeichsel",
+      "metaDescription": "ROLAND Jumbo mit 175-l-Transportbox aus Birkenholz, 20-Zoll-Speichenrädern und WEBER E-Kupplung. Die Tiefdeichsel ist höhenverstellbar; Deckel optional.",
+      "attributes": null,
+      "variations": null,
+      "images": [
+        "https://res.cloudinary.com/ih3hdf0k/image/upload/v1794846583/ffahrrad/woocommerce-import/zbgh7yyt57ljmgwipu5k.jpg",
+        "https://res.cloudinary.com/ih3hdf0k/image/upload/v1794846583/ffahrrad/woocommerce-import/glbxrcgkhneaqu9ackdm.jpg"
+      ],
+      "brand": null,
+      "categories": [
+        {
+          "name": "Fahrradanhänger",
+          "slug": "fahrradanhaenger"
+        },
+        {
+          "name": "Fahrradzubehör",
+          "slug": "fahrradzubehoer"
+        },
+        {
+          "name": "Transportanhänger",
+          "slug": "transportanhaenger"
+        }
+      ],
+      "createdAt": "2026-11-16T16:29:44.842Z",
+      "updatedAt": "2026-11-16T16:29:44.842Z"
+    },
+    {
+      "id": "11903118-6555-4e90-948c-afe14ab75d7c",
+      "title": "ROLAND Jumbo Doppeldeichsel Transportanhänger - 175 L",
+      "slug": "roland-jumbo-doppeldeichsel-transportanhaenger-175-l",
+      "price": 430.9,
+      "compareAtPrice": null,
+      "stock": null,
+      "gtin": null,
+      "discountLabel": null,
+      "type": "SIMPLE",
+      "shortDescription": "<table>\n<tbody>\n<tr>\n<td width=\"302\">Farbe</td>\n<td width=\"302\">Braun</td>\n</tr>\n<tr>\n<td width=\"302\">Geschlecht</td>\n<td width=\"302\">Unisex</td>\n</tr>\n<tr>\n<td width=\"302\">Marke</td>\n<td width=\"302\">ROLAND</td>\n</tr>\n<tr>\n<td width=\"302\">Saison</td>\n<td width=\"302\">2025</td>\n</tr>\n</tbody>\n</table>\n",
+      "description": "<p>Der ROLAND Jumbo mit Doppeldeichsel bietet eine 175-l-Transportbox aus Birkenholz für größere Transporte. Aluminium-Kantenprofile und Eckschutzkappen ergänzen die Box. Zwei Standfüße und doppelte Verschraubungen an der Doppeldeichsel unterstützen die Nutzung als Handwagen. Die 20-Zoll-Speichenräder besitzen eine verstärkte Achse. Ein Deckel kann optional nachgerüstet werden.</p><h2>Eigenschaften</h2><ul><li>Transportbox aus Birkenholz, Fassungsvermögen: 175 l</li><li>Doppeldeichsel mit zwei Standfüßen</li><li>Als Handwagen nutzbar</li><li>20-Zoll-Speichenräder mit verstärkter Achse</li><li>Deckel optional erhältlich</li></ul>",
+      "metaTitle": "ROLAND Jumbo Fahrradanhänger 175 l mit Doppeldeichsel",
+      "metaDescription": "ROLAND Jumbo mit 175-l-Transportbox aus Birkenholz und Doppeldeichsel mit zwei Standfüßen. Als Fahrradanhänger oder Handwagen nutzbar; Deckel optional.",
+      "attributes": null,
+      "variations": null,
+      "images": [
+        "https://res.cloudinary.com/ih3hdf0k/image/upload/v1794846576/ffahrrad/woocommerce-import/bcqrv6lcyzmcvnbw8ilb.jpg",
+        "https://res.cloudinary.com/ih3hdf0k/image/upload/v1794846576/ffahrrad/woocommerce-import/g8i2skzx58wkxltp2ar4.jpg"
+      ],
+      "brand": {
+        "name": "ROLAND",
+        "slug": "roland"
+      },
+      "categories": [
+        {
+          "name": "Fahrradanhänger",
+          "slug": "fahrradanhaenger"
+        },
+        {
+          "name": "Fahrradzubehör",
+          "slug": "fahrradzubehoer"
+        },
+        {
+          "name": "Transportanhänger",
+          "slug": "transportanhaenger"
+        }
+      ],
+      "createdAt": "2026-11-16T16:29:37.516Z",
+      "updatedAt": "2026-11-16T16:29:37.516Z"
+    },
+    {
+      "id": "683035ca-f637-4e41-82db-9a3b022a45be",
+      "title": "ROLAND Profi Hochdeichsel Transportanhänger - 120 L",
+      "slug": "roland-profi-hochdeichsel-transportanhaenger-120-l",
+      "price": 390.99,
+      "compareAtPrice": null,
+      "stock": null,
+      "gtin": null,
+      "discountLabel": null,
+      "type": "SIMPLE",
+      "shortDescription": "<table>\n<tbody>\n<tr>\n<td width=\"302\">Farbe</td>\n<td width=\"302\">Braun</td>\n</tr>\n<tr>\n<td width=\"302\">Geschlecht</td>\n<td width=\"302\">Unisex</td>\n</tr>\n<tr>\n<td width=\"302\">Marke</td>\n<td width=\"302\">ROLAND</td>\n</tr>\n<tr>\n<td width=\"302\">Saison</td>\n<td width=\"302\">2025</td>\n</tr>\n</tbody>\n</table>\n",
+      "description": "<p>Der ROLAND Profi ist ein Lastenanhänger mit einer 120-l-Transportbox aus Birkenholz. Die höhenverstellbare Hochdeichsel mit Kugelkopfkupplung und Schnellwechselsystem erleichtert die Verbindung mit dem Fahrrad. Ein Federstützfuß unterstützt das Be- und Entladen. Dank integrierter Handgriffe lässt sich der Anhänger auch als Handwagen verwenden. Der Deckel ist optional nachrüstbar.</p><h2>Eigenschaften</h2><ul><li>Transportbox aus Birkenholz, Fassungsvermögen: 120 l</li><li>Höhenverstellbare Hochdeichsel</li><li>Kugelkopfkupplung mit Schnellwechselsystem</li><li>20-Zoll-Speichenräder mit verstärkter Achse</li><li>Federstützfuß und Handwagenfunktion</li><li>Deckel optional erhältlich</li></ul>",
+      "metaTitle": "ROLAND Profi Fahrradanhänger 120 l mit Hochdeichsel",
+      "metaDescription": "ROLAND Profi mit 120-l-Transportbox, höhenverstellbarer Hochdeichsel und Kugelkopfkupplung. Mit 20-Zoll-Rädern, Federstützfuß und Handwagenfunktion.",
+      "attributes": null,
+      "variations": null,
+      "images": [
+        "https://res.cloudinary.com/ih3hdf0k/image/upload/v1794846571/ffahrrad/woocommerce-import/vnxzc58ckaanpi0iff32.jpg",
+        "https://res.cloudinary.com/ih3hdf0k/image/upload/v1794846571/ffahrrad/woocommerce-import/wqroolddtkfjahckmuqn.jpg"
+      ],
+      "brand": {
+        "name": "ROLAND",
+        "slug": "roland"
+      },
+      "categories": [
+        {
+          "name": "Fahrradanhänger",
+          "slug": "fahrradanhaenger"
+        },
+        {
+          "name": "Fahrradzubehör",
+          "slug": "fahrradzubehoer"
+        },
+        {
+          "name": "Transportanhänger",
+          "slug": "transportanhaenger"
+        }
+      ],
+      "createdAt": "2026-11-16T16:29:32.931Z",
+      "updatedAt": "2026-11-16T16:29:32.931Z"
+    },
+    {
+      "id": "bc811745-1b0e-4eb2-a32b-b99b4c7a6a46",
+      "title": "ROLAND Maxi Transportanhänger - 70 L",
+      "slug": "roland-maxi-transportanhaenger-70-l",
+      "price": 292,
+      "compareAtPrice": null,
+      "stock": null,
+      "gtin": null,
+      "discountLabel": null,
+      "type": "SIMPLE",
+      "shortDescription": "<table>\n<tbody>\n<tr>\n<td width=\"302\">Farbe</td>\n<td width=\"302\">Braun</td>\n</tr>\n<tr>\n<td width=\"302\">Geschlecht</td>\n<td width=\"302\">Unisex</td>\n</tr>\n<tr>\n<td width=\"302\">Marke</td>\n<td width=\"302\">ROLAND</td>\n</tr>\n<tr>\n<td width=\"302\">Saison</td>\n<td width=\"302\">2025</td>\n</tr>\n</tbody>\n</table>\n",
+      "description": "<p>Der ROLAND Maxi ist ein Fahrradanhänger mit einer 70-l-Transportbox aus siebenfach verleimtem Birkenholz. Die Hochdeichsel lässt sich mit einer werkzeuglosen Klemmfixierung in der Höhe anpassen. Integrierte Handgriffe ermöglichen auch die Nutzung als Handwagen. Der Anhänger besitzt 12-Zoll-Scheibenräder mit City-Profil und eine durchgehende Laufradachse. Ein Deckel ist optional nachrüstbar.</p><h2>Eigenschaften</h2><ul><li>Transportbox aus siebenfach verleimtem Birkenholz, Fassungsvermögen: 70 l</li><li>Höhenverstellbare Hochdeichsel</li><li>Kugelkopfkupplung</li><li>12-Zoll-Scheibenräder mit City-Profil</li><li>Handwagenfunktion</li><li>Deckel optional erhältlich</li></ul>",
+      "metaTitle": "ROLAND Maxi Fahrradanhänger 70 l mit Hochdeichsel",
+      "metaDescription": "ROLAND Maxi mit 70-l-Transportbox aus Birkenholz, Hochdeichsel und Handwagenfunktion. Mit 12-Zoll-Rädern und werkzeuglos verstellbarer Deichsel.",
+      "attributes": null,
+      "variations": null,
+      "images": [
+        "https://res.cloudinary.com/ih3hdf0k/image/upload/v1794846564/ffahrrad/woocommerce-import/wl6asxngubgv5qaemvyc.jpg"
+      ],
+      "brand": {
+        "name": "ROLAND",
+        "slug": "roland"
+      },
+      "categories": [
+        {
+          "name": "Fahrradanhänger",
+          "slug": "fahrradanhaenger"
+        },
+        {
+          "name": "Fahrradzubehör",
+          "slug": "fahrradzubehoer"
+        },
+        {
+          "name": "Transportanhänger",
+          "slug": "transportanhaenger"
+        }
+      ],
+      "createdAt": "2026-11-16T16:29:25.230Z",
+      "updatedAt": "2026-11-16T16:29:25.230Z"
+    }
+  ]
+}
