@@ -4,6 +4,9 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --theme-primary: #F28611;
+  --theme-navy: #0B131E;
+  --theme-cyan: #0284C7;
   zoom: 0.9;
 }
 
@@ -12,18 +15,23 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-  
-  /* Dynamic Theme Colors mapping */
-  --color-orange-50: color-mix(in srgb, var(--theme-primary, #c2410c), white 90%);
-  --color-orange-100: color-mix(in srgb, var(--theme-primary, #c2410c), white 80%);
-  --color-orange-200: color-mix(in srgb, var(--theme-primary, #c2410c), white 60%);
-  --color-orange-300: color-mix(in srgb, var(--theme-primary, #c2410c), white 40%);
-  --color-orange-400: color-mix(in srgb, var(--theme-primary, #c2410c), white 20%);
-  --color-orange-500: var(--theme-primary, #c2410c);
-  --color-orange-600: color-mix(in srgb, var(--theme-primary, #c2410c), black 10%);
-  --color-orange-700: color-mix(in srgb, var(--theme-primary, #c2410c), black 20%);
-  --color-orange-800: color-mix(in srgb, var(--theme-primary, #c2410c), black 30%);
-  --color-orange-900: color-mix(in srgb, var(--theme-primary, #c2410c), black 40%);
+
+  --color-brand-orange: var(--theme-primary, #F28611);
+  --color-brand-navy: var(--theme-navy, #0B131E);
+  --color-brand-cyan: var(--theme-cyan, #0284C7);
+  --color-brand-silver: #E2E8F0;
+
+  /* Dynamic Theme Colors mapping calibrated with Franke Fahrrad logo */
+  --color-orange-50: color-mix(in srgb, var(--theme-primary, #F28611), white 92%);
+  --color-orange-100: color-mix(in srgb, var(--theme-primary, #F28611), white 84%);
+  --color-orange-200: color-mix(in srgb, var(--theme-primary, #F28611), white 65%);
+  --color-orange-300: color-mix(in srgb, var(--theme-primary, #F28611), white 45%);
+  --color-orange-400: color-mix(in srgb, var(--theme-primary, #F28611), white 20%);
+  --color-orange-500: var(--theme-primary, #F28611);
+  --color-orange-600: color-mix(in srgb, var(--theme-primary, #F28611), black 12%);
+  --color-orange-700: color-mix(in srgb, var(--theme-primary, #F28611), black 25%);
+  --color-orange-800: color-mix(in srgb, var(--theme-primary, #F28611), black 40%);
+  --color-orange-900: color-mix(in srgb, var(--theme-primary, #F28611), black 55%);
 }
 
 @media (prefers-color-scheme: dark) {

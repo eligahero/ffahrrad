@@ -75,13 +75,13 @@ export default function DashboardChart({ data }: { data: SalesData[] }) {
           dx={-10}
           width={85}
         />
-        <Tooltip content={<CustomTooltip />} cursor={{ stroke: '#c2410c', strokeWidth: 1, strokeDasharray: '5 5' }} />
+        <Tooltip content={<CustomTooltip />} cursor={{ stroke: '#F28611', strokeWidth: 1, strokeDasharray: '5 5' }} />
         <Line 
           type="monotone" 
           dataKey="amount" 
-          stroke="#c2410c" 
+          stroke="#F28611" 
           strokeWidth={3}
-          dot={{ r: 4, fill: '#c2410c', strokeWidth: 2, stroke: '#fff' }}
+          dot={{ r: 4, fill: '#F28611', strokeWidth: 2, stroke: '#fff' }}
           activeDot={{ r: 6, fill: '#ea580c', strokeWidth: 0 }}
           animationDuration={1500}
         />

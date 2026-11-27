@@ -71,8 +71,8 @@ export default function Header({
   searchBorderColor = '#d1d5db',
   searchPlaceholder = 'Search products...',
   searchBtnText = 'Search',
-  searchBtnBgColor = '#c2410c',
-  searchBtnTextColor = '#111827',
+  searchBtnBgColor = '#F28611',
+  searchBtnTextColor = '#ffffff',
   showNew = true,
   showHot = true,
   showSale = true,
@@ -84,7 +84,7 @@ export default function Header({
   mobileContactEmail = '',
   mobileContactWebsite = '',
   mobileHeaderBorderColor = '#d1d5db',
-  allCategoriesBgColor = '#111827',
+  allCategoriesBgColor = '#0B131E',
   allCategoriesTextColor = '#ffffff',
   userRole = null,
 }: HeaderProps) {
@@ -298,8 +298,8 @@ export default function Header({
                   />
                 </div>
                 <div>
-                  <span className="font-extrabold text-lg sm:text-xl tracking-tight text-stone-900 block leading-tight">LENHA &amp; CARVÃO</span>
-                  <span className="text-[11px] font-bold tracking-wider text-red-600 uppercase block">SILVA DIAS</span>
+                  <span className="font-extrabold text-lg sm:text-xl tracking-tight text-stone-900 block leading-tight">FRANKE</span>
+                  <span className="text-[11px] font-bold tracking-wider text-[#F28611] uppercase block">FAHRRAD</span>
                 </div>
               </div>
             )}
@@ -321,7 +321,7 @@ export default function Header({
             <button 
               type="submit" 
               aria-label="Search"
-              className="bg-[#DC2626] hover:bg-[#B91C1C] text-white w-12 h-full flex items-center justify-center transition-colors rounded-r-md cursor-pointer flex-shrink-0"
+              className="bg-[#F28611] hover:bg-[#D97706] text-white w-12 h-full flex items-center justify-center transition-colors rounded-r-md cursor-pointer flex-shrink-0"
             >
               {isSearching ? (
                 <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
@@ -414,7 +414,7 @@ export default function Header({
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
             </svg>
             {mounted && wishlistItems > 0 && (
-              <span className="absolute -top-1.5 -right-1.5 bg-[#DC2626] text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center border-2 border-white shadow-sm">
+              <span className="absolute -top-1.5 -right-1.5 bg-[#F28611] text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center border-2 border-white shadow-sm">
                 {wishlistItems}
               </span>
             )}
@@ -423,7 +423,7 @@ export default function Header({
           {/* Red Cart Box with White Badge */}
           <div 
             onClick={() => cartStore.setIsOpen(true)}
-            className="relative flex items-center bg-[#DC2626] hover:bg-[#B91C1C] text-white rounded-md px-3 sm:px-4 py-2 cursor-pointer transition shadow-sm h-10 sm:h-11 select-none shrink-0"
+            className="relative flex items-center bg-[#F28611] hover:bg-[#D97706] text-white rounded-md px-3 sm:px-4 py-2 cursor-pointer transition shadow-sm h-10 sm:h-11 select-none shrink-0"
           >
             {/* Counter Bubble */}
             <span className="absolute -top-2 left-4 sm:left-5 bg-stone-900 text-white text-[11px] sm:text-xs font-black w-5 h-5 rounded-full flex items-center justify-center border-2 border-white shadow-sm">
@@ -481,7 +481,7 @@ export default function Header({
       </div>
 
       {/* Red Navigation Bar (Bottom Bar) */}
-      <div className="hidden lg:block bg-[#DC2626] w-full shadow-inner">
+      <div className="hidden lg:block bg-[#F28611] w-full shadow-inner">
         <div className="max-w-7xl mx-auto px-4 w-full flex items-center h-12">
           
           {/* ALL CATEGORIES BUTTON (Black block on the left) */}
@@ -489,12 +489,12 @@ export default function Header({
             <button 
               type="button"
               onClick={() => setIsBottomCategoryOpen(!isBottomCategoryOpen)}
-              className="bg-black hover:bg-stone-900 text-white px-6 h-12 flex items-center gap-3 font-extrabold text-[13px] tracking-wider uppercase transition-colors shadow-sm cursor-pointer select-none"
+              className="bg-[#0B131E] hover:bg-[#162032] text-white px-6 h-12 border-r border-orange-400/30 flex items-center gap-3 font-extrabold text-[13px] tracking-wider uppercase transition-colors shadow-sm cursor-pointer select-none"
             >
               <svg className="w-5 h-5 text-white shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M4 6h16M4 12h16M4 18h16" />
               </svg>
-              <span>CATEGORIAS</span>
+              <span>KATEGORIEN</span>
               <svg className={`w-3.5 h-3.5 ml-1 transition-transform duration-200 ${isBottomCategoryOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
               </svg>
@@ -508,7 +508,7 @@ export default function Header({
                     <Link 
                       key={cat.id} 
                       href={`/product-category/${cat.slug || cat.id}`}
-                      className={`flex items-center justify-between px-5 py-2.5 hover:bg-red-50 hover:text-red-600 transition ${!cat.parentId ? 'font-bold text-stone-900 text-xs bg-stone-50/60' : 'text-stone-600 pl-8 text-xs'}`}
+                      className={`flex items-center justify-between px-5 py-2.5 hover:bg-orange-50 hover:text-[#F28611] transition ${!cat.parentId ? 'font-bold text-stone-900 text-xs bg-stone-50/60' : 'text-stone-600 pl-8 text-xs'}`}
                       onClick={() => setIsBottomCategoryOpen(false)}
                     >
                       <span>{cat.name}</span>
@@ -531,7 +531,7 @@ export default function Header({
                     <Link
                       key={idx}
                       href={`/product-category/${cat.slug}`}
-                      className="flex items-center justify-between px-5 py-2.5 hover:bg-red-50 hover:text-red-600 text-stone-800 text-xs font-semibold transition"
+                      className="flex items-center justify-between px-5 py-2.5 hover:bg-orange-50 hover:text-[#F28611] text-stone-800 text-xs font-semibold transition"
                       onClick={() => setIsBottomCategoryOpen(false)}
                     >
                       <span className="flex items-center gap-2.5">

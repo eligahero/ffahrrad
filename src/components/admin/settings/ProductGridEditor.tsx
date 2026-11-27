@@ -401,7 +401,7 @@ export default function ProductGridEditor({
                 <div>
                   <label className="block text-xs font-medium mb-1 text-gray-600">Icons Hover Background</label>
                   <div className="relative w-full h-10 rounded-md overflow-hidden border border-gray-300 shadow-sm cursor-pointer">
-                    <input type="color" value={section.settings[`${section.type.toUpperCase()}_BTN_HOVER_BG_COLOR`] || section.settings.btnHoverBgColor || '#c2410c'} onChange={e => {
+                    <input type="color" value={section.settings[`${section.type.toUpperCase()}_BTN_HOVER_BG_COLOR`] || section.settings.btnHoverBgColor || '#F28611'} onChange={e => {
                         updateSectionSettings(section.id, `${section.type.toUpperCase()}_BTN_HOVER_BG_COLOR`, e.target.value);
                         if(section.type === 'ProductGrid') updateSectionSettings(section.id, 'btnHoverBgColor', e.target.value);
                     }} className="absolute -top-2 -left-2 w-16 h-16 cursor-pointer border-0 p-0" />

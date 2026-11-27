@@ -109,7 +109,7 @@ export default function ProductGridCard({
               onClick={handleAddToCart}
               aria-label={`${t('add_to_cart')} - ${product.title}`}
               className="flex items-center justify-center gap-2 px-4 py-2 rounded-md font-medium text-sm shadow-sm transition-all duration-300 transform hover:scale-105 hover:[background-color:var(--btn-hover-bg)] hover:[color:var(--btn-hover-text)] z-10"
-              style={{ backgroundColor: btnBgColor, color: btnTextColor, '--btn-hover-bg': btnHoverBgColor || '#c2410c', '--btn-hover-text': btnHoverTextColor || '#ffffff' } as React.CSSProperties}
+              style={{ backgroundColor: btnBgColor, color: btnTextColor, '--btn-hover-bg': btnHoverBgColor || '#F28611', '--btn-hover-text': btnHoverTextColor || '#ffffff' } as React.CSSProperties}
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
@@ -131,8 +131,8 @@ export default function ProductGridCard({
               className="p-2 rounded-md shadow-sm transition-all duration-300 transform hover:scale-105 hover:[background-color:var(--btn-hover-bg)] hover:[color:var(--btn-hover-text)]"
               style={
                 (variant === '1'
-                  ? { backgroundColor: isWishlisted ? btnBgColor : 'white', color: isWishlisted ? btnTextColor : '#374151', '--btn-hover-bg': btnHoverBgColor || '#c2410c', '--btn-hover-text': btnHoverTextColor || '#ffffff' }
-                  : { backgroundColor: btnBgColor, color: btnTextColor, '--btn-hover-bg': btnHoverBgColor || '#c2410c', '--btn-hover-text': btnHoverTextColor || '#ffffff' }) as React.CSSProperties
+                  ? { backgroundColor: isWishlisted ? btnBgColor : 'white', color: isWishlisted ? btnTextColor : '#374151', '--btn-hover-bg': btnHoverBgColor || '#F28611', '--btn-hover-text': btnHoverTextColor || '#ffffff' }
+                  : { backgroundColor: btnBgColor, color: btnTextColor, '--btn-hover-bg': btnHoverBgColor || '#F28611', '--btn-hover-text': btnHoverTextColor || '#ffffff' }) as React.CSSProperties
               }
             >
               <svg className="w-5 h-5" fill={isWishlisted ? 'currentColor' : 'none'} stroke="currentColor" viewBox="0 0 24 24">
@@ -150,8 +150,8 @@ export default function ProductGridCard({
               className="p-2 rounded-md shadow-sm transition-all duration-300 transform hover:scale-105 hover:[background-color:var(--btn-hover-bg)] hover:[color:var(--btn-hover-text)]"
               style={
                 (variant === '1'
-                  ? { backgroundColor: 'white', color: '#374151', '--btn-hover-bg': btnHoverBgColor || '#c2410c', '--btn-hover-text': btnHoverTextColor || '#ffffff' }
-                  : { backgroundColor: btnBgColor, color: btnTextColor, '--btn-hover-bg': btnHoverBgColor || '#c2410c', '--btn-hover-text': btnHoverTextColor || '#ffffff' }) as React.CSSProperties
+                  ? { backgroundColor: 'white', color: '#374151', '--btn-hover-bg': btnHoverBgColor || '#F28611', '--btn-hover-text': btnHoverTextColor || '#ffffff' }
+                  : { backgroundColor: btnBgColor, color: btnTextColor, '--btn-hover-bg': btnHoverBgColor || '#F28611', '--btn-hover-text': btnHoverTextColor || '#ffffff' }) as React.CSSProperties
               }
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -169,8 +169,8 @@ export default function ProductGridCard({
               className="p-2 rounded-md shadow-sm transition-all duration-300 transform hover:scale-105 hover:[background-color:var(--btn-hover-bg)] hover:[color:var(--btn-hover-text)]"
               style={
                 (variant === '1'
-                  ? { backgroundColor: 'white', color: '#374151', '--btn-hover-bg': btnHoverBgColor || '#c2410c', '--btn-hover-text': btnHoverTextColor || '#ffffff' }
-                  : { backgroundColor: btnBgColor, color: btnTextColor, '--btn-hover-bg': btnHoverBgColor || '#c2410c', '--btn-hover-text': btnHoverTextColor || '#ffffff' }) as React.CSSProperties
+                  ? { backgroundColor: 'white', color: '#374151', '--btn-hover-bg': btnHoverBgColor || '#F28611', '--btn-hover-text': btnHoverTextColor || '#ffffff' }
+                  : { backgroundColor: btnBgColor, color: btnTextColor, '--btn-hover-bg': btnHoverBgColor || '#F28611', '--btn-hover-text': btnHoverTextColor || '#ffffff' }) as React.CSSProperties
               }
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -247,7 +247,7 @@ export default function ProductGridCard({
                   borderColor: '#e5e7eb',
                   backgroundColor: btnBgColor,
                   color: btnTextColor,
-                  '--btn-hover-bg': btnHoverBgColor || '#c2410c',
+                  '--btn-hover-bg': btnHoverBgColor || '#F28611',
                   '--btn-hover-text': btnHoverTextColor || '#ffffff',
                 } as React.CSSProperties
               }

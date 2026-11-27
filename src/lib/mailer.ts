@@ -213,7 +213,7 @@ export async function sendClientOrderConfirmation(order: any, userEmail: string,
       
       bankDetailsHtml = `
         <div style="background-color: #fff7ed; border: 1px solid #fed7aa; border-radius: 8px; padding: 20px; margin-top: 25px; margin-bottom: 25px;">
-          <h4 style="margin-top: 0; margin-bottom: 12px; color: #c2410c; font-size: 15px; font-weight: bold;">
+          <h4 style="margin-top: 0; margin-bottom: 12px; color: #F28611; font-size: 15px; font-weight: bold;">
             💳 Dados para Transferência Bancária
           </h4>
           <p style="font-size: 13px; color: #431407; margin-bottom: 15px; line-height: 1.5;">
@@ -786,7 +786,7 @@ export async function sendAbandonedCartRecoveryEmail(cart: any, userEmail: strin
         </p>
         
         <div style="background-color: #fff7ed; border: 1px dashed #ea580c; border-radius: 8px; padding: 16px; margin: 25px 0; text-align: center;">
-          <p style="margin: 0; font-size: 14px; font-weight: bold; color: #c2410c;">${couponMessage}</p>
+          <p style="margin: 0; font-size: 14px; font-weight: bold; color: #F28611;">${couponMessage}</p>
         </div>
 
         <h3 style="font-size: 15px; font-weight: bold; margin-top: 30px; margin-bottom: 12px; color: #0f172a; border-bottom: 2px solid #ea580c; padding-bottom: 6px;">
@@ -1090,7 +1090,7 @@ export async function sendNewsletterWelcomeEmail(userEmail: string) {
         </p>
         
         <div style="background-color: #fff7ed; border: 2px dashed #ea580c; padding: 22px; text-align: center; border-radius: 8px; margin-bottom: 25px;">
-          <p style="margin: 0; font-size: 13px; color: #c2410c; text-transform: uppercase; letter-spacing: 1px; font-weight: bold;">
+          <p style="margin: 0; font-size: 13px; color: #F28611; text-transform: uppercase; letter-spacing: 1px; font-weight: bold;">
             O seu código promocional exclusivo:
           </p>
           <p style="margin: 10px 0 0 0; font-size: 26px; font-weight: 800; color: #ea580c; letter-spacing: 3px; font-family: monospace;">

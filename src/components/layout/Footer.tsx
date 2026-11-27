@@ -41,14 +41,14 @@ type FooterProps = {
 export default function Footer({ 
   supportPhone = '+351 253 000 000', 
   supportEmail = 'info@lenhaecarvaosilvadias.com',
-  footerBgColor = '#1C1917',
+  footerBgColor = '#0B131E',
   footerTextColor = '#ffffff',
   footerHeadingColor = '#ffffff',
   footerAddress1 = 'Alto Almosquia, 2750-000 Cascais – Portugal',
   footerNewsletterTitle = 'A Nossa Newsletter',
   footerNewsletterText = 'Subscreva para receber ofertas sazonais exclusivas e conselhos úteis sobre pellets e biomassa.',
   footerNewsletterPlaceholder = 'O seu endereço de e-mail...',
-  footerCopyright = '© 2026 SILVA DIAS – Comércio de Lenha e Carvão, Lda. Todos os direitos reservados.',
+  footerCopyright = '© 2026 FAHRRAD – Comércio de Lenha e Carvão, Lda. Todos os direitos reservados.',
   footerColumns = [],
   categories = [],
   footerLogoImage = '',
@@ -67,7 +67,7 @@ export default function Footer({
 
   return (
     <footer 
-      className="font-sans pt-12 sm:pt-16 pb-28 lg:pb-12 relative border-t border-stone-800" 
+      className="font-sans pt-12 sm:pt-16 pb-28 lg:pb-12 relative border-t border-slate-800" 
       style={{ backgroundColor: footerBgColor, color: footerTextColor }}
     >
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 w-full">
@@ -92,8 +92,8 @@ export default function Footer({
                     />
                   </div>
                   <div>
-                    <span className="font-extrabold text-base tracking-tight text-white block leading-tight">LENHA &amp; CARVÃO</span>
-                    <span className="text-[10px] font-bold tracking-wider text-red-500 uppercase block">SILVA DIAS</span>
+                    <span className="font-extrabold text-base tracking-tight text-white block leading-tight">FRANKE</span>
+                    <span className="text-[10px] font-bold tracking-wider text-[#F28611] uppercase block">FAHRRAD</span>
                   </div>
                 </div>
               )}
@@ -103,23 +103,23 @@ export default function Footer({
               {footerDescription}
             </p>
             
-            <div className="space-y-2.5 text-xs sm:text-sm text-stone-300 pt-2 border-t border-stone-800">
+            <div className="space-y-2.5 text-xs sm:text-sm text-stone-300 pt-2 border-t border-slate-800">
               {footerShowAddress && footerAddress1 && (
                 <div className="flex items-start">
-                  <svg className="w-4 h-4 mr-2.5 mt-0.5 text-red-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.243-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                  <svg className="w-4 h-4 mr-2.5 mt-0.5 text-[#F28611] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.243-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                   <p>{footerAddress1}</p>
                 </div>
               )}
               {footerShowEmail && supportEmail && (
                 <div className="flex items-start">
-                  <svg className="w-4 h-4 mr-2.5 mt-0.5 text-red-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
-                  <a href={`mailto:${supportEmail}`} className="hover:text-red-400 transition truncate">{supportEmail}</a>
+                  <svg className="w-4 h-4 mr-2.5 mt-0.5 text-[#F28611] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+                  <a href={`mailto:${supportEmail}`} className="hover:text-[#F28611] transition truncate">{supportEmail}</a>
                 </div>
               )}
               {footerShowPhone && supportPhone && (
                 <div className="flex items-start">
-                  <svg className="w-4 h-4 mr-2.5 mt-0.5 text-red-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" /></svg>
-                  <a href={`tel:${supportPhone.replace(/\s+/g, '')}`} className="hover:text-red-400 transition">{supportPhone}</a>
+                  <svg className="w-4 h-4 mr-2.5 mt-0.5 text-[#F28611] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" /></svg>
+                  <a href={`tel:${supportPhone.replace(/\s+/g, '')}`} className="hover:text-[#F28611] transition">{supportPhone}</a>
                 </div>
               )}
             </div>
@@ -128,7 +128,7 @@ export default function Footer({
           {/* Dynamic Footer Columns from Admin if present */}
           {footerColumns && footerColumns.length > 0 ? (
             footerColumns.map((col, idx) => (
-              <div key={idx} className="lg:col-span-1 border-t border-stone-800 pt-4 md:border-none md:pt-0">
+              <div key={idx} className="lg:col-span-1 border-t border-slate-800 pt-4 md:border-none md:pt-0">
                 <button 
                   type="button" 
                   onClick={() => toggleSection(`col-${idx}`)} 
@@ -144,7 +144,7 @@ export default function Footer({
                 <ul className={`space-y-3 text-xs sm:text-sm text-stone-300 ${openSection === `col-${idx}` ? 'block pb-3' : 'hidden md:block'}`}>
                   {col.links.map((link, linkIdx) => (
                     <li key={linkIdx}>
-                      <Link href={link.url} className="hover:text-red-400 transition">
+                      <Link href={link.url} className="hover:text-[#F28611] transition">
                         {link.label}
                       </Link>
                     </li>
@@ -155,7 +155,7 @@ export default function Footer({
           ) : (
             <>
               {/* Column 2: Informações Legais & Entregas */}
-              <div className="lg:col-span-1 border-t border-stone-800 pt-4 md:border-none md:pt-0">
+              <div className="lg:col-span-1 border-t border-slate-800 pt-4 md:border-none md:pt-0">
                 <button 
                   type="button" 
                   onClick={() => toggleSection('legal')} 
@@ -169,17 +169,17 @@ export default function Footer({
                 </button>
                 <h3 className="hidden md:block font-bold text-base mb-5" style={{ color: footerHeadingColor }}>Informações &amp; Apoio</h3>
                 <ul className={`space-y-3 text-xs sm:text-sm text-stone-300 ${openSection === 'legal' ? 'block pb-3' : 'hidden md:block'}`}>
-                  <li><Link href="/order-tracking" className="hover:text-red-400 transition">Rastrear Encomenda</Link></li>
-                  <li><Link href="/devolucoes" className="hover:text-red-400 transition">Política de Devolução</Link></li>
-                  <li><Link href="/envios-e-entregas" className="hover:text-red-400 transition">Expedição com Plataforma</Link></li>
-                  <li><Link href="/termos-e-condicoes" className="hover:text-red-400 transition">Termos e Condições</Link></li>
-                  <li><Link href="/privacidade" className="hover:text-red-400 transition">Política de Privacidade</Link></li>
-                  <li><Link href={`/${contactSlug}`} className="hover:text-red-400 transition">Contacte-nos</Link></li>
+                  <li><Link href="/order-tracking" className="hover:text-[#F28611] transition">Rastrear Encomenda</Link></li>
+                  <li><Link href="/devolucoes" className="hover:text-[#F28611] transition">Política de Devolução</Link></li>
+                  <li><Link href="/envios-e-entregas" className="hover:text-[#F28611] transition">Expedição com Plataforma</Link></li>
+                  <li><Link href="/termos-e-condicoes" className="hover:text-[#F28611] transition">Termos e Condições</Link></li>
+                  <li><Link href="/privacidade" className="hover:text-[#F28611] transition">Política de Privacidade</Link></li>
+                  <li><Link href={`/${contactSlug}`} className="hover:text-[#F28611] transition">Contacte-nos</Link></li>
                 </ul>
               </div>
 
               {/* Column 3: A Minha Conta */}
-              <div className="lg:col-span-1 border-t border-stone-800 pt-4 md:border-none md:pt-0">
+              <div className="lg:col-span-1 border-t border-slate-800 pt-4 md:border-none md:pt-0">
                 <button 
                   type="button" 
                   onClick={() => toggleSection('account')} 
@@ -193,16 +193,16 @@ export default function Footer({
                 </button>
                 <h3 className="hidden md:block font-bold text-base mb-5" style={{ color: footerHeadingColor }}>A Minha Conta</h3>
                 <ul className={`space-y-3 text-xs sm:text-sm text-stone-300 ${openSection === 'account' ? 'block pb-3' : 'hidden md:block'}`}>
-                  <li><Link href="/account" className="hover:text-red-400 transition">Painel do Cliente</Link></li>
-                  <li><Link href="/cart" className="hover:text-red-400 transition">Ver Carrinho de Compras</Link></li>
-                  <li><Link href="/account/orders" className="hover:text-red-400 transition">Histórico de Encomendas</Link></li>
-                  <li><Link href="/checkout" className="hover:text-red-400 transition">Finalizar Compra</Link></li>
-                  <li><Link href="/#simulador-envio" className="hover:text-red-400 transition">Simulador de Envio</Link></li>
+                  <li><Link href="/account" className="hover:text-[#F28611] transition">Painel do Cliente</Link></li>
+                  <li><Link href="/cart" className="hover:text-[#F28611] transition">Ver Carrinho de Compras</Link></li>
+                  <li><Link href="/account/orders" className="hover:text-[#F28611] transition">Histórico de Encomendas</Link></li>
+                  <li><Link href="/checkout" className="hover:text-[#F28611] transition">Finalizar Compra</Link></li>
+                  <li><Link href="/#simulador-envio" className="hover:text-[#F28611] transition">Simulador de Envio</Link></li>
                 </ul>
               </div>
 
               {/* Column 4: Categorias */}
-              <div className="lg:col-span-1 border-t border-stone-800 pt-4 md:border-none md:pt-0">
+              <div className="lg:col-span-1 border-t border-slate-800 pt-4 md:border-none md:pt-0">
                 <button 
                   type="button" 
                   onClick={() => toggleSection('categories')} 
@@ -219,19 +219,19 @@ export default function Footer({
                   {categories && categories.length > 0 ? (
                     categories.slice(0, 7).map((cat) => (
                       <li key={cat.id}>
-                        <Link href={`/product-category/${cat.slug || cat.id}`} className="hover:text-red-400 transition">
+                        <Link href={`/product-category/${cat.slug || cat.id}`} className="hover:text-[#F28611] transition">
                           {cat.name}
                         </Link>
                       </li>
                     ))
                   ) : (
                     <>
-                      <li><Link href="/combustiveis/lenha-e-pellets" className="hover:text-red-400 transition">Pellets &amp; Lenha</Link></li>
-                      <li><Link href="/climatizacao-e-aquecimento/aquecimento" className="hover:text-red-400 transition">Salamandras</Link></li>
-                      <li><Link href="/climatizacao-e-aquecimento/aquecimento/recuperadores-de-calor" className="hover:text-red-400 transition">Recuperadores de Calor</Link></li>
-                      <li><Link href="/climatizacao-e-aquecimento/aquecimento/fogoes-a-lenha" className="hover:text-red-400 transition">Fogões a Lenha</Link></li>
-                      <li><Link href="/climatizacao-e-aquecimento/climatizacao" className="hover:text-red-400 transition">Climatização</Link></li>
-                      <li><Link href="/termoacumulador" className="hover:text-red-400 transition">Termoacumuladores</Link></li>
+                      <li><Link href="/combustiveis/lenha-e-pellets" className="hover:text-[#F28611] transition">Pellets &amp; Lenha</Link></li>
+                      <li><Link href="/climatizacao-e-aquecimento/aquecimento" className="hover:text-[#F28611] transition">Salamandras</Link></li>
+                      <li><Link href="/climatizacao-e-aquecimento/aquecimento/recuperadores-de-calor" className="hover:text-[#F28611] transition">Recuperadores de Calor</Link></li>
+                      <li><Link href="/climatizacao-e-aquecimento/aquecimento/fogoes-a-lenha" className="hover:text-[#F28611] transition">Fogões a Lenha</Link></li>
+                      <li><Link href="/climatizacao-e-aquecimento/climatizacao" className="hover:text-[#F28611] transition">Climatização</Link></li>
+                      <li><Link href="/termoacumulador" className="hover:text-[#F28611] transition">Termoacumuladores</Link></li>
                     </>
                   )}
                 </ul>
@@ -240,7 +240,7 @@ export default function Footer({
           )}
 
           {/* Column 5: Newsletter */}
-          <div className="lg:col-span-1 border-t border-stone-800 pt-6 md:border-none md:pt-0">
+          <div className="lg:col-span-1 border-t border-slate-800 pt-6 md:border-none md:pt-0">
             <h3 className="font-bold text-sm sm:text-base mb-3 sm:mb-5" style={{ color: footerHeadingColor }}>{footerNewsletterTitle}</h3>
             <p className="text-xs sm:text-sm mb-4 leading-relaxed text-stone-300">
               {footerNewsletterText}
@@ -251,7 +251,7 @@ export default function Footer({
         </div>
 
         {/* Bottom Bar: Copyright & Verified Portuguese Payment Badges */}
-        <div className="border-t border-stone-800/80 pt-6 mt-6 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div className="border-t border-slate-800/80 pt-6 mt-6 flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="text-xs sm:text-sm text-stone-400 text-center md:text-left">
             {footerCopyright}
           </div>

@@ -136,7 +136,7 @@ export default async function Hero({ config, isPreview, sectionId }: { config?: 
           className={`inline-block font-bold px-8 py-3.5 shadow-lg transition-all transform hover:-translate-y-1 hover:shadow-xl text-responsive ring-1 ring-white/20 w-full sm:w-auto text-center ${getBtnRadiusClass('HERO_1')}`}
           style={{
             ...getResponsiveVars('HERO_1_CTA', { m: '15px', t: '16px', d: '16px' }),
-            backgroundColor: settings.HERO_1_BTN_BG_COLOR || '#c2410c',
+            backgroundColor: settings.HERO_1_BTN_BG_COLOR || '#F28611',
             color: settings.HERO_1_BTN_TEXT_COLOR || '#ffffff'
           }}
           dangerouslySetInnerHTML={{ __html: basicSanitizeHtml(settings.HERO_1_CTA || t('shop_now')) }}
@@ -181,7 +181,7 @@ export default async function Hero({ config, isPreview, sectionId }: { config?: 
           className={`inline-block font-bold px-6 py-2.5 shadow-md transition-all transform hover:-translate-y-1 hover:shadow-lg text-responsive ring-1 ring-white/10 text-center ${getBtnRadiusClass('HERO_2')} ${settings.HERO_2_ALIGN === 'right' ? 'self-end' : settings.HERO_2_ALIGN === 'center' ? 'self-center' : 'self-start'}`}
           style={{
             ...getResponsiveVars('HERO_2_CTA', { m: '13px', t: '14px', d: '14px' }),
-            backgroundColor: settings.HERO_2_BTN_BG_COLOR || '#c2410c',
+            backgroundColor: settings.HERO_2_BTN_BG_COLOR || '#F28611',
             color: settings.HERO_2_BTN_TEXT_COLOR || '#ffffff'
           }}
           dangerouslySetInnerHTML={{ __html: basicSanitizeHtml(settings.HERO_2_CTA || t('shop_now')) }}
@@ -226,7 +226,7 @@ export default async function Hero({ config, isPreview, sectionId }: { config?: 
           className={`inline-block font-bold px-6 py-2.5 shadow-md transition-all transform hover:-translate-y-1 hover:shadow-lg text-responsive ring-1 ring-white/10 text-center ${getBtnRadiusClass('HERO_3')} ${settings.HERO_3_ALIGN === 'right' ? 'self-end' : settings.HERO_3_ALIGN === 'center' ? 'self-center' : 'self-start'}`}
           style={{
             ...getResponsiveVars('HERO_3_CTA', { m: '13px', t: '14px', d: '14px' }),
-            backgroundColor: settings.HERO_3_BTN_BG_COLOR || '#c2410c',
+            backgroundColor: settings.HERO_3_BTN_BG_COLOR || '#F28611',
             color: settings.HERO_3_BTN_TEXT_COLOR || '#ffffff'
           }}
           dangerouslySetInnerHTML={{ __html: basicSanitizeHtml(settings.HERO_3_CTA || t('shop_now')) }}
@@ -271,7 +271,7 @@ export default async function Hero({ config, isPreview, sectionId }: { config?: 
           className={`inline-block font-bold px-8 py-3 shadow-md transition-all transform hover:-translate-y-1 hover:shadow-lg text-responsive ring-1 ring-white/20 text-center ${getBtnRadiusClass('HERO_4')} ${settings.HERO_4_ALIGN === 'right' ? 'self-end' : settings.HERO_4_ALIGN === 'center' ? 'self-center' : 'self-start'}`}
           style={{
             ...getResponsiveVars('HERO_4_CTA', { m: '14px', t: '15px', d: '15px' }),
-            backgroundColor: settings.HERO_4_BTN_BG_COLOR || '#c2410c',
+            backgroundColor: settings.HERO_4_BTN_BG_COLOR || '#F28611',
             color: settings.HERO_4_BTN_TEXT_COLOR || '#ffffff'
           }}
           dangerouslySetInnerHTML={{ __html: basicSanitizeHtml(settings.HERO_4_CTA || t('shop_now')) }}
@@ -312,7 +312,7 @@ export default async function Hero({ config, isPreview, sectionId }: { config?: 
           {settings.STYLE2_HERO_1_SUBTITLE || settings.HERO_1_SUBTITLE ? (
             <span dangerouslySetInnerHTML={{ __html: basicSanitizeHtml(settings.STYLE2_HERO_1_SUBTITLE || settings.HERO_1_SUBTITLE) }} />
           ) : (
-            <span>Campanha de Inverno <span className="text-[#DC2626] font-bold">Lenha & Pellets</span></span>
+            <span>Campanha de Inverno <span className="text-[#F28611] font-bold">Lenha & Pellets</span></span>
           )}
         </div>
 
@@ -321,7 +321,7 @@ export default async function Hero({ config, isPreview, sectionId }: { config?: 
           {settings.STYLE2_HERO_1_TITLE || settings.HERO_1_TITLE ? (
             <span dangerouslySetInnerHTML={{ __html: basicSanitizeHtml(settings.STYLE2_HERO_1_TITLE || settings.HERO_1_TITLE) }} />
           ) : (
-            <>Promoção de Inverno!<br /><span className="text-[#DC2626]">Fogão a Pellets & Lenha</span></>
+            <>Promoção de Inverno!<br /><span className="text-[#F28611]">Fogão a Pellets & Lenha</span></>
           )}
         </h1>
 
@@ -329,7 +329,7 @@ export default async function Hero({ config, isPreview, sectionId }: { config?: 
         {((settings.STYLE2_HERO_1_PRICE || settings.HERO_1_PRICE) || (settings.STYLE2_HERO_1_PRICE_LABEL || settings.HERO_1_PRICE_LABEL)) && (
           <div className="text-lg md:text-xl text-gray-700 font-medium mb-6 flex items-baseline flex-wrap gap-1 animate-hero-price">
             <span>{settings.STYLE2_HERO_1_PRICE_LABEL || settings.HERO_1_PRICE_LABEL || 'A partir de'}</span>
-            <span className="text-[#DC2626] font-bold text-2xl md:text-3xl ml-1">
+            <span className="text-[#F28611] font-bold text-2xl md:text-3xl ml-1">
               {settings.STYLE2_HERO_1_PRICE || settings.HERO_1_PRICE || '1.417,50 €'}
             </span>
           </div>
@@ -339,7 +339,7 @@ export default async function Hero({ config, isPreview, sectionId }: { config?: 
         <div className="animate-hero-btn">
           <Link
             href={settings.STYLE2_HERO_1_LINK || settings.HERO_1_LINK || '/shop'}
-            className="inline-block bg-[#DC2626] hover:bg-[#B91C1C] text-white font-extrabold px-8 py-3.5 rounded-md shadow-sm transition-all duration-300 transform hover:-translate-y-0.5 hover:shadow-md text-xs tracking-wider uppercase cursor-pointer"
+            className="inline-block bg-[#F28611] hover:bg-[#D97706] text-white font-extrabold px-8 py-3.5 rounded-md shadow-sm transition-all duration-300 transform hover:-translate-y-0.5 hover:shadow-md text-xs tracking-wider uppercase cursor-pointer"
           >
             {settings.STYLE2_HERO_1_CTA || settings.HERO_1_CTA || 'VER OFERTAS'}
           </Link>
@@ -382,7 +382,7 @@ export default async function Hero({ config, isPreview, sectionId }: { config?: 
           {settings.STYLE2_HERO_1_SLIDE2_SUBTITLE ? (
             <span dangerouslySetInnerHTML={{ __html: basicSanitizeHtml(settings.STYLE2_HERO_1_SLIDE2_SUBTITLE) }} />
           ) : (
-            <span>Eficiência Certificada <span className="text-[#DC2626] font-bold">Eco-Design</span></span>
+            <span>Eficiência Certificada <span className="text-[#F28611] font-bold">Eco-Design</span></span>
           )}
         </div>
 
@@ -399,7 +399,7 @@ export default async function Hero({ config, isPreview, sectionId }: { config?: 
         {(settings.STYLE2_HERO_1_SLIDE2_PRICE || settings.STYLE2_HERO_1_SLIDE2_PRICE_LABEL) && (
           <div className="text-lg md:text-xl text-gray-700 font-medium mb-6 flex items-baseline flex-wrap gap-1 animate-hero-price">
             <span>{settings.STYLE2_HERO_1_SLIDE2_PRICE_LABEL || 'A partir de'}</span>
-            <span className="text-[#DC2626] font-bold text-2xl md:text-3xl ml-1">
+            <span className="text-[#F28611] font-bold text-2xl md:text-3xl ml-1">
               {settings.STYLE2_HERO_1_SLIDE2_PRICE || '975,00 €'}
             </span>
           </div>
@@ -409,7 +409,7 @@ export default async function Hero({ config, isPreview, sectionId }: { config?: 
         <div className="animate-hero-btn">
           <Link
             href={settings.STYLE2_HERO_1_SLIDE2_LINK || settings.STYLE2_HERO_1_LINK || '/shop'}
-            className="inline-block bg-[#DC2626] hover:bg-[#B91C1C] text-white font-extrabold px-8 py-3.5 rounded-md shadow-sm transition-all duration-300 transform hover:-translate-y-0.5 hover:shadow-md text-xs tracking-wider uppercase cursor-pointer"
+            className="inline-block bg-[#F28611] hover:bg-[#D97706] text-white font-extrabold px-8 py-3.5 rounded-md shadow-sm transition-all duration-300 transform hover:-translate-y-0.5 hover:shadow-md text-xs tracking-wider uppercase cursor-pointer"
           >
             {settings.STYLE2_HERO_1_SLIDE2_CTA || 'VER CATÁLOGO'}
           </Link>
@@ -462,7 +462,7 @@ export default async function Hero({ config, isPreview, sectionId }: { config?: 
           className="font-semibold text-xs md:text-sm mb-2"
           style={{
             ...getResponsiveVars('STYLE2_HERO_2_CATEGORY', { m: '12px', t: '13px', d: '14px' }),
-            color: settings.STYLE2_HERO_2_CATEGORY_COLOR || '#DC2626'
+            color: settings.STYLE2_HERO_2_CATEGORY_COLOR || '#F28611'
           }}
         >
           {settings.STYLE2_HERO_2_CATEGORY || 'Biomassa & Aquecimento'}
@@ -480,7 +480,7 @@ export default async function Hero({ config, isPreview, sectionId }: { config?: 
           className="font-bold text-sm md:text-base mb-3"
           style={{
             ...getResponsiveVars('STYLE2_HERO_2_SUBTITLE', { m: '14px', t: '15px', d: '16px' }),
-            color: settings.STYLE2_HERO_2_SUBTITLE_COLOR || '#DC2626'
+            color: settings.STYLE2_HERO_2_SUBTITLE_COLOR || '#F28611'
           }}
         >
           {settings.STYLE2_HERO_2_SUBTITLE || '70 Sacos de 15kg • Alta Eficiência'}
@@ -494,7 +494,7 @@ export default async function Hero({ config, isPreview, sectionId }: { config?: 
               className="inline-block font-extrabold px-5 py-2 rounded-md shadow-sm transition-all text-[11px] tracking-wider uppercase cursor-pointer"
               style={{
                 ...getResponsiveVars('STYLE2_HERO_2_CTA', { m: '11px', t: '11px', d: '11px' }),
-                backgroundColor: settings.STYLE2_HERO_2_BTN_BG_COLOR || '#DC2626',
+                backgroundColor: settings.STYLE2_HERO_2_BTN_BG_COLOR || '#F28611',
                 color: settings.STYLE2_HERO_2_BTN_TEXT_COLOR || '#FFFFFF'
               }}
             >
@@ -555,7 +555,7 @@ export default async function Hero({ config, isPreview, sectionId }: { config?: 
           className="font-bold text-sm md:text-base mb-3"
           style={{
             ...getResponsiveVars('STYLE2_HERO_3_SUBTITLE', { m: '14px', t: '15px', d: '16px' }),
-            color: settings.STYLE2_HERO_3_SUBTITLE_COLOR || '#DC2626'
+            color: settings.STYLE2_HERO_3_SUBTITLE_COLOR || '#F28611'
           }}
         >
           {settings.STYLE2_HERO_3_SUBTITLE || 'Conforto Térmico Todo o Ano'}
@@ -569,7 +569,7 @@ export default async function Hero({ config, isPreview, sectionId }: { config?: 
               className="inline-block font-extrabold px-5 py-2 rounded-md shadow-sm transition-all text-[11px] tracking-wider uppercase cursor-pointer"
               style={{
                 ...getResponsiveVars('STYLE2_HERO_3_CTA', { m: '11px', t: '11px', d: '11px' }),
-                backgroundColor: settings.STYLE2_HERO_3_BTN_BG_COLOR || '#DC2626',
+                backgroundColor: settings.STYLE2_HERO_3_BTN_BG_COLOR || '#F28611',
                 color: settings.STYLE2_HERO_3_BTN_TEXT_COLOR || '#FFFFFF'
               }}
             >

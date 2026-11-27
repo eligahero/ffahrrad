@@ -154,7 +154,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     adminDashboardText: settingsMap.ADMIN_DASHBOARD_TEXT,
     topBarBgColor: settingsMap.TOP_BAR_BG_COLOR || '#ffffff',
     topBarTextColor: settingsMap.TOP_BAR_TEXT_COLOR || '#4b5563',
-    footerBgColor: settingsMap.FOOTER_BG_COLOR || '#1C1917',
+    footerBgColor: settingsMap.FOOTER_BG_COLOR || '#0B131E',
     footerTextColor: settingsMap.FOOTER_TEXT_COLOR || '#d1d5db',
     footerHeadingColor: settingsMap.FOOTER_HEADING_COLOR || '#ffffff',
     footerAddress1: settingsMap.FOOTER_ADDRESS_1 ?? 'Braga, Portugal Continental',
@@ -189,8 +189,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     searchBorderColor: settingsMap.SEARCH_BORDER_COLOR || '#d1d5db',
     searchPlaceholder: settingsMap.SEARCH_PLACEHOLDER || 'Pesquisar pellets, lenha, salamandras, recuperadores...',
     searchBtnText: settingsMap.SEARCH_BTN_TEXT || 'Pesquisar',
-    searchBtnBgColor: settingsMap.SEARCH_BTN_BG_COLOR || '#c2410c',
-    searchBtnTextColor: settingsMap.SEARCH_BTN_TEXT_COLOR || '#111827',
+    searchBtnBgColor: settingsMap.SEARCH_BTN_BG_COLOR || '#F28611',
+    searchBtnTextColor: settingsMap.SEARCH_BTN_TEXT_COLOR || '#ffffff',
     showNew: newProductsCount > 0,
     showHot: hotProductsCount >= 3,
     showSale: saleProductsCount > 0,
@@ -283,7 +283,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             })
           }}
         />
-        <ThemeProvider themeColor={settingsMap.THEME_COLOR || '#c2410c'} />
+        <ThemeProvider themeColor={settingsMap.THEME_COLOR || '#F28611'} />
         <ZoomController />
         <NextIntlClientProvider messages={messages} locale={locale}>
           <PostHogProvider>

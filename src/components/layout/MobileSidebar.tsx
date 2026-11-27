@@ -116,8 +116,8 @@ export default function MobileSidebar({
               <div className="flex items-center gap-2.5">
                 <Image src="/logo-flame.png" alt="Silva Dias" width={32} height={52} className="h-8 w-auto object-contain shrink-0" />
                 <div>
-                  <span className="font-extrabold text-base tracking-tight text-stone-900 block leading-tight">LENHA &amp; CARVÃO</span>
-                  <span className="text-[10px] font-bold tracking-wider text-red-600 uppercase block">SILVA DIAS</span>
+                  <span className="font-extrabold text-base tracking-tight text-stone-900 block leading-tight">FRANKE</span>
+                  <span className="text-[10px] font-bold tracking-wider text-[#F28611] uppercase block">FAHRRAD</span>
                 </div>
               </div>
             )}
@@ -140,9 +140,9 @@ export default function MobileSidebar({
           <Link
             href="/account"
             onClick={onClose}
-            className="flex items-center gap-2 p-2 bg-white rounded-xl border border-stone-200 text-xs font-bold text-stone-800 hover:border-red-400 hover:text-red-600 transition shadow-xs"
+            className="flex items-center gap-2 p-2 bg-white rounded-xl border border-stone-200 text-xs font-bold text-stone-800 hover:border-red-400 hover:text-[#F28611] transition shadow-xs"
           >
-            <svg className="w-4 h-4 text-red-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-4 h-4 text-[#F28611] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
             </svg>
             <span className="truncate">Minha Conta</span>
@@ -154,16 +154,16 @@ export default function MobileSidebar({
               onClose();
               cartStore.setIsOpen(true);
             }}
-            className="flex items-center justify-between p-2 bg-white rounded-xl border border-stone-200 text-xs font-bold text-stone-800 hover:border-red-400 hover:text-red-600 transition shadow-xs cursor-pointer"
+            className="flex items-center justify-between p-2 bg-white rounded-xl border border-stone-200 text-xs font-bold text-stone-800 hover:border-red-400 hover:text-[#F28611] transition shadow-xs cursor-pointer"
           >
             <span className="flex items-center gap-2 truncate">
-              <svg className="w-4 h-4 text-red-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-4 h-4 text-[#F28611] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
               </svg>
               <span>Carrinho</span>
             </span>
             {mounted && cartStore.getTotalItems() > 0 && (
-              <span className="bg-red-600 text-white text-[10px] font-black px-1.5 py-0.2 rounded-full">
+              <span className="bg-[#F28611] text-white text-[10px] font-black px-1.5 py-0.2 rounded-full">
                 {cartStore.getTotalItems()}
               </span>
             )}
@@ -178,7 +178,7 @@ export default function MobileSidebar({
               <Link
                 href="/"
                 onClick={onClose}
-                className="flex items-center justify-between px-3.5 py-2.5 text-sm font-bold text-stone-800 hover:bg-red-50 hover:text-red-600 rounded-xl transition-colors"
+                className="flex items-center justify-between px-3.5 py-2.5 text-sm font-bold text-stone-800 hover:bg-red-50 hover:text-[#F28611] rounded-xl transition-colors"
               >
                 <span>Início</span>
                 <span className="text-stone-400 text-xs">&rarr;</span>
@@ -190,7 +190,7 @@ export default function MobileSidebar({
               <button
                 type="button"
                 onClick={() => setIsCategoriesOpen(!isCategoriesOpen)}
-                className="w-full flex items-center justify-between px-3.5 py-2.5 text-sm font-bold text-stone-900 bg-stone-100/90 hover:bg-red-50 hover:text-red-600 rounded-xl transition-colors cursor-pointer mt-1"
+                className="w-full flex items-center justify-between px-3.5 py-2.5 text-sm font-bold text-stone-900 bg-stone-100/90 hover:bg-red-50 hover:text-[#F28611] rounded-xl transition-colors cursor-pointer mt-1"
               >
                 <span className="flex items-center gap-2">
                   <span>📂</span>
@@ -202,13 +202,13 @@ export default function MobileSidebar({
               </button>
 
               {isCategoriesOpen && (
-                <ul className="mt-1 ml-2 space-y-1 border-l-2 border-red-500/30 pl-2 py-1">
+                <ul className="mt-1 ml-2 space-y-1 border-l-2 border-orange-500/30 pl-2 py-1">
                   {displayCategories.map((cat: any, idx: number) => (
                     <li key={cat.id || idx}>
                       <Link
                         href={`/product-category/${cat.slug || cat.id}`}
                         onClick={onClose}
-                        className="flex items-center justify-between px-3 py-2 text-xs font-semibold text-stone-700 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                        className="flex items-center justify-between px-3 py-2 text-xs font-semibold text-stone-700 hover:text-[#F28611] hover:bg-red-50 rounded-lg transition-colors"
                       >
                         <span className="flex items-center gap-2">
                           {cat.icon && <span>{cat.icon}</span>}
@@ -230,7 +230,7 @@ export default function MobileSidebar({
                 <Link
                   href={link.url}
                   onClick={onClose}
-                  className="flex items-center justify-between px-3.5 py-2.5 text-sm font-bold text-stone-800 hover:bg-red-50 hover:text-red-600 rounded-xl transition-colors"
+                  className="flex items-center justify-between px-3.5 py-2.5 text-sm font-bold text-stone-800 hover:bg-red-50 hover:text-[#F28611] rounded-xl transition-colors"
                 >
                   <span>{link.label}</span>
                   <span className="text-stone-400 text-xs">&rarr;</span>
@@ -246,8 +246,8 @@ export default function MobileSidebar({
             <p className="font-bold text-stone-900 uppercase tracking-wider text-[11px]">Apoio ao Cliente</p>
 
             {hasPhone && (
-              <a href={`tel:${contactPhone.replace(/\s+/g, '')}`} className="flex items-center gap-2 text-stone-600 hover:text-red-600 transition">
-                <svg className="w-4 h-4 text-red-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <a href={`tel:${contactPhone.replace(/\s+/g, '')}`} className="flex items-center gap-2 text-stone-600 hover:text-[#F28611] transition">
+                <svg className="w-4 h-4 text-[#F28611] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                 </svg>
                 <span>{contactPhone}</span>
@@ -255,8 +255,8 @@ export default function MobileSidebar({
             )}
 
             {hasEmail && (
-              <a href={`mailto:${contactEmail}`} className="flex items-center gap-2 text-stone-600 hover:text-red-600 transition truncate">
-                <svg className="w-4 h-4 text-red-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <a href={`mailto:${contactEmail}`} className="flex items-center gap-2 text-stone-600 hover:text-[#F28611] transition truncate">
+                <svg className="w-4 h-4 text-[#F28611] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                 </svg>
                 <span className="truncate">{contactEmail}</span>

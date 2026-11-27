@@ -451,7 +451,7 @@ export default function FeaturedProductTabs({ initialProducts }: FeaturedProduct
         {/* Header & Filter Tabs */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
           <div>
-            <span className="text-red-600 font-extrabold text-xs uppercase tracking-wider block">
+            <span className="text-[#F28611] font-extrabold text-xs uppercase tracking-wider block">
               Equipamentos & Combustíveis
             </span>
             <div className="flex items-center gap-3 mt-1">
@@ -459,7 +459,7 @@ export default function FeaturedProductTabs({ initialProducts }: FeaturedProduct
                 Produtos em Destaque
               </h2>
               {hasSlider && (
-                <span className="hidden sm:inline-flex px-2.5 py-0.5 rounded-full bg-red-100 text-red-700 text-xs font-bold border border-red-200">
+                <span className="hidden sm:inline-flex px-2.5 py-0.5 rounded-full bg-orange-100 text-orange-700 text-xs font-bold border border-orange-200">
                   {filteredProducts.length} em promoção
                 </span>
               )}
@@ -495,7 +495,7 @@ export default function FeaturedProductTabs({ initialProducts }: FeaturedProduct
                   disabled={!canScrollLeft}
                   aria-label="Artigos anteriores"
                   className={`w-9 h-9 rounded-xl border flex items-center justify-center transition-all cursor-pointer ${canScrollLeft
-                    ? 'bg-white border-stone-300 text-stone-800 hover:bg-red-600 hover:text-white hover:border-red-600 shadow-sm'
+                    ? 'bg-white border-stone-300 text-stone-800 hover:bg-[#F28611] hover:text-white hover:border-[#F28611] shadow-sm'
                     : 'bg-stone-100 border-stone-200 text-stone-300 cursor-not-allowed'
                     }`}
                 >
@@ -510,7 +510,7 @@ export default function FeaturedProductTabs({ initialProducts }: FeaturedProduct
                   disabled={!canScrollRight}
                   aria-label="Próximos artigos"
                   className={`w-9 h-9 rounded-xl border flex items-center justify-center transition-all cursor-pointer ${canScrollRight
-                    ? 'bg-white border-stone-300 text-stone-800 hover:bg-red-600 hover:text-white hover:border-red-600 shadow-sm'
+                    ? 'bg-white border-stone-300 text-stone-800 hover:bg-[#F28611] hover:text-white hover:border-[#F28611] shadow-sm'
                     : 'bg-stone-100 border-stone-200 text-stone-300 cursor-not-allowed'
                     }`}
                 >
@@ -532,7 +532,7 @@ export default function FeaturedProductTabs({ initialProducts }: FeaturedProduct
               type="button"
               onClick={() => scroll('left')}
               aria-label="Artigos anteriores"
-              className="hidden lg:flex absolute -left-5 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full bg-white text-stone-900 shadow-xl border border-stone-200 items-center justify-center hover:bg-red-600 hover:text-white hover:border-red-600 transition-all cursor-pointer"
+              className="hidden lg:flex absolute -left-5 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full bg-white text-stone-900 shadow-xl border border-stone-200 items-center justify-center hover:bg-[#F28611] hover:text-white hover:border-[#F28611] transition-all cursor-pointer"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
@@ -546,7 +546,7 @@ export default function FeaturedProductTabs({ initialProducts }: FeaturedProduct
               type="button"
               onClick={() => scroll('right')}
               aria-label="Próximos artigos"
-              className="hidden lg:flex absolute -right-5 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full bg-white text-stone-900 shadow-xl border border-stone-200 items-center justify-center hover:bg-red-600 hover:text-white hover:border-red-600 transition-all cursor-pointer"
+              className="hidden lg:flex absolute -right-5 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full bg-white text-stone-900 shadow-xl border border-stone-200 items-center justify-center hover:bg-[#F28611] hover:text-white hover:border-[#F28611] transition-all cursor-pointer"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
@@ -571,7 +571,7 @@ export default function FeaturedProductTabs({ initialProducts }: FeaturedProduct
                     {/* Top Left Badges */}
                     <div className="absolute top-2.5 left-2.5 z-10 flex flex-col items-start gap-1 pointer-events-none">
                       {prod.discountLabel ? (
-                        <span className="px-2.5 py-1 bg-red-600 text-white font-extrabold text-[10px] rounded-md uppercase tracking-wider shadow-sm">
+                        <span className="px-2.5 py-1 bg-[#F28611] text-white font-extrabold text-[10px] rounded-md uppercase tracking-wider shadow-sm">
                           {prod.discountLabel}
                         </span>
                       ) : null}
@@ -586,8 +586,8 @@ export default function FeaturedProductTabs({ initialProducts }: FeaturedProduct
                         type="button"
                         onClick={(e) => handleToggleWishlist(e, prod)}
                         className={`w-8 h-8 rounded-full flex items-center justify-center transition-all shadow-md cursor-pointer ${wishlistStore.hasItem(prod.id)
-                          ? 'bg-red-600 text-white shadow-red-500/30 ring-2 ring-red-400'
-                          : 'bg-white/95 text-stone-700 hover:bg-red-600 hover:text-white border border-stone-200/80 hover:border-red-600'
+                          ? 'bg-[#F28611] text-white shadow-orange-500/30 ring-2 ring-orange-400'
+                          : 'bg-white/95 text-stone-700 hover:bg-[#F28611] hover:text-white border border-stone-200/80 hover:border-[#F28611]'
                           }`}
                         title={wishlistStore.hasItem(prod.id) ? 'Remover dos Favoritos' : 'Adicionar aos Favoritos'}
                         aria-label="Wishlist"
@@ -600,7 +600,7 @@ export default function FeaturedProductTabs({ initialProducts }: FeaturedProduct
                       <button
                         type="button"
                         onClick={(e) => handleOpenQuickView(e, prod)}
-                        className="w-8 h-8 rounded-full bg-white/95 text-stone-700 hover:bg-red-600 hover:text-white border border-stone-200/80 hover:border-red-600 flex items-center justify-center transition-all shadow-md cursor-pointer"
+                        className="w-8 h-8 rounded-full bg-white/95 text-stone-700 hover:bg-[#F28611] hover:text-white border border-stone-200/80 hover:border-[#F28611] flex items-center justify-center transition-all shadow-md cursor-pointer"
                         title="Vista Rápida"
                         aria-label="Quick View"
                       >
@@ -630,7 +630,7 @@ export default function FeaturedProductTabs({ initialProducts }: FeaturedProduct
                         <React.Fragment key={cat.slug || idx}>
                           <Link
                             href={`/product-category/${cat.slug}`}
-                            className="hover:text-red-600 hover:underline transition-colors"
+                            className="hover:text-[#F28611] hover:underline transition-colors"
                             onClick={(e) => e.stopPropagation()}
                           >
                             {cat.name}
@@ -643,7 +643,7 @@ export default function FeaturedProductTabs({ initialProducts }: FeaturedProduct
                     ) : prod.categorySlug ? (
                       <Link
                         href={`/product-category/${prod.categorySlug}`}
-                        className="hover:text-red-600 hover:underline transition-colors"
+                        className="hover:text-[#F28611] hover:underline transition-colors"
                         onClick={(e) => e.stopPropagation()}
                       >
                         {prod.categoryName || 'Soluções Térmicas'}
@@ -653,7 +653,7 @@ export default function FeaturedProductTabs({ initialProducts }: FeaturedProduct
                     )}
                   </div>
                   <Link href={`/produto/${prod.slug}`}>
-                    <h4 className="font-bold text-stone-900 text-sm mt-1 line-clamp-2 min-h-[40px] group-hover:text-red-600 transition-colors">
+                    <h4 className="font-bold text-stone-900 text-sm mt-1 line-clamp-2 min-h-[40px] group-hover:text-[#F28611] transition-colors">
                       {prod.title}
                     </h4>
                   </Link>
@@ -681,7 +681,7 @@ export default function FeaturedProductTabs({ initialProducts }: FeaturedProduct
                   <button
                     type="button"
                     onClick={() => handleAddToCart(prod)}
-                    className="px-3.5 py-2 bg-stone-900 hover:bg-red-600 text-white rounded-xl text-xs font-bold transition-all shadow-sm active:scale-95 cursor-pointer flex items-center gap-1.5 group/btn"
+                    className="px-3.5 py-2 bg-stone-900 hover:bg-[#F28611] text-white rounded-xl text-xs font-bold transition-all shadow-sm active:scale-95 cursor-pointer flex items-center gap-1.5 group/btn"
                     title={`Adicionar ${prod.title} ao carrinho`}
                   >
                     <svg className="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">

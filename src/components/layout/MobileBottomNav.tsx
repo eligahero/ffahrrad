@@ -58,7 +58,7 @@ export default function MobileBottomNav({
         href="/" 
         aria-label="Início"
         className={`flex flex-col items-center justify-center py-1 px-2 min-w-[56px] transition-colors ${
-          pathname === '/' ? 'text-red-500 font-bold' : 'hover:text-white'
+          pathname === '/' ? 'text-[#F28611] font-bold' : 'hover:text-white'
         }`}
       >
         <svg className="w-5 h-5 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -85,7 +85,7 @@ export default function MobileBottomNav({
         href="/shop" 
         aria-label="Catálogo da Loja"
         className={`flex flex-col items-center justify-center py-1 px-2 min-w-[56px] transition-colors ${
-          pathname.startsWith('/shop') || pathname.startsWith('/product-category') ? 'text-red-500 font-bold' : 'hover:text-white'
+          pathname.startsWith('/shop') || pathname.startsWith('/product-category') ? 'text-[#F28611] font-bold' : 'hover:text-white'
         }`}
       >
         <svg className="w-5 h-5 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -106,7 +106,7 @@ export default function MobileBottomNav({
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
           </svg>
           {mounted && cartItems > 0 && (
-            <span className="absolute -top-1.5 -right-2.5 bg-red-600 text-white text-[9px] font-black w-4 h-4 rounded-full flex items-center justify-center border border-stone-950 shadow-sm animate-pulse">
+            <span className="absolute -top-1.5 -right-2.5 bg-[#F28611] text-white text-[9px] font-black w-4 h-4 rounded-full flex items-center justify-center border border-stone-950 shadow-sm animate-pulse">
               {cartItems > 99 ? '99+' : cartItems}
             </span>
           )}
@@ -120,7 +120,7 @@ export default function MobileBottomNav({
         onClick={handleAccountClick}
         aria-label="Minha Conta"
         className={`flex flex-col items-center justify-center py-1 px-2 min-w-[56px] transition-colors cursor-pointer ${
-          pathname.startsWith('/account') || pathname.startsWith('/admin') ? 'text-red-500 font-bold' : 'hover:text-white'
+          pathname.startsWith('/account') || pathname.startsWith('/admin') ? 'text-[#F28611] font-bold' : 'hover:text-white'
         }`}
       >
         <svg className="w-5 h-5 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
