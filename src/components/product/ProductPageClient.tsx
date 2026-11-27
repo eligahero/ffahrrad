@@ -3,12 +3,10 @@
 import { useState } from 'react';
 import ProductGallery from './ProductGallery';
 import ProductActions from './ProductActions';
-import Link from 'next/link';
-import Image from "next/image";
 
 const Star = ({ filled = true }: { filled?: boolean }) => (
   <svg
-    className={`w-4 h-4 ${filled ? 'text-orange-600' : 'text-gray-300'}`}
+    className={`w-4 h-4 ${filled ? 'text-[#F28611]' : 'text-gray-300'}`}
     fill="currentColor"
     viewBox="0 0 20 20"
   >
@@ -28,10 +26,13 @@ interface ProductPageClientProps {
     images: string[];
     attributes?: { name: string; options: string[] }[];
     variations?: { id: string; price: string; stock?: string; image?: string; attributes: Record<string, string> }[];
-    brand?: { name: string; logo?: string | null } | null;
-    categories?: { id: string; name: string }[];
-    tags?: { name: string }[];
+    brand?: { id?: string; name: string; logo?: string | null } | null;
+    categories?: { id: string; name: string; slug?: string }[];
+    tags?: { id?: string; name: string; slug?: string }[];
     reviews?: { rating: number }[];
+    forceSales?: any[];
+    saleTogether?: any[];
+    gtin?: string | null;
     [key: string]: any;
   };
   enableBuyNow?: boolean;
@@ -49,8 +50,13 @@ interface ProductPageClientProps {
   contactSlug?: string;
 }
 
-export default function ProductPageClient({ product, enableBuyNow = false, storeName = 'My Store', translations, shippingInfo, contactSlug = 'contact' }: ProductPageClientProps) {
-  // L'image active de la galerie, pilotée par la variation sélectionnée
+export default function ProductPageClient({ 
+  product, 
+  enableBuyNow = false, 
+  shippingInfo, 
+  contactSlug = 'contact' 
+}: ProductPageClientProps) {
+  // Active variation image drives gallery preview
   const [variationImage, setVariationImage] = useState<string | null>(null);
 
   const reviews = product.reviews || [];
@@ -58,107 +64,51 @@ export default function ProductPageClient({ product, enableBuyNow = false, store
     ? reviews.reduce((acc: number, curr: any) => acc + curr.rating, 0) / reviews.length
     : 0;
 
-  const t = translations;
-
   return (
-    <>
-      {/* Galerie — reçoit l'image de variation pour l'afficher en priorité */}
-      <ProductGallery
-        images={product.images}
-        title={product.title}
-        discountLabel={product.discountLabel}
-        compareAtPrice={product.compareAtPrice}
-        price={product.price}
-        activeVariationImage={variationImage}
-      />
+    <div className="w-full flex flex-col">
+      {/* 1. Main Product Title at the top across the screen (matching reference layout) */}
+      <div className="mb-6">
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#0B131E] tracking-tight leading-tight">
+          {product.title}
+        </h1>
 
-      {/* Colonne droite : titre, marque, avis, actions, méta */}
-      <div className="w-full lg:w-1/2 flex flex-col">
-        <h1 className="text-3xl font-bold mb-4 leading-tight">{product.title}</h1>
-
-        {/* Marque : logo seul si défini, nom seul sinon */}
-        {product.brand && (
-          <div className="flex items-center mb-4">
-            {product.brand.logo ? (
-              <Image width={800} height={800} src={product.brand.logo} alt={product.brand.name} className="h-10 object-contain rounded-sm" />
-            ) : (
-              <span className="text-sm text-gray-500 uppercase tracking-wider font-semibold">{product.brand.name}</span>
-            )}
+        {reviews.length > 0 && (
+          <div className="flex items-center gap-3 mt-2 text-sm text-gray-500">
+            <div className="flex items-center gap-1">
+              <div className="flex">
+                {[1, 2, 3, 4, 5].map(i => <Star key={i} filled={i <= Math.round(avgRating)} />)}
+              </div>
+              <span className="ml-1 text-gray-700 font-semibold">
+                {reviews.length} {reviews.length === 1 ? 'Kundenbewertung' : 'Kundenbewertungen'}
+              </span>
+            </div>
           </div>
         )}
+      </div>
 
-        {/* Avis & Vendus */}
-        <div className="flex items-center gap-4 mb-6 text-sm text-gray-500">
-          {reviews.length > 0 && (
-            <>
-              <div className="flex items-center gap-1">
-                <div className="flex">
-                  {[1, 2, 3, 4, 5].map(i => <Star key={i} filled={i <= Math.round(avgRating)} />)}
-                </div>
-                <span className="ml-1 text-gray-600">
-                  {t?.customer_reviews ?? `${reviews.length} avaliações`}
-                </span>
-              </div>
-              <span className="border-l border-gray-300 h-4"></span>
-            </>
-          )}
-          <span>
-            {t?.sold ?? 'Vendido'} <span className="font-semibold text-gray-900">24</span>
-          </span>
-        </div>
-
-        {/* Actions — remonte l'image quand une variation est sélectionnée */}
-        <ProductActions
-          product={product as any}
-          enableBuyNow={enableBuyNow}
-          onVariationChange={(image: string | null) => setVariationImage(image)}
-          shippingInfo={shippingInfo}
-          contactSlug={contactSlug}
+      {/* 2. Hero 2-Column Section: Gallery on Left, Buy Box Card on Right */}
+      <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 items-start">
+        {/* Gallery */}
+        <ProductGallery
+          images={product.images}
+          title={product.title}
+          discountLabel={product.discountLabel}
+          compareAtPrice={product.compareAtPrice}
+          price={product.price}
+          activeVariationImage={variationImage}
         />
 
-        {/* Méta */}
-        <div className="space-y-2 text-sm pt-4 border-t border-gray-100">
-          <p>
-            <span className="font-semibold text-gray-900">{t?.sku ?? 'Ref / SKU:'} </span>
-            {product.id.split('-')[0].toUpperCase()}
-          </p>
-          <p>
-            <span className="font-semibold text-gray-900">{t?.categories ?? 'Categorias:'} </span>
-            {product.categories && product.categories.length > 0
-              ? product.categories.map((c: any, index: number) => (
-                  <span key={c.id}>
-                    <Link href={`/product-category/${c.slug || c.id}`} className="hover:text-red-600 hover:underline transition-colors">
-                      {c.name}
-                    </Link>
-                    {index < product.categories!.length - 1 ? ', ' : ''}
-                  </span>
-                ))
-              : (t?.uncategorized ?? 'Sem categoria')}
-          </p>
-          {product.brand && !product.brand.logo && (
-            <p><span className="font-semibold text-gray-900">{t?.brand ?? 'Marca:'} </span>{product.brand.name}</p>
-          )}
-          {product.tags && product.tags.length > 0 && (
-            <p>
-              <span className="font-semibold text-gray-900">{t?.tags ?? 'Tags :'} </span>
-              {product.tags.map((tag: any, index: number) => (
-                <span key={tag.id}>
-                  <Link href={`/shop?tag=${tag.slug || tag.id}`} className="hover:text-orange-600 hover:underline transition-colors">
-                    {tag.name}
-                  </Link>
-                  {index < product.tags!.length - 1 ? ', ' : ''}
-                </span>
-              ))}
-            </p>
-          )}
-          {product.gtin && (
-            <p>
-              <span className="font-semibold text-gray-900">GTIN / EAN : </span>
-              <span className="font-mono text-gray-600">{product.gtin}</span>
-            </p>
-          )}
+        {/* Right Buy Box */}
+        <div className="w-full lg:w-5/12">
+          <ProductActions
+            product={product as any}
+            enableBuyNow={enableBuyNow}
+            onVariationChange={(image: string | null) => setVariationImage(image)}
+            shippingInfo={shippingInfo}
+            contactSlug={contactSlug}
+          />
         </div>
       </div>
-    </>
+    </div>
   );
 }

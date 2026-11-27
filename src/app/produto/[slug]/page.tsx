@@ -20,11 +20,11 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   
   const product = await getCachedProductBySlug(slug);
   
-  const storeName = process.env.NEXT_PUBLIC_STORE_NAME || "Lenha & Carvão Silva Dias";
+  const storeName = process.env.NEXT_PUBLIC_STORE_NAME || "Fahrrad Franke";
 
   if (!product) {
     return {
-      title: `Produto não encontrado - ${storeName}`,
+      title: `Produkt nicht gefunden - ${storeName}`,
     };
   }
 
@@ -56,17 +56,17 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   const settingsMap = await getCachedSettings();
   const enableBuyNow = settingsMap.ENABLE_BUY_NOW_BUTTON === 'true';
   const shippingInfo = [
-    settingsMap.SHIPPING_INFO_1 || '3-5 dias úteis em Portugal Continental',
-    settingsMap.SHIPPING_INFO_2 || '5-7 dias úteis para envios internacionais',
-    settingsMap.SHIPPING_INFO_3 || 'Descarga por plataforma elevatória incluída',
-    settingsMap.SHIPPING_INFO_4 || 'Devolução legal até 14 dias',
+    settingsMap.SHIPPING_INFO_1 || 'Lieferzeit: 3-5 Werktage (Montiert & fahrbereit)',
+    settingsMap.SHIPPING_INFO_2 || 'Kostenloser Rückversand innerhalb von 30 Tagen',
+    settingsMap.SHIPPING_INFO_3 || 'Fachmännisch montiert und werkstattgeprüft',
+    settingsMap.SHIPPING_INFO_4 || 'Sicherer Speditionsversand mit Avisierung',
   ];
 
   // Related products (same category)
   const categoryIds = (product as any).categories?.map((c: any) => c.id) || [];
   const relatedProducts = await getCachedRelatedProducts(categoryIds, product.id);
 
-  // Lowest shipping rate for PT (cached Anti-CPU/Anti-Egress)
+  // Lowest shipping rate for DE (cached Anti-CPU/Anti-Egress)
   const lowestShippingRate = await getCachedDefaultShippingRate();
 
   // Canonical category path for SEO
@@ -78,7 +78,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   const { data: { user } } = await supabase.auth.getUser();
   const isLoggedIn = !!user;
 
-  const storeName = process.env.NEXT_PUBLIC_STORE_NAME || 'Lenha & Carvão Silva Dias';
+  const storeName = process.env.NEXT_PUBLIC_STORE_NAME || 'Fahrrad Franke';
 
   const reviews = (product as any).reviews || [];
   const avgRating = reviews.length > 0
@@ -94,7 +94,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     sku: product.id.split('-')[0].toUpperCase(),
     offers: {
       '@type': 'Offer',
-      url: `${process.env.NEXT_PUBLIC_BASE_URL || 'https://lenhaecarvaosilvadias.com'}/produto/${product.slug}`,
+      url: `${process.env.NEXT_PUBLIC_BASE_URL || 'https://ffahrrad.de'}/produto/${product.slug}`,
       priceCurrency: 'EUR',
       price: product.price,
       itemCondition: 'https://schema.org/NewCondition',
@@ -105,9 +105,9 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
       },
       hasMerchantReturnPolicy: {
         '@type': 'MerchantReturnPolicy',
-        applicableCountry: 'PT',
+        applicableCountry: 'DE',
         returnPolicyCategory: 'https://schema.org/MerchantReturnFiniteReturnWindow',
-        merchantReturnDays: 14,
+        merchantReturnDays: 30,
         returnMethod: 'https://schema.org/ReturnByMail',
         returnFees: 'https://schema.org/FreeReturn'
       },
@@ -120,7 +120,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
         },
         shippingDestination: {
           '@type': 'DefinedRegion',
-          addressCountry: 'PT'
+          addressCountry: 'DE'
         },
         deliveryTime: {
           '@type': 'ShippingDeliveryTime',
@@ -155,7 +155,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
       },
       author: {
         '@type': 'Person',
-        name: r.reviewerName || 'Cliente',
+        name: r.reviewerName || 'Kunde',
       },
       reviewBody: r.comment || '',
       datePublished: r.createdAt ? new Date(r.createdAt).toISOString().split('T')[0] : undefined,
@@ -175,7 +175,6 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
 
   return (
     <div className="min-h-screen bg-white font-sans text-gray-900 flex flex-col">
-      
       <main className="flex-grow pb-28 lg:pb-20">
         <script
           type="application/ld+json"
@@ -193,7 +192,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
                 {
                   '@type': 'ListItem',
                   position: 1,
-                  name: 'Início',
+                  name: 'Startseite',
                   item: SITE_URL,
                 },
                 ...(primaryCat ? [{
@@ -212,15 +211,16 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             })
           }}
         />
-        {/* Breadcrumb */}
-        <div className="bg-gray-50 border-b border-gray-200 mb-4 sm:mb-10">
-          <div className="max-w-7xl mx-auto px-4 sm:px-5 py-3 sm:py-4 text-xs sm:text-sm text-gray-500 flex items-center gap-1.5 sm:gap-2 flex-wrap">
-            <Link href="/" className="hover:text-red-600 transition">{t('home')}</Link>
+
+        {/* Breadcrumb Navigation */}
+        <div className="bg-gray-50 border-b border-gray-200 mb-4 sm:mb-8">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-3.5 text-xs sm:text-sm text-gray-500 flex items-center gap-1.5 sm:gap-2 flex-wrap">
+            <Link href="/" className="hover:text-[#F28611] transition">{t('home')}</Link>
             <span className="text-gray-300">/</span>
             {primaryCat ? (
               <Link 
                 href={primaryCatPath || `/product-category/${primaryCat.slug || primaryCat.id}`}
-                className="hover:text-red-600 transition"
+                className="hover:text-[#F28611] transition"
               >
                 {primaryCat.name}
               </Link>
@@ -232,28 +232,29 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
           </div>
         </div>
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-8 py-4 sm:py-10">
+        {/* Main Product Container */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 sm:py-6">
           <div id="cart-notification-portal"></div>
-          <div className="flex flex-col lg:flex-row gap-12">
-            <ProductPageClient
-              product={product as any}
-              enableBuyNow={enableBuyNow}
-              storeName={storeName}
-              shippingInfo={shippingInfo}
-              contactSlug={settingsMap.CONTACT_SLUG || 'contact'}
-              translations={{
-                sku: t('sku'),
-                categories: t('categories'),
-                tags: t('tags'),
-                sold: t('sold'),
-                customer_reviews: t('customer_reviews', { count: (product as any).reviews?.length || 0 }),
-                uncategorized: t('uncategorized'),
-                brand: t('brand')
-              }}
-            />
-          </div>
+          
+          {/* Main Hero (Title + Gallery + Buy Box Card) */}
+          <ProductPageClient
+            product={product as any}
+            enableBuyNow={enableBuyNow}
+            storeName={storeName}
+            shippingInfo={shippingInfo}
+            contactSlug={settingsMap.CONTACT_SLUG || 'contact'}
+            translations={{
+              sku: t('sku'),
+              categories: t('categories'),
+              tags: t('tags'),
+              sold: t('sold'),
+              customer_reviews: t('customer_reviews', { count: (product as any).reviews?.length || 0 }),
+              uncategorized: t('uncategorized'),
+              brand: t('brand')
+            }}
+          />
 
-          {/* Tabs Section (Description & Reviews) */}
+          {/* Description & Technical Specifications & Reviews Tabs */}
           <ProductReviews 
             productId={product.id}
             productTitle={product.title}
@@ -263,26 +264,41 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
           />
 
           {/* Related Products Section */}
-          <div className="mt-20">
-            <div className="border-b border-gray-200 pb-4 mb-8">
-              <h2 className="text-xl font-bold text-gray-900">{t('related_products')}</h2>
+          <div className="mt-16 sm:mt-24">
+            <div className="border-b border-gray-200 pb-4 mb-8 flex items-center justify-between">
+              <h2 className="text-xl sm:text-2xl font-black text-[#0B131E] tracking-tight">{t('related_products')}</h2>
             </div>
             
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {relatedProducts.length > 0 ? (
                 relatedProducts.map(rp => (
-                  <Link href={`/produto/${rp.slug}`} key={rp.id} className="group border border-gray-200 rounded-lg p-4 bg-white hover:shadow-md transition flex flex-col">
-                    <div className="relative h-48 w-full flex items-center justify-center mb-4">
+                  <Link 
+                    href={`/produto/${rp.slug}`} 
+                    key={rp.id} 
+                    className="group border border-gray-200 rounded-2xl p-4 bg-white hover:shadow-lg transition-all duration-300 flex flex-col hover:border-gray-300"
+                  >
+                    <div className="relative h-48 w-full flex items-center justify-center mb-4 bg-gray-50/50 rounded-xl overflow-hidden">
                       {rp.images && rp.images[0] ? (
-                        <Image width={800} height={800} src={rp.images[0]} alt={rp.title} title={rp.title} className="max-h-full max-w-full object-contain group-hover:scale-105 transition duration-500" />
+                        <Image 
+                          width={400} 
+                          height={400} 
+                          src={rp.images[0]} 
+                          alt={rp.title} 
+                          title={rp.title} 
+                          className="max-h-full max-w-full object-contain group-hover:scale-105 transition duration-500" 
+                        />
                       ) : (
-                        <div className="text-6xl text-gray-300">🛍️</div>
+                        <div className="text-5xl text-gray-300">🚲</div>
                       )}
                     </div>
-                    <div className="mt-auto">
-                      <p className="text-xs text-blue-500 font-semibold mb-1">{rp.categories && rp.categories.length > 0 ? rp.categories[0].name : t('general')}</p>
-                      <h3 className="text-sm font-medium text-gray-900 line-clamp-2 mb-2 group-hover:text-orange-600 transition">{rp.title}</h3>
-                      <Price amount={rp.price} className="font-bold text-red-600" />
+                    <div className="mt-auto flex flex-col">
+                      <p className="text-[11px] text-[#0284C7] font-bold uppercase tracking-wider mb-1">
+                        {rp.categories && rp.categories.length > 0 ? rp.categories[0].name : t('general')}
+                      </p>
+                      <h3 className="text-sm font-semibold text-gray-900 line-clamp-2 mb-2 group-hover:text-[#F28611] transition leading-snug">
+                        {rp.title}
+                      </h3>
+                      <Price amount={rp.price} className="font-extrabold text-gray-900 text-base" />
                     </div>
                   </Link>
                 ))
