@@ -43,6 +43,53 @@ const DEFAULT_FRAME_SIZES = [
   { value: 'XXL', label: 'XXL (23" / > 200 cm)' }
 ];
 
+// The 4 intermittent reassurance highlights from user reference
+const REASSURANCE_ITEMS = [
+  {
+    id: 1,
+    text: 'Lieferzeit 2-4 Werktage deutschlandweit',
+    icon: (
+      // Target / Location Pin Icon
+      <svg className="w-4 h-4 text-slate-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.243-4.243a8 8 0 1111.314 0z" />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+      </svg>
+    )
+  },
+  {
+    id: 2,
+    text: 'Kostenloser Speditionsversand ab 150 €',
+    icon: (
+      // Globe Icon
+      <svg className="w-4 h-4 text-slate-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="9" strokeWidth={1.8} />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M3 12h18M12 3a14 14 0 014 9 14 14 0 01-4 9 14 14 0 01-4-9 14 14 0 014-9z" />
+      </svg>
+    )
+  },
+  {
+    id: 3,
+    text: 'Sichere Lieferung mit Terminankündigung',
+    icon: (
+      // Delivery Truck Icon
+      <svg className="w-4 h-4 text-slate-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" />
+      </svg>
+    )
+  },
+  {
+    id: 4,
+    text: '30 Tage Rückgaberecht & 2 Jahre Garantie',
+    icon: (
+      // Circular Return / Refresh Icon
+      <svg className="w-4 h-4 text-slate-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+      </svg>
+    )
+  }
+];
+
 export default function ProductActions({ 
   product, 
   enableBuyNow = false, 
@@ -64,8 +111,24 @@ export default function ProductActions({
   const [showStickyBar, setShowStickyBar] = useState(false);
   const t = useTranslations('Product');
 
+  // Intermittent ticker state (rotates every ~3.2 seconds with smooth fade)
+  const [tickerIndex, setTickerIndex] = useState(0);
+  const [tickerFade, setTickerFade] = useState(true);
+
   useEffect(() => {
     setIsClient(true);
+  }, []);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTickerFade(false);
+      setTimeout(() => {
+        setTickerIndex(prev => (prev + 1) % REASSURANCE_ITEMS.length);
+        setTickerFade(true);
+      }, 250);
+    }, 3200);
+
+    return () => clearInterval(timer);
   }, []);
 
   useEffect(() => {
@@ -206,7 +269,7 @@ export default function ProductActions({
     }
   };
 
-  const monthlyRate = (currentPrice / 12).toFixed(2);
+  const currentTickerItem = REASSURANCE_ITEMS[tickerIndex];
 
   return (
     <div className="w-full flex flex-col">
@@ -214,7 +277,7 @@ export default function ProductActions({
       {addedItemName && notificationPortal && createPortal(
         <div className="bg-[#16A34A] text-white px-6 py-4 mb-6 flex flex-col sm:flex-row items-center justify-between shadow-md rounded-xl animate-in fade-in slide-in-from-top-2">
           <div className="flex items-center gap-3 text-sm font-medium">
-            <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" /></svg>
+            <svg className="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" /></svg>
             <span>{addedItemName} wurde erfolgreich in den Warenkorb gelegt!</span>
           </div>
           <Link href="/cart" className="mt-3 sm:mt-0 text-xs font-bold tracking-wider hover:underline whitespace-nowrap bg-black/20 hover:bg-black/30 transition-colors px-5 py-2.5 rounded-lg">
@@ -227,7 +290,7 @@ export default function ProductActions({
       {wishlistedItemName && notificationPortal && createPortal(
         <div className="bg-[#F28611] text-white px-6 py-4 mb-6 flex flex-col sm:flex-row items-center justify-between shadow-md rounded-xl animate-in fade-in slide-in-from-top-2">
           <div className="flex items-center gap-3 text-sm font-medium">
-            <svg className="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>
+            <svg className="w-5 h-5 shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>
             <span>„{wishlistedItemName}“ wurde zu Ihrem Wunschzettel hinzugefügt!</span>
           </div>
           <Link href="/wishlist" className="mt-3 sm:mt-0 text-xs font-bold tracking-wider hover:underline whitespace-nowrap bg-black/20 hover:bg-black/30 transition-colors px-5 py-2.5 rounded-lg">
@@ -238,47 +301,47 @@ export default function ProductActions({
       )}
 
       {/* =========================================================================
-          BUY BOX CARD — MATCHING REFERENCE SCREENSHOT
+          BUY BOX CARD — MATCHING CAPTURE 2 EXACT LAYOUT
           ========================================================================= */}
       <div className="bg-white border border-gray-200 rounded-2xl p-6 sm:p-7 shadow-xs flex flex-col">
         
-        {/* Brand Header */}
-        <div className="flex justify-center items-center mb-3">
+        {/* 1. Brand Header */}
+        <div className="flex justify-center items-center mb-2.5">
           {product.brand?.logo ? (
             <Image 
               width={140} 
               height={45} 
               src={product.brand.logo} 
               alt={product.brand.name} 
-              className="h-10 object-contain" 
+              className="h-9 sm:h-10 object-contain" 
             />
           ) : (
-            <span className="text-2xl font-black tracking-widest text-[#0B131E] uppercase">
-              {product.brand?.name || 'CUBE'}
+            <span className="text-xl sm:text-2xl font-black tracking-widest text-[#0B131E] uppercase">
+              {product.brand?.name || 'CROOZER'}
             </span>
           )}
         </div>
 
-        {/* Price & Tiefpreisgarantie */}
-        <div className="flex flex-col items-center justify-center mb-5">
+        {/* 2. Price & Tiefpreisgarantie Pill */}
+        <div className="flex flex-col items-center justify-center mb-4">
           {product.compareAtPrice && product.compareAtPrice > currentPrice && (
             <span className="text-sm sm:text-base text-gray-400 line-through mb-0.5">
               {formatPrice(product.compareAtPrice)}
             </span>
           )}
-          <div className="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight">
+          <div className="text-3xl sm:text-4xl font-black text-gray-900 tracking-tight">
             {formatPrice(currentPrice)}
           </div>
           <div className="mt-1.5">
             <span className="inline-flex items-center gap-1 bg-[#DC2626] text-white text-[11px] font-black uppercase tracking-wider px-3.5 py-1 rounded-full shadow-2xs">
-              Tiefpreisgarantie ★
+              TIEFPREISGARANTIE ★
             </span>
           </div>
         </div>
 
-        {/* Additional attributes selection if product has multiple (e.g. Farbe) */}
+        {/* 3. Additional attributes selection if product has multiple (e.g. Farbe) */}
         {isVariable && attributes.length > 1 && (
-          <div className="space-y-3 mb-4 pt-2 border-t border-gray-100">
+          <div className="space-y-3 mb-3.5 pt-2 border-t border-gray-100">
             {attributes.filter(a => a !== sizeAttribute).map(attr => (
               <div key={attr.name}>
                 <span className="text-xs text-gray-500 mb-1.5 block font-medium">
@@ -308,26 +371,26 @@ export default function ProductActions({
           </div>
         )}
 
-        {/* Size Guide Trigger Link */}
+        {/* 4. Size Guide Trigger Link (Right Aligned above selector) */}
         <div className="w-full flex justify-end mb-1.5">
           <button
             type="button"
             onClick={() => setIsSizeModalOpen(true)}
-            className="text-xs text-gray-500 hover:text-[#F28611] transition underline flex items-center gap-1 cursor-pointer font-medium"
+            className="text-[11px] sm:text-xs text-gray-500 hover:text-[#F28611] transition flex items-center gap-1 cursor-pointer font-medium"
           >
             <span>📐</span> Größentabelle ansehen
           </button>
         </div>
 
-        {/* ACTION ROW: [ ? ] [ Size Dropdown v ] [ 🛒 In den Warenkorb ] */}
-        <div ref={actionButtonsRef} className="w-full flex items-center gap-2 mb-3">
-          {/* Circular Help Button */}
+        {/* 5. ACTION ROW: [ ? ] [ Size Dropdown v ] [ 🛒 In den Warenkorb ] */}
+        <div ref={actionButtonsRef} className="w-full flex items-center gap-2 mb-3.5">
+          {/* Circular Help Button ? */}
           <button
             type="button"
             onClick={() => setIsSizeModalOpen(true)}
             title="Größenberatung öffnen"
             aria-label="Größenberatung öffnen"
-            className="w-11 h-11 rounded-full bg-gray-500 hover:bg-gray-700 text-white font-bold flex items-center justify-center shrink-0 cursor-pointer shadow-xs transition-colors text-base"
+            className="w-10 h-10 rounded-full bg-[#52525B] hover:bg-[#3F3F46] text-white font-bold flex items-center justify-center shrink-0 cursor-pointer shadow-xs transition-colors text-sm"
           >
             ?
           </button>
@@ -337,7 +400,7 @@ export default function ProductActions({
             <select
               value={currentSelectedSize}
               onChange={(e) => handleSizeChange(e.target.value)}
-              className="w-full h-11 appearance-none bg-white border border-gray-300 rounded-xl px-4 pr-8 text-sm font-bold text-gray-800 hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-[#F28611] focus:border-transparent transition cursor-pointer shadow-2xs"
+              className="w-full h-10 appearance-none bg-white border border-gray-300 rounded-xl px-3.5 pr-8 text-xs sm:text-sm font-semibold text-gray-800 hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-[#F28611] focus:border-transparent transition cursor-pointer shadow-2xs"
             >
               {sizeOptions.map(opt => (
                 <option key={opt.value} value={opt.value}>
@@ -345,9 +408,9 @@ export default function ProductActions({
                 </option>
               ))}
             </select>
-            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-500">
+            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2.5 text-gray-500">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.2} d="M19 9l-7 7-7-7" />
               </svg>
             </div>
           </div>
@@ -357,13 +420,13 @@ export default function ProductActions({
             type="button"
             onClick={handleAddToCart}
             disabled={isVariable && !currentVariation}
-            className={`h-11 font-black text-sm px-5 sm:px-6 rounded-xl flex items-center justify-center gap-2 shadow-sm transition-all cursor-pointer whitespace-nowrap active:scale-95 ${
+            className={`h-10 font-bold text-xs sm:text-sm px-4 sm:px-5 rounded-xl flex items-center justify-center gap-1.5 shadow-sm transition-all cursor-pointer whitespace-nowrap active:scale-95 ${
               isVariable && !currentVariation
                 ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
                 : 'bg-[#16A34A] hover:bg-[#15803D] text-white'
             }`}
           >
-            <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
             </svg>
             <span>In den Warenkorb</span>
@@ -375,62 +438,74 @@ export default function ProductActions({
           <button 
             type="button"
             onClick={handleBuyNow}
-            className="w-full mb-3 bg-[#F28611] hover:bg-orange-600 active:scale-98 text-white font-bold rounded-xl py-2.5 transition shadow-xs text-sm cursor-pointer"
+            className="w-full mb-3 bg-[#F28611] hover:bg-orange-600 active:scale-98 text-white font-bold rounded-xl py-2.5 transition shadow-xs text-xs sm:text-sm cursor-pointer"
           >
             Sofort kaufen (Express Checkout)
           </button>
         )}
 
-        {/* Financing / Ratenzahlung Teaser */}
-        <div className="w-full text-center text-xs text-gray-600 mb-4 py-2 px-3 bg-gray-50/80 rounded-xl flex items-center justify-center gap-1.5 font-medium border border-gray-100">
-          <span>Ratenzahlung ab <strong className="text-gray-900 font-bold">{monthlyRate} € / Monat</strong> mit</span>
-          <span className="font-extrabold text-[#003087]">PayPal</span>
-          <span className="text-gray-300">/</span>
-          <span className="font-extrabold text-pink-600 bg-pink-50 px-1.5 py-0.5 rounded text-[11px] border border-pink-200">Klarna</span>
-        </div>
-
-        {/* Delivery & Stock Matrix (2 Columns matching reference image) */}
-        <div className="w-full grid grid-cols-2 gap-3 py-4 border-y border-gray-100 mb-4">
-          {/* Online Warehouse Stock */}
-          <div className="flex flex-col items-center text-center p-2.5 rounded-xl bg-gray-50/70 border border-gray-100">
-            <div className="w-8 h-8 rounded-full bg-red-50 text-red-600 flex items-center justify-center mb-1.5">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" />
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" />
-              </svg>
-            </div>
-            <div className="flex items-center gap-1.5 text-xs font-bold text-gray-900 mb-0.5">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-              <span>Online auf Lager</span>
-            </div>
-            <span className="text-[11px] text-gray-500 leading-tight">
-              Lieferzeit: 3-5 Werktage (Montiert)
-            </span>
-          </div>
-
-          {/* Store Availability */}
-          <div className="flex flex-col items-center text-center p-2.5 rounded-xl bg-gray-50/70 border border-gray-100">
-            <div className="w-8 h-8 rounded-full bg-red-50 text-red-600 flex items-center justify-center mb-1.5">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-              </svg>
-            </div>
-            <div className="flex items-center gap-1.5 text-xs font-bold text-gray-900 mb-0.5">
-              <span className="w-2 h-2 rounded-full bg-red-500"></span>
-              <span>Nicht in Filiale</span>
-            </div>
-            <span className="text-[11px] text-gray-500 leading-tight">
-              Kostenloser Rückversand
-            </span>
+        {/* =====================================================================
+            6. INTERMITTENT ROTATING TICKER
+            Replaces the Klarna payment installment box with the 4 rotating highlights!
+            ===================================================================== */}
+        <div className="w-full bg-gray-50/90 border border-gray-100 rounded-xl py-2 px-3 mb-3.5 flex items-center justify-center min-h-[38px] overflow-hidden select-none">
+          <div 
+            className={`flex items-center justify-center gap-2 text-xs text-gray-700 font-medium transition-all duration-300 transform ${
+              tickerFade ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-1'
+            }`}
+          >
+            {currentTickerItem.icon}
+            <span className="leading-tight">{currentTickerItem.text}</span>
           </div>
         </div>
 
-        {/* Reassurance Red Pill Banner */}
-        <div className="w-full bg-[#DC2626] text-white font-bold py-2.5 px-4 rounded-full text-xs sm:text-sm text-center shadow-2xs flex items-center justify-center gap-2 mb-3.5 tracking-wide">
+        {/* =====================================================================
+            7. GRAY METADATA BOX (Inside Card as in Capture 2)
+            ===================================================================== */}
+        <div className="w-full bg-gray-50/80 border border-gray-100 rounded-xl p-3 text-xs text-gray-600 space-y-1 mb-3.5 text-left">
+          <p>
+            <span className="font-bold text-gray-900">Artikelnummer / SKU: </span>
+            <span className="font-mono text-gray-700">{product.id.split('-')[0].toUpperCase()}</span>
+          </p>
+          {product.brand && (
+            <p>
+              <span className="font-bold text-gray-900">Hersteller: </span>
+              <span className="text-gray-700">{product.brand.name}</span>
+            </p>
+          )}
+          {product.categories && product.categories.length > 0 && (
+            <p>
+              <span className="font-bold text-gray-900">Kategorie: </span>
+              <span className="text-gray-700">
+                {product.categories.map((c: any, index: number) => (
+                  <span key={c.id}>
+                    <Link href={`/product-category/${c.slug || c.id}`} className="hover:text-[#F28611] hover:underline transition-colors">
+                      {c.name}
+                    </Link>
+                    {index < product.categories!.length - 1 ? ', ' : ''}
+                  </span>
+                ))}
+              </span>
+            </p>
+          )}
+          {product.gtin && (
+            <p>
+              <span className="font-bold text-gray-900">EAN / GTIN: </span>
+              <span className="font-mono text-gray-700">{product.gtin}</span>
+            </p>
+          )}
+        </div>
+
+        {/* =====================================================================
+            8. REASSURANCE RED PILL BANNER
+            ===================================================================== */}
+        <div className="w-full bg-[#DC2626] text-white font-bold py-2.5 px-4 rounded-full text-xs sm:text-sm text-center shadow-2xs flex items-center justify-center gap-2 mb-2.5 tracking-wide">
           <span>30 Tage Rückgaberecht &amp; Tiefpreisgarantie 🎁</span>
         </div>
 
-        {/* Smooth Scroll Button to Description & Specs */}
+        {/* =====================================================================
+            9. OUTLINE PILL BUTTON (Smooth Scroll to Specs)
+            ===================================================================== */}
         <button
           type="button"
           onClick={() => {
@@ -439,13 +514,15 @@ export default function ProductActions({
               el.scrollIntoView({ behavior: 'smooth' });
             }
           }}
-          className="w-full border border-gray-300 hover:border-gray-400 hover:bg-gray-50 text-gray-700 font-semibold py-2.5 px-4 rounded-full text-xs sm:text-sm text-center shadow-2xs transition-colors flex items-center justify-center gap-1 cursor-pointer"
+          className="w-full border border-gray-300 hover:border-gray-400 hover:bg-gray-50 text-gray-700 font-semibold py-2 px-4 rounded-full text-xs sm:text-sm text-center shadow-2xs transition-colors flex items-center justify-center gap-1 cursor-pointer mb-3"
         >
           <span>Zur vollständigen Beschreibung &amp; Spezifikationen ›</span>
         </button>
 
-        {/* Secondary Actions (Wishlist & Beratung) */}
-        <div className="w-full flex items-center justify-between pt-4 mt-4 border-t border-gray-100 text-xs text-gray-500">
+        {/* =====================================================================
+            10. CARD FOOTER ROW: Wunschzettel (left) & Frage stellen (right)
+            ===================================================================== */}
+        <div className="w-full flex items-center justify-between pt-3 border-t border-gray-100 text-xs text-gray-500">
           <button
             type="button"
             onClick={handleToggleWishlist}
@@ -521,39 +598,6 @@ export default function ProductActions({
           </div>
         </div>
       )}
-
-      {/* Product Meta Specifications Clean Box */}
-      <div className="mt-4 p-4 rounded-xl bg-gray-50/70 border border-gray-100 text-xs text-gray-600 space-y-1.5">
-        <p>
-          <span className="font-bold text-gray-900">Artikelnummer / SKU: </span>
-          <span className="font-mono text-gray-700">{product.id.split('-')[0].toUpperCase()}</span>
-        </p>
-        {product.brand && (
-          <p>
-            <span className="font-bold text-gray-900">Hersteller: </span>
-            <span className="text-gray-700">{product.brand.name}</span>
-          </p>
-        )}
-        {product.categories && product.categories.length > 0 && (
-          <p>
-            <span className="font-bold text-gray-900">Kategorie: </span>
-            {product.categories.map((c: any, index: number) => (
-              <span key={c.id}>
-                <Link href={`/product-category/${c.slug || c.id}`} className="hover:text-[#F28611] hover:underline transition-colors text-gray-700">
-                  {c.name}
-                </Link>
-                {index < product.categories!.length - 1 ? ', ' : ''}
-              </span>
-            ))}
-          </p>
-        )}
-        {product.gtin && (
-          <p>
-            <span className="font-bold text-gray-900">EAN / GTIN: </span>
-            <span className="font-mono text-gray-700">{product.gtin}</span>
-          </p>
-        )}
-      </div>
 
       {/* Frame Size Guide Interactive Modal */}
       <SizeGuideModal 

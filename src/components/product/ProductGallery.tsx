@@ -14,13 +14,13 @@ type ProductGalleryProps = {
 
 const VISIBLE_COUNT = 5;
 
-export default function ProductGallery({ 
-  images = [], 
-  title, 
-  discountLabel, 
-  compareAtPrice, 
-  price, 
-  activeVariationImage 
+export default function ProductGallery({
+  images = [],
+  title,
+  discountLabel,
+  compareAtPrice,
+  price,
+  activeVariationImage
 }: ProductGalleryProps) {
   const hasImages = Array.isArray(images) && images.length > 0;
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -127,7 +127,7 @@ export default function ProductGallery({
   return (
     <>
       <div className="w-full lg:w-7/12 flex flex-col gap-4 lg:sticky lg:top-8 self-start">
-        
+
         {/* MAIN LARGE IMAGE CONTAINER WITH SIDE CHEVRONS */}
         <div className="w-full border border-gray-200/90 rounded-2xl relative overflow-hidden flex items-center justify-center bg-white aspect-square shadow-xs group">
           {discountLabel && compareAtPrice && price && compareAtPrice > price && (
@@ -188,7 +188,7 @@ export default function ProductGallery({
 
           {/* Interactive Hover Zoom Area */}
           {mainImage ? (
-            <div 
+            <div
               className="w-full h-full flex items-center justify-center overflow-hidden cursor-crosshair relative"
               onMouseMove={handleMouseMove}
               onMouseEnter={() => setIsHoverZoomActive(true)}
@@ -198,14 +198,14 @@ export default function ProductGallery({
                 setIsLightboxOpen(true);
               }}
             >
-              <Image 
-                width={1000} 
-                height={1000} 
-                src={mainImage} 
-                alt={title} 
-                title={title} 
+              <Image
+                width={1000}
+                height={1000}
+                src={mainImage}
+                alt={title}
+                title={title}
                 priority
-                className="w-full h-full object-contain p-4 sm:p-8 transition-transform duration-150 ease-out select-none pointer-events-none" 
+                className="w-full h-full object-contain p-4 sm:p-8 transition-transform duration-150 ease-out select-none pointer-events-none"
                 style={{
                   transformOrigin: `${zoomPos.x}% ${zoomPos.y}%`,
                   transform: isHoverZoomActive ? 'scale(2)' : 'scale(1)',
@@ -213,7 +213,7 @@ export default function ProductGallery({
               />
 
               {!isHoverZoomActive && (
-                <div className="hidden lg:flex items-center gap-1.5 absolute bottom-3 left-3 bg-white/85 backdrop-blur-xs px-3 py-1 rounded-full border border-gray-200 text-[11px] font-medium text-gray-600 pointer-events-none">
+                <div className="flex items-center gap-1.5 absolute bottom-3 left-3 bg-white/90 backdrop-blur-xs px-3 py-1 rounded-full border border-gray-200 text-[11px] font-medium text-gray-600 pointer-events-none shadow-2xs">
                   <svg className="w-3.5 h-3.5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                   </svg>
@@ -252,11 +252,10 @@ export default function ProductGallery({
                     key={idx}
                     onClick={() => handleSelectThumbnail(idx)}
                     aria-label={`Bild ${idx + 1} auswählen`}
-                    className={`h-16 w-16 sm:h-20 sm:w-20 rounded-xl bg-white p-1.5 flex items-center justify-center transition-all cursor-pointer shrink-0 overflow-hidden ${
-                      isSelected
+                    className={`h-16 w-16 sm:h-20 sm:w-20 rounded-xl bg-white p-1.5 flex items-center justify-center transition-all cursor-pointer shrink-0 overflow-hidden ${isSelected
                         ? 'border-2 border-[#F28611] ring-2 ring-[#F28611]/25 shadow-xs scale-102'
                         : 'border border-gray-200 hover:border-gray-400 opacity-75 hover:opacity-100'
-                    }`}
+                      }`}
                   >
                     <Image
                       width={100}
@@ -289,12 +288,12 @@ export default function ProductGallery({
 
       {/* FULL-SCREEN LIGHTBOX MODAL WITH ZOOM */}
       {isLightboxOpen && mainImage && (
-        <div 
+        <div
           className="fixed inset-0 z-[100] bg-black/92 backdrop-blur-md flex flex-col items-center justify-center p-4 select-none animate-in fade-in duration-200"
           onClick={() => setIsLightboxOpen(false)}
         >
           {/* Lightbox Top Bar */}
-          <div 
+          <div
             className="absolute top-4 left-4 right-4 flex items-center justify-between text-white z-20"
             onClick={(e) => e.stopPropagation()}
           >
@@ -367,7 +366,7 @@ export default function ProductGallery({
           )}
 
           {/* Main Modal Image */}
-          <div 
+          <div
             className="w-full h-full max-w-5xl max-h-[82vh] flex items-center justify-center overflow-auto p-2"
             onClick={(e) => e.stopPropagation()}
           >
@@ -376,9 +375,8 @@ export default function ProductGallery({
               height={1600}
               src={mainImage}
               alt={title}
-              className={`max-w-full max-h-full object-contain transition-transform duration-200 select-none ${
-                isModalZoomed ? 'scale-175 cursor-zoom-out' : 'cursor-zoom-in'
-              }`}
+              className={`max-w-full max-h-full object-contain transition-transform duration-200 select-none ${isModalZoomed ? 'scale-175 cursor-zoom-out' : 'cursor-zoom-in'
+                }`}
               onClick={() => setIsModalZoomed(prev => !prev)}
             />
           </div>
