@@ -10,6 +10,7 @@ import { useCurrency } from '@/components/CurrencyProvider';
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import SizeGuideModal from './SizeGuideModal';
+import ReassuranceDrawer from './ReassuranceDrawer';
 
 interface ProductActionsProps {
   product: {
@@ -43,48 +44,56 @@ const DEFAULT_FRAME_SIZES = [
   { value: 'XXL', label: 'XXL (23" / > 200 cm)' }
 ];
 
-// The 4 intermittent reassurance highlights from user reference
+// Helper to deduce brand name if brand relation is missing
+function deduceBrandName(title: string, brand?: { name: string } | null): string {
+  if (brand?.name) return brand.name;
+  const match = title.match(/^(CUBE|CROOZER|SHIMANO|RADON|SCOTT|SRAM|BOSCH|TREK|HAIBIKE|GHOST|ORTLIEB|SCHWALBE|CONTINENTAL|ABUS)/i);
+  if (match) return match[1].toUpperCase();
+  return '';
+}
+
+// 4 intermittent reassurance highlights from user reference
 const REASSURANCE_ITEMS = [
   {
     id: 1,
-    text: 'Lieferzeit 2-4 Werktage deutschlandweit',
+    title: 'Lieferzeit 2-4 Werktage deutschlandweit',
     icon: (
       // Target / Location Pin Icon
-      <svg className="w-4 h-4 text-slate-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.243-4.243a8 8 0 1111.314 0z" />
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+      <svg className="w-4 h-4 text-[#F28611] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.243-4.243a8 8 0 1111.314 0z" />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
       </svg>
     )
   },
   {
     id: 2,
-    text: 'Kostenloser Speditionsversand ab 150 €',
+    title: 'Kostenloser Speditionsversand ab 150 €',
     icon: (
       // Globe Icon
-      <svg className="w-4 h-4 text-slate-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <circle cx="12" cy="12" r="9" strokeWidth={1.8} />
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M3 12h18M12 3a14 14 0 014 9 14 14 0 01-4 9 14 14 0 01-4-9 14 14 0 014-9z" />
+      <svg className="w-4 h-4 text-[#F28611] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="9" strokeWidth={2.2} />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.2} d="M3 12h18M12 3a14 14 0 014 9 14 14 0 01-4 9 14 14 0 01-4-9 14 14 0 014-9z" />
       </svg>
     )
   },
   {
     id: 3,
-    text: 'Sichere Lieferung mit Terminankündigung',
+    title: 'Sichere Lieferung mit Terminankündigung',
     icon: (
       // Delivery Truck Icon
-      <svg className="w-4 h-4 text-slate-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" />
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" />
+      <svg className="w-4 h-4 text-[#F28611] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.2} d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.2} d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" />
       </svg>
     )
   },
   {
     id: 4,
-    text: '30 Tage Rückgaberecht & 2 Jahre Garantie',
+    title: '30 Tage Rückgaberecht & 2 Jahre Garantie',
     icon: (
       // Circular Return / Refresh Icon
-      <svg className="w-4 h-4 text-slate-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+      <svg className="w-4 h-4 text-[#F28611] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
       </svg>
     )
   }
@@ -102,6 +111,7 @@ export default function ProductActions({
   const [selectedAttributes, setSelectedAttributes] = useState<Record<string, string>>({});
   const [selectedFallbackSize, setSelectedFallbackSize] = useState<string>('L');
   const [isSizeModalOpen, setIsSizeModalOpen] = useState(false);
+  const [isServiceDrawerOpen, setIsServiceDrawerOpen] = useState(false);
   const { formatPrice } = useCurrency();
   const [addedItemName, setAddedItemName] = useState<string | null>(null);
   const [wishlistedItemName, setWishlistedItemName] = useState<string | null>(null);
@@ -270,6 +280,8 @@ export default function ProductActions({
   };
 
   const currentTickerItem = REASSURANCE_ITEMS[tickerIndex];
+  const brandName = deduceBrandName(product.title, product.brand);
+  const brandLogo = product.brand?.logo;
 
   return (
     <div className="w-full h-full flex flex-col">
@@ -305,21 +317,21 @@ export default function ProductActions({
           ========================================================================= */}
       <div className="bg-white border border-gray-200 rounded-2xl p-6 sm:p-7 shadow-xs flex flex-col h-full justify-between">
         
-        {/* 1. Brand Header */}
-        <div className="flex justify-center items-center mb-2.5">
-          {product.brand?.logo ? (
+        {/* 1. Brand Header: Fixed display container (h-12) to prevent any layout shift */}
+        <div className="h-12 w-full max-w-[200px] mx-auto flex items-center justify-center mb-2.5">
+          {brandLogo ? (
             <Image 
-              width={140} 
-              height={45} 
-              src={product.brand.logo} 
-              alt={product.brand.name} 
-              className="h-9 sm:h-10 object-contain" 
+              width={180} 
+              height={48} 
+              src={brandLogo} 
+              alt={brandName || 'Brand Logo'} 
+              className="max-h-12 max-w-full object-contain" 
             />
-          ) : (
-            <span className="text-xl sm:text-2xl font-black tracking-widest text-[#0B131E] uppercase">
-              {product.brand?.name || 'CROOZER'}
+          ) : brandName ? (
+            <span className="text-xl sm:text-2xl font-black tracking-widest text-[#0B131E] uppercase truncate">
+              {brandName}
             </span>
-          )}
+          ) : null}
         </div>
 
         {/* 2. Price & Tiefpreisgarantie Pill */}
@@ -382,15 +394,15 @@ export default function ProductActions({
           </button>
         </div>
 
-        {/* 5. ACTION ROW: [ ? ] [ Size Dropdown v ] [ 🛒 In den Warenkorb ] */}
+        {/* 5. ACTION ROW: [ ? (Opens Service Drawer) ] [ Size Dropdown v ] [ 🛒 In den Warenkorb ] */}
         <div ref={actionButtonsRef} className="w-full flex items-center gap-2 mb-3.5">
-          {/* Circular Help Button ? */}
+          {/* Circular Help Button ? (Triggers the Service & Reassurance Slide-over Drawer from the right) */}
           <button
             type="button"
-            onClick={() => setIsSizeModalOpen(true)}
-            title="Größenberatung öffnen"
-            aria-label="Größenberatung öffnen"
-            className="w-10 h-10 rounded-full bg-[#52525B] hover:bg-[#3F3F46] text-white font-bold flex items-center justify-center shrink-0 cursor-pointer shadow-xs transition-colors text-sm"
+            onClick={() => setIsServiceDrawerOpen(true)}
+            title="Service-Garantie & Einkaufsvorteile anzeigen"
+            aria-label="Service-Garantie & Einkaufsvorteile anzeigen"
+            className="w-10 h-10 rounded-full bg-[#0B131E] hover:bg-[#F28611] text-white font-bold flex items-center justify-center shrink-0 cursor-pointer shadow-xs transition-all text-sm active:scale-95"
           >
             ?
           </button>
@@ -445,17 +457,46 @@ export default function ProductActions({
         )}
 
         {/* =====================================================================
-            6. INTERMITTENT ROTATING TICKER
-            Replaces the Klarna payment installment box with the 4 rotating highlights!
+            6. PROMINENT THEME-COLOR INTERMITTENT TICKER
+            Highlighted with brand theme orange (#F28611) gradient, high contrast & badge!
             ===================================================================== */}
-        <div className="w-full bg-gray-50/90 border border-gray-100 rounded-xl py-2 px-3 mb-3.5 flex items-center justify-center min-h-[38px] overflow-hidden select-none">
-          <div 
-            className={`flex items-center justify-center gap-2 text-xs text-gray-700 font-medium transition-all duration-300 transform ${
-              tickerFade ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-1'
-            }`}
-          >
-            {currentTickerItem.icon}
-            <span className="leading-tight">{currentTickerItem.text}</span>
+        <div 
+          onClick={() => setIsServiceDrawerOpen(true)}
+          title="Klicken für alle Service-Vorteile"
+          className="w-full bg-gradient-to-r from-orange-50/95 via-amber-50 to-orange-50/95 border-2 border-[#F28611] rounded-xl py-2.5 px-3.5 mb-3.5 shadow-xs flex items-center justify-between gap-2.5 cursor-pointer hover:shadow-md transition-all select-none group"
+        >
+          {/* Animated content */}
+          <div className="flex items-center gap-2.5 min-w-0 flex-1">
+            <div className="w-7 h-7 rounded-lg bg-orange-500/15 text-[#F28611] flex items-center justify-center shrink-0 border border-orange-500/25 group-hover:scale-105 transition-transform">
+              {currentTickerItem.icon}
+            </div>
+            <div className="min-w-0 flex-1">
+              <span 
+                className={`text-xs sm:text-[13px] font-black text-[#0B131E] tracking-tight leading-tight block truncate transition-all duration-300 ${
+                  tickerFade ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-1'
+                }`}
+              >
+                {currentTickerItem.title}
+              </span>
+            </div>
+          </div>
+
+          {/* Right Indicator & Mini Badge */}
+          <div className="flex items-center gap-2 shrink-0">
+            <span className="text-[10px] font-black uppercase bg-[#F28611] text-white px-2 py-0.5 rounded-full shadow-2xs tracking-wider">
+              VORTEIL
+            </span>
+            {/* Subtle Progress Dots */}
+            <div className="flex items-center gap-1">
+              {REASSURANCE_ITEMS.map((_, i) => (
+                <span 
+                  key={i} 
+                  className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${
+                    i === tickerIndex ? 'bg-[#F28611] w-3' : 'bg-orange-200'
+                  }`}
+                />
+              ))}
+            </div>
           </div>
         </div>
 
@@ -467,10 +508,10 @@ export default function ProductActions({
             <span className="font-bold text-gray-900">Artikelnummer / SKU: </span>
             <span className="font-mono text-gray-700">{product.id.split('-')[0].toUpperCase()}</span>
           </p>
-          {product.brand && (
+          {brandName && (
             <p>
               <span className="font-bold text-gray-900">Hersteller: </span>
-              <span className="text-gray-700">{product.brand.name}</span>
+              <span className="text-gray-700">{brandName}</span>
             </p>
           )}
           {product.categories && product.categories.length > 0 && (
@@ -603,6 +644,12 @@ export default function ProductActions({
       <SizeGuideModal 
         isOpen={isSizeModalOpen} 
         onClose={() => setIsSizeModalOpen(false)} 
+      />
+
+      {/* Service Guarantees & Reassurance Right Slide-over Drawer (Triggered by ? button) */}
+      <ReassuranceDrawer
+        isOpen={isServiceDrawerOpen}
+        onClose={() => setIsServiceDrawerOpen(false)}
       />
 
       {/* Mobile Sticky Bottom Add-to-Cart Bar */}

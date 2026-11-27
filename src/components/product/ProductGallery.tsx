@@ -12,19 +12,16 @@ type ProductGalleryProps = {
   activeVariationImage?: string | null;
 };
 
-const VISIBLE_COUNT = 5;
-
-export default function ProductGallery({
-  images = [],
-  title,
-  discountLabel,
-  compareAtPrice,
-  price,
-  activeVariationImage
+export default function ProductGallery({ 
+  images = [], 
+  title, 
+  discountLabel, 
+  compareAtPrice, 
+  price, 
+  activeVariationImage 
 }: ProductGalleryProps) {
   const hasImages = Array.isArray(images) && images.length > 0;
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const [startIndex, setStartIndex] = useState(0);
 
   // Zoom & Loupe states
   const [isHoverZoomActive, setIsHoverZoomActive] = useState(false);
@@ -32,60 +29,43 @@ export default function ProductGallery({
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
   const [isModalZoomed, setIsModalZoomed] = useState(false);
 
-  // Max start index for the sliding thumbnail window
-  const maxStartIndex = Math.max(0, (images?.length || 0) - VISIBLE_COUNT);
+  // Ref to thumbnail scroll container
+  const thumbnailsContainerRef = useRef<HTMLDivElement>(null);
 
-  // When active variation image changes, select it and bring into view
+  // When active variation image changes from parent, sync selectedIndex
   useEffect(() => {
     if (activeVariationImage && hasImages) {
       const idx = images.indexOf(activeVariationImage);
       if (idx !== -1) {
         setSelectedIndex(idx);
-        if (idx < startIndex) {
-          setStartIndex(idx);
-        } else if (idx >= startIndex + VISIBLE_COUNT) {
-          setStartIndex(Math.min(maxStartIndex, idx - VISIBLE_COUNT + 1));
-        }
-      } else {
-        setSelectedIndex(0);
-        setStartIndex(0);
+        scrollThumbnailIntoView(idx);
       }
     }
-  }, [activeVariationImage, hasImages, images, maxStartIndex]);
+  }, [activeVariationImage, hasImages, images]);
+
+  const scrollThumbnailIntoView = (idx: number) => {
+    if (!thumbnailsContainerRef.current) return;
+    const thumb = thumbnailsContainerRef.current.children[idx] as HTMLElement;
+    if (thumb) {
+      thumb.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    }
+  };
 
   const handleSelectThumbnail = (idx: number) => {
     setSelectedIndex(idx);
-    if (idx < startIndex) {
-      setStartIndex(idx);
-    } else if (idx >= startIndex + VISIBLE_COUNT) {
-      setStartIndex(Math.min(maxStartIndex, idx - VISIBLE_COUNT + 1));
-    }
+    scrollThumbnailIntoView(idx);
   };
 
   const handleNext = () => {
     if (!hasImages) return;
-    if (selectedIndex < images.length - 1) {
-      const nextIdx = selectedIndex + 1;
-      setSelectedIndex(nextIdx);
-      if (nextIdx >= startIndex + VISIBLE_COUNT) {
-        setStartIndex(Math.min(maxStartIndex, nextIdx - VISIBLE_COUNT + 1));
-      }
-    } else if (startIndex < maxStartIndex) {
-      setStartIndex(prev => Math.min(maxStartIndex, prev + 1));
-    }
+    const nextIdx = selectedIndex < images.length - 1 ? selectedIndex + 1 : 0;
+    handleSelectThumbnail(nextIdx);
   };
 
   const handlePrev = () => {
     if (!hasImages) return;
-    if (selectedIndex > 0) {
-      const prevIdx = selectedIndex - 1;
-      setSelectedIndex(prevIdx);
-      if (prevIdx < startIndex) {
-        setStartIndex(Math.max(0, prevIdx));
-      }
-    } else if (startIndex > 0) {
-      setStartIndex(prev => Math.max(0, prev - 1));
-    }
+    const prevIdx = selectedIndex > 0 ? selectedIndex - 1 : images.length - 1;
+    handleSelectThumbnail(prevIdx);
   };
 
   // Hover zoom coordinates tracking
@@ -119,14 +99,12 @@ export default function ProductGallery({
     };
   }, [isLightboxOpen, selectedIndex, images.length]);
 
-  const mainImage = activeVariationImage || (hasImages ? images[selectedIndex] : null);
-
-  const isPrevDisabled = !hasImages || selectedIndex === 0;
-  const isNextDisabled = !hasImages || selectedIndex >= images.length - 1;
+  // Main display image: strictly follows selectedIndex so user clicks ALWAYS work!
+  const mainImage = hasImages ? images[selectedIndex] : (activeVariationImage || null);
 
   return (
     <>
-      <div className="w-full h-full flex flex-col justify-between gap-3 sm:gap-4">
+      <div className="w-full h-full flex flex-col justify-between gap-3 sm:gap-4 select-none">
 
         {/* MAIN LARGE IMAGE CONTAINER WITH SIDE CHEVRONS (Auto-adjusts height to sibling column) */}
         <div className="w-full flex-1 aspect-[4/3] sm:aspect-square lg:aspect-auto min-h-[300px] sm:min-h-[360px] lg:min-h-0 border border-gray-200/90 rounded-2xl relative overflow-hidden flex items-center justify-center bg-white shadow-xs group">
@@ -159,8 +137,7 @@ export default function ProductGallery({
             <button
               type="button"
               onClick={handlePrev}
-              disabled={isPrevDisabled}
-              className="absolute left-3 top-1/2 -translate-y-1/2 z-20 w-9 h-14 sm:w-10 sm:h-16 rounded-r-xl bg-white/80 hover:bg-white text-gray-700 hover:text-[#F28611] border border-gray-200 shadow-md flex items-center justify-center disabled:opacity-20 disabled:cursor-not-allowed transition-all cursor-pointer backdrop-blur-xs"
+              className="absolute left-3 top-1/2 -translate-y-1/2 z-20 w-9 h-14 sm:w-10 sm:h-16 rounded-r-xl bg-white/85 hover:bg-white text-gray-700 hover:text-[#F28611] border border-gray-200 shadow-md flex items-center justify-center transition-all cursor-pointer backdrop-blur-xs active:scale-95"
               title="Vorheriges Bild"
               aria-label="Vorheriges Bild"
             >
@@ -175,8 +152,7 @@ export default function ProductGallery({
             <button
               type="button"
               onClick={handleNext}
-              disabled={isNextDisabled}
-              className="absolute right-3 top-1/2 -translate-y-1/2 z-20 w-9 h-14 sm:w-10 sm:h-16 rounded-l-xl bg-white/80 hover:bg-white text-gray-700 hover:text-[#F28611] border border-gray-200 shadow-md flex items-center justify-center disabled:opacity-20 disabled:cursor-not-allowed transition-all cursor-pointer backdrop-blur-xs"
+              className="absolute right-3 top-1/2 -translate-y-1/2 z-20 w-9 h-14 sm:w-10 sm:h-16 rounded-l-xl bg-white/85 hover:bg-white text-gray-700 hover:text-[#F28611] border border-gray-200 shadow-md flex items-center justify-center transition-all cursor-pointer backdrop-blur-xs active:scale-95"
               title="Nächstes Bild"
               aria-label="Nächstes Bild"
             >
@@ -205,7 +181,7 @@ export default function ProductGallery({
                 alt={title}
                 title={title}
                 priority
-                className="w-full h-full object-contain p-4 sm:p-8 transition-transform duration-150 ease-out select-none pointer-events-none"
+                className="w-full h-full max-h-full max-w-full object-contain p-4 sm:p-6 transition-transform duration-150 ease-out select-none pointer-events-none"
                 style={{
                   transformOrigin: `${zoomPos.x}% ${zoomPos.y}%`,
                   transform: isHoverZoomActive ? 'scale(2)' : 'scale(1)',
@@ -226,16 +202,15 @@ export default function ProductGallery({
           )}
         </div>
 
-        {/* HORIZONTAL THUMBNAILS STRIP WITH CHEVRONS (Exactly like the reference image) */}
+        {/* HORIZONTAL THUMBNAILS STRIP WITH CHEVRONS */}
         {hasImages && images.length > 1 && (
           <div className="flex items-center justify-center gap-2 sm:gap-3 w-full shrink-0 pt-1">
             {/* Left Scroll Arrow */}
             <button
               type="button"
               onClick={handlePrev}
-              disabled={isPrevDisabled}
               aria-label="Vorheriges Bild"
-              className="h-16 w-8 sm:h-20 sm:w-10 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 text-gray-600 hover:text-gray-900 flex items-center justify-center disabled:opacity-25 disabled:cursor-not-allowed transition cursor-pointer shrink-0 shadow-2xs"
+              className="h-16 w-8 sm:h-20 sm:w-10 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 text-gray-600 hover:text-[#F28611] flex items-center justify-center transition cursor-pointer shrink-0 shadow-2xs active:scale-95"
             >
               <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
@@ -243,7 +218,10 @@ export default function ProductGallery({
             </button>
 
             {/* Thumbnail Cards Container */}
-            <div className="flex gap-2 sm:gap-3 overflow-x-auto no-scrollbar py-1 px-0.5 max-w-full">
+            <div 
+              ref={thumbnailsContainerRef}
+              className="flex gap-2 sm:gap-3 overflow-x-auto no-scrollbar py-1 px-0.5 max-w-full scroll-smooth"
+            >
               {images.map((img, idx) => {
                 const isSelected = idx === selectedIndex;
                 return (
@@ -252,17 +230,18 @@ export default function ProductGallery({
                     key={idx}
                     onClick={() => handleSelectThumbnail(idx)}
                     aria-label={`Bild ${idx + 1} auswählen`}
-                    className={`h-16 w-16 sm:h-20 sm:w-20 rounded-xl bg-white p-1.5 flex items-center justify-center transition-all cursor-pointer shrink-0 overflow-hidden ${isSelected
-                      ? 'border-2 border-[#F28611] ring-2 ring-[#F28611]/25 shadow-xs scale-102'
-                      : 'border border-gray-200 hover:border-gray-400 opacity-75 hover:opacity-100'
-                      }`}
+                    className={`h-16 w-16 sm:h-20 sm:w-20 rounded-xl bg-white p-1.5 flex items-center justify-center transition-all cursor-pointer shrink-0 overflow-hidden ${
+                      isSelected
+                        ? 'border-2 border-[#F28611] ring-2 ring-[#F28611]/30 shadow-xs scale-102'
+                        : 'border border-gray-200 hover:border-gray-400 opacity-75 hover:opacity-100'
+                    }`}
                   >
                     <Image
                       width={100}
                       height={100}
                       src={img}
                       alt={`${title} - Miniaturansicht ${idx + 1}`}
-                      className="w-full h-full object-contain"
+                      className="w-full h-full object-contain pointer-events-none"
                     />
                   </button>
                 );
@@ -273,9 +252,8 @@ export default function ProductGallery({
             <button
               type="button"
               onClick={handleNext}
-              disabled={isNextDisabled}
               aria-label="Nächstes Bild"
-              className="h-16 w-8 sm:h-20 sm:w-10 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 text-gray-600 hover:text-gray-900 flex items-center justify-center disabled:opacity-25 disabled:cursor-not-allowed transition cursor-pointer shrink-0 shadow-2xs"
+              className="h-16 w-8 sm:h-20 sm:w-10 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 text-gray-600 hover:text-[#F28611] flex items-center justify-center transition cursor-pointer shrink-0 shadow-2xs active:scale-95"
             >
               <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
@@ -283,54 +261,38 @@ export default function ProductGallery({
             </button>
           </div>
         )}
-
       </div>
 
-      {/* FULL-SCREEN LIGHTBOX MODAL WITH ZOOM */}
+      {/* LIGHTBOX MODAL */}
       {isLightboxOpen && mainImage && (
-        <div
-          className="fixed inset-0 z-[100] bg-black/92 backdrop-blur-md flex flex-col items-center justify-center p-4 select-none animate-in fade-in duration-200"
+        <div 
+          className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex flex-col items-center justify-center p-4 select-none animate-in fade-in duration-200"
           onClick={() => setIsLightboxOpen(false)}
         >
-          {/* Lightbox Top Bar */}
-          <div
-            className="absolute top-4 left-4 right-4 flex items-center justify-between text-white z-20"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="text-xs sm:text-sm font-semibold text-gray-300 bg-gray-900/80 px-4 py-2 rounded-full border border-gray-700/70 backdrop-blur-sm max-w-[65vw] truncate">
-              {title} &bull; <span className="text-white font-bold">{selectedIndex + 1} / {images.length}</span>
-            </div>
+          {/* Top Controls */}
+          <div className="absolute top-4 right-4 z-50 flex items-center gap-3" onClick={(e) => e.stopPropagation()}>
+            <button
+              type="button"
+              onClick={() => setIsModalZoomed(!isModalZoomed)}
+              className="px-3.5 py-1.5 bg-white/20 hover:bg-white/30 text-white rounded-lg text-xs font-semibold backdrop-blur-xs flex items-center gap-1.5 transition cursor-pointer"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v6m3-3H7" />
+              </svg>
+              <span>{isModalZoomed ? 'Verkleinern' : 'Vergrößern (2x)'}</span>
+            </button>
 
-            <div className="flex items-center gap-2">
-              <button
-                type="button"
-                onClick={() => setIsModalZoomed(prev => !prev)}
-                className="w-10 h-10 rounded-full bg-gray-800/90 hover:bg-gray-700 text-white flex items-center justify-center border border-gray-600 transition cursor-pointer"
-                title={isModalZoomed ? "Verkleinern" : "Vergrößern"}
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  {isModalZoomed ? (
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM13 10H7" />
-                  ) : (
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v6m3-3H7" />
-                  )}
-                </svg>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setIsLightboxOpen(false)}
-                className="w-10 h-10 rounded-full bg-gray-800/90 hover:bg-red-600 text-white flex items-center justify-center border border-gray-600 transition cursor-pointer"
-                title="Schließen"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
+            <button
+              type="button"
+              onClick={() => setIsLightboxOpen(false)}
+              className="w-10 h-10 rounded-full bg-white/20 hover:bg-white/30 text-white flex items-center justify-center transition cursor-pointer text-lg font-bold"
+              title="Schließen (ESC)"
+            >
+              ✕
+            </button>
           </div>
 
-          {/* Modal Navigation Chevrons */}
+          {/* Chevrons in Lightbox */}
           {hasImages && images.length > 1 && (
             <>
               <button
@@ -339,11 +301,10 @@ export default function ProductGallery({
                   e.stopPropagation();
                   handlePrev();
                 }}
-                disabled={isPrevDisabled}
-                className="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-gray-900/80 hover:bg-gray-800 text-white border border-gray-700 flex items-center justify-center disabled:opacity-20 disabled:cursor-not-allowed transition cursor-pointer shadow-lg"
-                title="Vorheriges Bild"
+                className="absolute left-4 top-1/2 -translate-y-1/2 z-50 w-12 h-16 rounded-xl bg-white/20 hover:bg-white/30 text-white flex items-center justify-center transition cursor-pointer"
+                title="Vorheriges Bild (Pfeiltaste links)"
               >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
                 </svg>
               </button>
@@ -354,31 +315,40 @@ export default function ProductGallery({
                   e.stopPropagation();
                   handleNext();
                 }}
-                disabled={isNextDisabled}
-                className="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-gray-900/80 hover:bg-gray-800 text-white border border-gray-700 flex items-center justify-center disabled:opacity-20 disabled:cursor-not-allowed transition cursor-pointer shadow-lg"
-                title="Nächstes Bild"
+                className="absolute right-4 top-1/2 -translate-y-1/2 z-50 w-12 h-16 rounded-xl bg-white/20 hover:bg-white/30 text-white flex items-center justify-center transition cursor-pointer"
+                title="Nächstes Bild (Pfeiltaste rechts)"
               >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
                 </svg>
               </button>
             </>
           )}
 
-          {/* Main Modal Image */}
-          <div
-            className="w-full h-full max-w-5xl max-h-[82vh] flex items-center justify-center overflow-auto p-2"
-            onClick={(e) => e.stopPropagation()}
+          {/* Lightbox Center Image */}
+          <div 
+            className={`relative max-w-5xl max-h-[85vh] w-full h-full flex items-center justify-center overflow-auto ${
+              isModalZoomed ? 'cursor-zoom-out' : 'cursor-zoom-in'
+            }`}
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsModalZoomed(!isModalZoomed);
+            }}
           >
             <Image
               width={1600}
               height={1600}
               src={mainImage}
               alt={title}
-              className={`max-w-full max-h-full object-contain transition-transform duration-200 select-none ${isModalZoomed ? 'scale-175 cursor-zoom-out' : 'cursor-zoom-in'
-                }`}
-              onClick={() => setIsModalZoomed(prev => !prev)}
+              className={`max-w-full max-h-full object-contain transition-transform duration-200 ${
+                isModalZoomed ? 'scale-175 sm:scale-200' : 'scale-100'
+              }`}
             />
+          </div>
+
+          {/* Lightbox Footer Index Counter */}
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-white/20 backdrop-blur-xs text-white text-xs px-4 py-1.5 rounded-full font-medium">
+            {selectedIndex + 1} / {images.length}
           </div>
         </div>
       )}

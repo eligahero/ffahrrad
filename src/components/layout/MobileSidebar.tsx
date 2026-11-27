@@ -21,13 +21,13 @@ type MobileSidebarProps = {
 };
 
 const defaultCategories = [
-  { name: 'Pellets & Lenha', slug: 'combustiveis', icon: '🪵' },
-  { name: 'Salamandras', slug: 'salamandras', icon: '🔥' },
-  { name: 'Recuperadores de Calor', slug: 'recuperadores-de-calor', icon: '🏠' },
-  { name: 'Fogões a Lenha', slug: 'fogoes-a-lenha', icon: '🍳' },
-  { name: 'Climatização & AC', slug: 'climatizacao', icon: '❄️' },
-  { name: 'Termoacumuladores', slug: 'termoacumuladores', icon: '💧' },
-  { name: 'Fornos a Lenha', slug: 'fornos-a-lenha', icon: '🍕' },
+  { name: 'Mountainbikes (MTB)', slug: 'mountainbike', icon: '🚵' },
+  { name: 'E-Bikes & Pedelecs', slug: 'e-bike', icon: '⚡' },
+  { name: 'Rennräder & Gravel', slug: 'gravel', icon: '🚴' },
+  { name: 'Trekking- & Cityräder', slug: 'trekking', icon: '🏙️' },
+  { name: 'Fahrradanhänger', slug: 'anhaenger', icon: '🛒' },
+  { name: 'Komponenten & Teile', slug: 'komponenten', icon: '⚙️' },
+  { name: 'Zubehör & Ausrüstung', slug: 'zubehoer', icon: '🔦' },
 ];
 
 export default function MobileSidebar({
@@ -114,11 +114,7 @@ export default function MobileSidebar({
               />
             ) : (
               <div className="flex items-center gap-2.5">
-                <Image src="/logo-flame.png" alt="Silva Dias" width={32} height={52} className="h-8 w-auto object-contain shrink-0" />
-                <div>
-                  <span className="font-extrabold text-base tracking-tight text-stone-900 block leading-tight">FRANKE</span>
-                  <span className="text-[10px] font-bold tracking-wider text-[#F28611] uppercase block">FAHRRAD</span>
-                </div>
+                <Image src="/franke-logo.png" alt="Fahrrad Franke" width={140} height={42} className="h-9 w-auto object-contain shrink-0" />
               </div>
             )}
           </Link>
@@ -126,7 +122,7 @@ export default function MobileSidebar({
           <button
             type="button"
             onClick={onClose}
-            aria-label="Fechar menu"
+            aria-label="Menü schließen"
             className="w-9 h-9 flex items-center justify-center text-stone-500 hover:text-stone-900 bg-white hover:bg-stone-200 border border-stone-200 rounded-full transition-colors cursor-pointer"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -140,12 +136,12 @@ export default function MobileSidebar({
           <Link
             href="/account"
             onClick={onClose}
-            className="flex items-center gap-2 p-2 bg-white rounded-xl border border-stone-200 text-xs font-bold text-stone-800 hover:border-red-400 hover:text-[#F28611] transition shadow-xs"
+            className="flex items-center gap-2 p-2 bg-white rounded-xl border border-stone-200 text-xs font-bold text-stone-800 hover:border-orange-400 hover:text-[#F28611] transition shadow-xs"
           >
             <svg className="w-4 h-4 text-[#F28611] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
             </svg>
-            <span className="truncate">Minha Conta</span>
+            <span className="truncate">Mein Konto</span>
           </Link>
 
           <button
@@ -154,13 +150,13 @@ export default function MobileSidebar({
               onClose();
               cartStore.setIsOpen(true);
             }}
-            className="flex items-center justify-between p-2 bg-white rounded-xl border border-stone-200 text-xs font-bold text-stone-800 hover:border-red-400 hover:text-[#F28611] transition shadow-xs cursor-pointer"
+            className="flex items-center justify-between p-2 bg-white rounded-xl border border-stone-200 text-xs font-bold text-stone-800 hover:border-orange-400 hover:text-[#F28611] transition shadow-xs cursor-pointer"
           >
             <span className="flex items-center gap-2 truncate">
               <svg className="w-4 h-4 text-[#F28611] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
               </svg>
-              <span>Carrinho</span>
+              <span>Warenkorb</span>
             </span>
             {mounted && cartStore.getTotalItems() > 0 && (
               <span className="bg-[#F28611] text-white text-[10px] font-black px-1.5 py-0.2 rounded-full">
@@ -173,14 +169,14 @@ export default function MobileSidebar({
         {/* Navigation Section */}
         <nav className="p-3.5 flex-1 overflow-y-auto">
           <ul className="space-y-1 pb-3">
-            {/* 1. Início */}
+            {/* 1. Startseite */}
             <li>
               <Link
                 href="/"
                 onClick={onClose}
-                className="flex items-center justify-between px-3.5 py-2.5 text-sm font-bold text-stone-800 hover:bg-red-50 hover:text-[#F28611] rounded-xl transition-colors"
+                className="flex items-center justify-between px-3.5 py-2.5 text-sm font-bold text-stone-800 hover:bg-orange-50 hover:text-[#F28611] rounded-xl transition-colors"
               >
-                <span>Início</span>
+                <span>Startseite</span>
                 <span className="text-stone-400 text-xs">&rarr;</span>
               </Link>
             </li>
@@ -190,11 +186,11 @@ export default function MobileSidebar({
               <button
                 type="button"
                 onClick={() => setIsCategoriesOpen(!isCategoriesOpen)}
-                className="w-full flex items-center justify-between px-3.5 py-2.5 text-sm font-bold text-stone-900 bg-stone-100/90 hover:bg-red-50 hover:text-[#F28611] rounded-xl transition-colors cursor-pointer mt-1"
+                className="w-full flex items-center justify-between px-3.5 py-2.5 text-sm font-bold text-stone-900 bg-stone-100/90 hover:bg-orange-50 hover:text-[#F28611] rounded-xl transition-colors cursor-pointer mt-1"
               >
                 <span className="flex items-center gap-2">
                   <span>📂</span>
-                  <span>Categorias de Produtos</span>
+                  <span>Kategorien</span>
                 </span>
                 <svg className={`w-4 h-4 text-stone-500 transition-transform duration-200 ${isCategoriesOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />

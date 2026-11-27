@@ -54,13 +54,13 @@ type HeaderProps = {
 };
 
 export default function Header({ 
-  announcement = 'Welcome to My Store', 
+  announcement = 'Kostenloser Speditionsversand ab 150 € • 30 Tage Rückgaberecht', 
   logoImage = '',
-  headerLogoHeight = '80',
-  mobileLogoHeight = '64',
+  headerLogoHeight = '65',
+  mobileLogoHeight = '50',
   menuLinks = [],
   topBarLinks = [
-    { label: 'Rastrear Encomenda', icon: 'truck', url: '/order-tracking' }
+    { label: 'Sendung verfolgen', icon: 'truck', url: '/order-tracking' }
   ],
   loginText,
   myAccountText,
@@ -252,7 +252,7 @@ export default function Header({
                 .filter(link => !link.label.toLowerCase().includes('store') && !link.url.includes('store-locator'))
                 .map(link => {
                   if (link.label.toLowerCase().includes('order') || link.label.toLowerCase().includes('track') || link.url.includes('order-tracking')) {
-                    return { ...link, label: 'Rastrear Encomenda' };
+                    return { ...link, label: 'Sendung verfolgen' };
                   }
                   return link;
                 })
@@ -275,32 +275,26 @@ export default function Header({
       <div className="py-4 px-4 max-w-7xl mx-auto w-full flex flex-nowrap items-center justify-between gap-4 md:gap-8 lg:gap-10">
         {/* Logo */}
         <div className="flex-shrink-0 flex items-center">
-          <Link href="/" className="flex items-center">
-            {logoImage && logoImage !== '/logo.png' && logoImage !== '/logo.jpg' ? (
+          <Link href="/" className="flex items-center group">
+            {logoImage && logoImage !== '/logo.png' && logoImage !== '/logo.jpg' && !logoImage.includes('logo-flame') ? (
               <Image 
                 src={logoImage} 
-                alt="Lenha & Carvão Silva Dias" 
+                alt="Fahrrad Franke" 
                 width={260} 
                 height={75} 
-                className="object-contain custom-logo-height w-auto max-w-[220px] md:max-w-[280px]" 
+                className="object-contain custom-logo-height w-auto max-w-[200px] md:max-w-[260px] group-hover:scale-102 transition-transform" 
                 priority 
               />
             ) : (
-              <div className="flex items-center gap-3 group">
-                <div className="relative h-11 w-auto shrink-0 flex items-center justify-center group-hover:scale-105 transition-transform">
-                  <Image
-                    src="/logo-flame.png"
-                    alt="Lenha & Carvão Silva Dias"
-                    width={51}
-                    height={82}
-                    className="h-10 w-auto object-contain"
-                    priority
-                  />
-                </div>
-                <div>
-                  <span className="font-extrabold text-lg sm:text-xl tracking-tight text-stone-900 block leading-tight">FRANKE</span>
-                  <span className="text-[11px] font-bold tracking-wider text-[#F28611] uppercase block">FAHRRAD</span>
-                </div>
+              <div className="relative h-12 sm:h-14 w-auto flex items-center">
+                <Image
+                  src="/franke-logo.png"
+                  alt="Fahrrad Franke"
+                  width={240}
+                  height={65}
+                  className="h-11 sm:h-13 w-auto object-contain group-hover:scale-102 transition-transform"
+                  priority
+                />
               </div>
             )}
           </Link>
@@ -452,11 +446,11 @@ export default function Header({
                 />
                 
                 {/* Les 5 fentes verticales blanches caractéristiques */}
-                <rect x="18" y="34" width="3.5" height="18" rx="1.75" fill="#e01b1b" />
-                <rect x="25" y="34" width="3.5" height="18" rx="1.75" fill="#e01b1b" />
-                <rect x="32" y="34" width="3.5" height="18" rx="1.75" fill="#e01b1b" />
-                <rect x="39" y="34" width="3.5" height="18" rx="1.75" fill="#e01b1b" />
-                <rect x="46" y="34" width="3.5" height="18" rx="1.75" fill="#e01b1b" />
+                <rect x="18" y="34" width="3.5" height="18" rx="1.75" fill="#F28611" />
+                <rect x="25" y="34" width="3.5" height="18" rx="1.75" fill="#F28611" />
+                <rect x="32" y="34" width="3.5" height="18" rx="1.75" fill="#F28611" />
+                <rect x="39" y="34" width="3.5" height="18" rx="1.75" fill="#F28611" />
+                <rect x="46" y="34" width="3.5" height="18" rx="1.75" fill="#F28611" />
               </svg>
             </div>
 
@@ -480,7 +474,7 @@ export default function Header({
         </div>
       </div>
 
-      {/* Red Navigation Bar (Bottom Bar) */}
+      {/* Navigation Bar (Bottom Bar) */}
       <div className="hidden lg:block bg-[#F28611] w-full shadow-inner">
         <div className="max-w-7xl mx-auto px-4 w-full flex items-center h-12">
           
@@ -517,20 +511,18 @@ export default function Header({
                   ))
                 ) : (
                   [
-                    { name: 'Aquecimento', slug: 'aquecimento', icon: '🔥' },
-                    { name: 'Fogões a Lenha', slug: 'fogoes-a-lenha', icon: '🍳' },
-                    { name: 'Lareiras a Lenha', slug: 'lareira-a-lenha', icon: '🪵' },
-                    { name: 'Ar Condicionado', slug: 'ar-condicionado', icon: '❄️' },
-                    { name: 'Climatização', slug: 'climatizacao', icon: '💨' },
-                    { name: 'Desumidificadores', slug: 'desumidificador', icon: '💧' },
-                    { name: 'Pellets & Lenha', slug: 'combustiveis', icon: '🌲' },
-                    { name: 'Fornos a Lenha', slug: 'fornos-a-lenha', icon: '🍕' },
-                    { name: 'Recuperadores de Calor', slug: 'recuperadores-de-calor', icon: '🏠' },
-                    { name: 'Salamandras a Pellets', slug: 'salamandras-a-pellets', icon: '⚡' },
+                    { name: 'Mountainbikes (MTB)', slug: 'mountainbike', icon: '🚵' },
+                    { name: 'E-Bikes & Pedelecs', slug: 'e-bike', icon: '⚡' },
+                    { name: 'Rennräder & Gravel', slug: 'gravel', icon: '🚴' },
+                    { name: 'Trekking- & Cityräder', slug: 'trekking', icon: '🏙️' },
+                    { name: 'Fahrradanhänger & Transport', slug: 'anhaenger', icon: '🛒' },
+                    { name: 'Komponenten & Pedale', slug: 'komponenten', icon: '⚙️' },
+                    { name: 'Helme & Bekleidung', slug: 'bekleidung', icon: '🪖' },
+                    { name: 'Zubehör & Beleuchtung', slug: 'zubehoer', icon: '🔦' },
                   ].map((cat, idx) => (
                     <Link
                       key={idx}
-                      href={`/product-category/${cat.slug}`}
+                      href={`/shop?category=${cat.slug}`}
                       className="flex items-center justify-between px-5 py-2.5 hover:bg-orange-50 hover:text-[#F28611] text-stone-800 text-xs font-semibold transition"
                       onClick={() => setIsBottomCategoryOpen(false)}
                     >
@@ -562,19 +554,22 @@ export default function Header({
             ) : (
               <>
                 <Link href="/" className="flex items-center px-4 py-3 hover:bg-black/15 rounded transition font-black text-white">
-                  <span>INÍCIO</span>
+                  <span>STARTSEITE</span>
                 </Link>
                 <Link href="/shop" className="flex items-center px-4 py-3 hover:bg-black/15 rounded transition font-black text-white">
-                  <span>SHOP</span>
+                  <span>FAHRRÄDER &amp; SHOP</span>
                 </Link>
-                <Link href="/devolucoes" className="flex items-center px-4 py-3 hover:bg-black/15 rounded transition font-black text-white">
-                  <span>DEVOLUÇÃO E REEMBOLSO</span>
+                <Link href="/shop?category=anhaenger" className="flex items-center px-4 py-3 hover:bg-black/15 rounded transition font-black text-white">
+                  <span>ANHÄNGER</span>
                 </Link>
                 <Link href="/envios-e-entregas" className="flex items-center px-4 py-3 hover:bg-black/15 rounded transition font-black text-white">
-                  <span>EXPEDIÇÃO</span>
+                  <span>VERSAND &amp; LIEFERUNG</span>
+                </Link>
+                <Link href="/devolucoes" className="flex items-center px-4 py-3 hover:bg-black/15 rounded transition font-black text-white">
+                  <span>30 TAGE RÜCKGABE</span>
                 </Link>
                 <Link href="/contact" className="flex items-center px-4 py-3 hover:bg-black/15 rounded transition font-black text-white">
-                  <span>CONTACTAR NOS</span>
+                  <span>KONTAKT &amp; BERATUNG</span>
                 </Link>
               </>
             )}
