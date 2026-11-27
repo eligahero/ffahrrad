@@ -3,7 +3,11 @@ import fs from 'fs';
 import path from 'path';
 
 const isApply = process.argv.includes('--apply');
-const jsonPath = path.join(process.cwd(), 'exports', 'copilot-sample-10-products-seo.json');
+
+// Permet de passer un fichier custom : --file=exports/mon-fichier.json
+const fileArg = process.argv.find((arg) => arg.startsWith('--file='));
+const defaultPath = path.join(process.cwd(), 'copilot-sample-products.json');
+const jsonPath = fileArg ? path.resolve(process.cwd(), fileArg.split('=')[1]) : defaultPath;
 
 if (!fs.existsSync(jsonPath)) {
   console.error(`Fichier introuvable : ${jsonPath}`);
@@ -14,8 +18,9 @@ const fileData = JSON.parse(fs.readFileSync(jsonPath, 'utf8'));
 const products = fileData.products;
 
 console.log(`\n========================================================`);
-console.log(`IMPORT DES OPTIMISATIONS SEO COPILOT (${products.length} PRODUITS)`);
-console.log(`Mode : ${isApply ? '🚀 APPLICATION RÉELLE EN BASE' : '🔍 SIMULATION (DRY RUN)'}`);
+console.log(`IMPORT DES OPTIMISATIONS SEO COPILOT`);
+console.log(`Fichier source : ${path.basename(jsonPath)} (${products.length} produits)`);
+console.log(`Mode           : ${isApply ? '🚀 APPLICATION RÉELLE EN BASE' : '🔍 SIMULATION (DRY RUN)'}`);
 console.log(`========================================================\n`);
 
 const prisma = new PrismaClient();
