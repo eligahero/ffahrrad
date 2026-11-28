@@ -12,10 +12,22 @@ import Image from 'next/image';
 import SizeGuideModal from './SizeGuideModal';
 import ReassuranceDrawer from './ReassuranceDrawer';
 
+interface ColorVariantItem {
+  id: string;
+  title: string;
+  slug: string;
+  colorName: string;
+  image: string | null;
+  price: number;
+  compareAtPrice?: number | null;
+  isCurrent?: boolean;
+}
+
 interface ProductActionsProps {
   product: {
     id: string;
     title: string;
+    slug?: string;
     price: number;
     compareAtPrice?: number | null;
     type: string;
@@ -30,6 +42,7 @@ interface ProductActionsProps {
     categories?: { id: string; name: string; slug?: string }[];
     tags?: { id?: string; name: string; slug?: string }[];
   };
+  colorVariants?: ColorVariantItem[];
   enableBuyNow?: boolean;
   onVariationChange?: (image: string | null) => void;
   shippingInfo?: string[];
@@ -50,6 +63,68 @@ function deduceBrandName(title: string, brand?: { name: string } | null): string
   const match = title.match(/^(CUBE|CROOZER|SHIMANO|RADON|SCOTT|SRAM|BOSCH|TREK|HAIBIKE|GHOST|ORTLIEB|SCHWALBE|CONTINENTAL|ABUS)/i);
   if (match) return match[1].toUpperCase();
   return '';
+}
+
+// Extract colorway name from bike title (e.g. "Mole'n'Prism", "aloegreen'n'black", etc.)
+function extractColorFromTitle(title: string): string {
+  const clean = title.replace(/[´`’]/g, "'");
+  const cubeColorMatch = clean.match(/([a-zA-Z0-9]+'n'[a-zA-Z0-9]+)/i);
+  if (cubeColorMatch) return cubeColorMatch[1];
+
+  const finishMatch = clean.match(/\b(blackline|greylime|goldorange|whitenblack|allroad|desertstone|titanium|raw|neomint)\b/i);
+  if (finishMatch) return finishMatch[1];
+
+  const dashMatch = clean.match(/-\s*([A-Za-z0-9' ]+)$/);
+  if (dashMatch) {
+    const candidate = dashMatch[1].trim();
+    if (!/^\d+\s*cm$/i.test(candidate) && !/^\d+\s*zoll$/i.test(candidate) && !/^\d{4}$/.test(candidate)) {
+      return candidate;
+    }
+  }
+
+  const words = clean.split(/\s+/);
+  if (words.length >= 3) {
+    const lastWord = words[words.length - 1];
+    if (/^(black|white|grey|silver|blue|red|green|orange|yellow|mint|purple|bronze)$/i.test(lastWord)) {
+      return lastWord;
+    }
+  }
+
+  return '';
+}
+
+function resolveSingleColor(word: string): string {
+  const w = word.toLowerCase();
+  if (w.includes('black') || w.includes('schwarz') || w.includes('carbon')) return '#18181b';
+  if (w.includes('white') || w.includes('weiß') || w.includes('cotton')) return '#f8fafc';
+  if (w.includes('aloe') || w.includes('olive') || w.includes('pea') || w.includes('royalgreen') || w.includes('green') || w.includes('grün') || w.includes('lime')) return '#22c55e';
+  if (w.includes('cappuccino') || w.includes('brown') || w.includes('braun')) return '#92400e';
+  if (w.includes('blue') || w.includes('blau') || w.includes('iris') || w.includes('iceblue')) return '#2563eb';
+  if (w.includes('orange') || w.includes('molotov')) return '#ea580c';
+  if (w.includes('red') || w.includes('rot') || w.includes('ruby')) return '#dc2626';
+  if (w.includes('yellow') || w.includes('gelb') || w.includes('golden')) return '#eab308';
+  if (w.includes('grey') || w.includes('gray') || w.includes('grau') || w.includes('stone') || w.includes('silver') || w.includes('silber')) return '#64748b';
+  if (w.includes('mole') || w.includes('vulcan') || w.includes('anthrazit')) return '#475569';
+  if (w.includes('prism') || w.includes('chrome')) return '#06b6d4';
+  if (w.includes('mint') || w.includes('teal') || w.includes('türkis')) return '#14b8a6';
+  if (w.includes('desert') || w.includes('sand') || w.includes('beige')) return '#d4b996';
+  if (w.includes('rose') || w.includes('blush') || w.includes('pink') || w.includes('puce')) return '#f43f5e';
+  if (w.includes('purple') || w.includes('violett') || w.includes('lilac')) return '#9333ea';
+  if (w.includes('bronze') || w.includes('copper')) return '#b45309';
+  return '#3b82f6';
+}
+
+function getColorSwatch(name: string): { bg: string } {
+  const clean = name.toLowerCase().replace(/[´`’]/g, "'");
+
+  if (clean.includes("'n'") || clean.includes(" & ") || clean.includes("/")) {
+    const parts = clean.split(/'n'| & |\//);
+    const c1 = resolveSingleColor(parts[0].trim());
+    const c2 = resolveSingleColor(parts[1]?.trim() || 'black');
+    return { bg: `linear-gradient(135deg, ${c1} 50%, ${c2} 50%)` };
+  }
+
+  return { bg: resolveSingleColor(clean) };
 }
 
 // 4 intermittent reassurance highlights from user reference
@@ -101,6 +176,7 @@ const REASSURANCE_ITEMS = [
 
 export default function ProductActions({ 
   product, 
+  colorVariants = [],
   enableBuyNow = false, 
   onVariationChange, 
   shippingInfo, 
@@ -162,6 +238,103 @@ export default function ProductActions({
   const attributes = product.attributes || [];
   const variations = product.variations || [];
 
+  // Determine size options for dropdown
+  const sizeAttribute = attributes.find(a => /größe|size|rahmen/i.test(a.name)) || attributes[0];
+  const sizeOptions = sizeAttribute 
+    ? sizeAttribute.options.map(opt => ({ value: opt, label: opt }))
+    : DEFAULT_FRAME_SIZES;
+
+  const currentSelectedSize = sizeAttribute 
+    ? (selectedAttributes[sizeAttribute.name] || sizeOptions[0]?.value) 
+    : selectedFallbackSize;
+
+  const handleSizeChange = (val: string) => {
+    if (sizeAttribute) {
+      setSelectedAttributes(prev => ({ ...prev, [sizeAttribute.name]: val }));
+    } else {
+      setSelectedFallbackSize(val);
+    }
+  };
+
+  // Color variations resolution
+  const colorAttr = attributes.find(a => /farbe|color|colour|farbton|farbvariante/i.test(a.name));
+  const detectedTitleColor = extractColorFromTitle(product.title);
+
+  type UnifiedColorOption = {
+    name: string;
+    slug?: string;
+    image?: string | null;
+    price?: number;
+    isCurrent?: boolean;
+  };
+
+  const availableColors: UnifiedColorOption[] = (() => {
+    // Priority 1: Sister color variants from base model matches
+    if (colorVariants && colorVariants.length > 0) {
+      return colorVariants.map(cv => ({
+        name: cv.colorName,
+        slug: cv.slug,
+        image: cv.image,
+        price: cv.price,
+        isCurrent: cv.isCurrent || cv.id === product.id,
+      }));
+    }
+
+    // Priority 2: Explicit color attribute from product attributes
+    if (colorAttr && colorAttr.options && colorAttr.options.length > 0) {
+      return colorAttr.options.map(opt => {
+        const matchingVar = variations.find(v => v.attributes?.[colorAttr.name] === opt);
+        return {
+          name: opt,
+          image: matchingVar?.image || null,
+          price: matchingVar?.price ? parseFloat(matchingVar.price) : undefined,
+          isCurrent: selectedAttributes[colorAttr.name] === opt,
+        };
+      });
+    }
+
+    // Priority 3: Extracted color from bike title (e.g. Mole'n'Prism)
+    if (detectedTitleColor) {
+      return [{
+        name: detectedTitleColor,
+        image: product.images?.[0] || null,
+        price: product.price,
+        isCurrent: true,
+      }];
+    }
+
+    return [];
+  })();
+
+  const defaultColorName = availableColors.find(c => c.isCurrent)?.name 
+    || availableColors[0]?.name 
+    || detectedTitleColor 
+    || '';
+
+  const [selectedColor, setSelectedColor] = useState<string>(defaultColorName);
+
+  useEffect(() => {
+    if (defaultColorName && !selectedColor) {
+      setSelectedColor(defaultColorName);
+    }
+  }, [defaultColorName, selectedColor]);
+
+  const handleColorSelect = (col: UnifiedColorOption) => {
+    setSelectedColor(col.name);
+
+    if (col.image && onVariationChange) {
+      onVariationChange(col.image);
+    }
+
+    if (colorAttr) {
+      setSelectedAttributes(prev => ({ ...prev, [colorAttr.name]: col.name }));
+    }
+
+    if (col.slug && col.slug !== product.slug) {
+      router.push(`/produto/${col.slug}`, { scroll: false });
+    }
+  };
+
   // Initialize primary size attribute if available
   useEffect(() => {
     if (isVariable && attributes.length > 0 && Object.keys(selectedAttributes).length === 0) {
@@ -211,9 +384,11 @@ export default function ProductActions({
     return [...fsItems, ...stItems];
   };
 
-  const activeCartAttributes = isVariable 
-    ? (currentVariation ? selectedAttributes : undefined) 
-    : { 'Rahmengröße': selectedFallbackSize };
+  const activeCartAttributes: Record<string, string> = {
+    ...(isVariable && currentVariation ? selectedAttributes : {}),
+    ...(selectedColor && selectedColor !== 'Standard' ? { 'Farbe': selectedColor } : {}),
+    ...(!sizeAttribute ? { 'Rahmengröße': selectedFallbackSize } : {}),
+  };
 
   const handleAddToCart = () => {
     if (isVariable && !currentVariation) {
@@ -258,24 +433,6 @@ export default function ProductActions({
       setTimeout(() => {
         setWishlistedItemName(null);
       }, 5000);
-    }
-  };
-
-  // Determine size options for dropdown
-  const sizeAttribute = attributes.find(a => /größe|size|rahmen/i.test(a.name)) || attributes[0];
-  const sizeOptions = sizeAttribute 
-    ? sizeAttribute.options.map(opt => ({ value: opt, label: opt }))
-    : DEFAULT_FRAME_SIZES;
-
-  const currentSelectedSize = sizeAttribute 
-    ? (selectedAttributes[sizeAttribute.name] || sizeOptions[0]?.value) 
-    : selectedFallbackSize;
-
-  const handleSizeChange = (val: string) => {
-    if (sizeAttribute) {
-      setSelectedAttributes(prev => ({ ...prev, [sizeAttribute.name]: val }));
-    } else {
-      setSelectedFallbackSize(val);
     }
   };
 
@@ -351,10 +508,52 @@ export default function ProductActions({
           </div>
         </div>
 
-        {/* 3. Additional attributes selection if product has multiple (e.g. Farbe) */}
-        {isVariable && attributes.length > 1 && (
+        {/* 3. COLOR VARIATION SELECTOR (Visual Swatches / Pills) */}
+        {availableColors.length > 0 && (
+          <div className="w-full mb-3.5 pt-3 border-t border-gray-100">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-xs sm:text-sm font-semibold text-gray-700">
+                Farbe: <strong className="text-gray-900 font-bold ml-1">{selectedColor || defaultColorName}</strong>
+              </span>
+              {availableColors.length > 1 && (
+                <span className="text-[11px] text-gray-400 font-medium">
+                  {availableColors.length} Farben verfügbar
+                </span>
+              )}
+            </div>
+
+            <div className="flex flex-wrap gap-2">
+              {availableColors.map((col) => {
+                const isSelected = (selectedColor || defaultColorName).toLowerCase() === col.name.toLowerCase();
+                const swatch = getColorSwatch(col.name);
+                return (
+                  <button
+                    key={col.name}
+                    type="button"
+                    onClick={() => handleColorSelect(col)}
+                    title={`Farbe: ${col.name}`}
+                    className={`group flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-bold transition-all cursor-pointer ${
+                      isSelected
+                        ? 'border-[#F28611] bg-orange-50/70 text-gray-900 ring-2 ring-[#F28611]/30 shadow-2xs'
+                        : 'border-gray-200 bg-white text-gray-700 hover:border-gray-300 hover:bg-gray-50'
+                    }`}
+                  >
+                    <span 
+                      className="w-3.5 h-3.5 rounded-full border border-gray-300/80 shrink-0 shadow-2xs group-hover:scale-105 transition-transform" 
+                      style={{ background: swatch.bg }}
+                    />
+                    <span className="truncate max-w-[130px]">{col.name}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* 3b. Additional attributes selection (e.g. Battery Wh) excluding size and color */}
+        {isVariable && attributes.filter(a => a !== sizeAttribute && a !== colorAttr).length > 0 && (
           <div className="space-y-3 mb-3.5 pt-2 border-t border-gray-100">
-            {attributes.filter(a => a !== sizeAttribute).map(attr => (
+            {attributes.filter(a => a !== sizeAttribute && a !== colorAttr).map(attr => (
               <div key={attr.name}>
                 <span className="text-xs text-gray-500 mb-1.5 block font-medium">
                   {attr.name}: <strong className="text-gray-900">{selectedAttributes[attr.name]}</strong>
@@ -383,14 +582,31 @@ export default function ProductActions({
           </div>
         )}
 
-        {/* 4. Size Guide Trigger Link (Right Aligned above selector) */}
+        {/* 4. Size Guide Trigger Link (Right Aligned above selector) - Theme Color Ruler & Text */}
         <div className="w-full flex justify-end mb-1.5">
           <button
             type="button"
             onClick={() => setIsSizeModalOpen(true)}
-            className="text-[11px] sm:text-xs text-gray-500 hover:text-[#F28611] transition flex items-center gap-1 cursor-pointer font-medium"
+            className="text-[11px] sm:text-xs text-[#F28611] hover:text-[#D97706] transition flex items-center gap-1.5 cursor-pointer font-bold group"
           >
-            <span>📐</span> Größentabelle ansehen
+            <svg 
+              className="w-3.5 h-3.5 text-[#F28611] group-hover:scale-110 transition-transform shrink-0" 
+              viewBox="0 0 24 24" 
+              fill="none" 
+              stroke="currentColor" 
+              strokeWidth={2.2} 
+              strokeLinecap="round" 
+              strokeLinejoin="round"
+            >
+              <path d="M21.3 8.7 8.7 21.3a1 1 0 0 1-1.4 0L2.7 16.7a1 1 0 0 1 0-1.4L15.3 2.7a1 1 0 0 1 1.4 0l4.6 4.6a1 1 0 0 1 0 1.4Z"/>
+              <path d="m14.5 4.5-2 2"/>
+              <path d="m11.5 7.5-3 3"/>
+              <path d="m8.5 10.5-2 2"/>
+              <path d="m5.5 13.5-3 3"/>
+            </svg>
+            <span className="underline underline-offset-2 decoration-[#F28611]/60 group-hover:decoration-[#F28611]">
+              Größentabelle ansehen
+            </span>
           </button>
         </div>
 
@@ -481,22 +697,11 @@ export default function ProductActions({
             </div>
           </div>
 
-          {/* Right Indicator & Mini Badge */}
-          <div className="flex items-center gap-2 shrink-0">
-            <span className="text-[10px] font-black uppercase bg-[#F28611] text-white px-2 py-0.5 rounded-full shadow-2xs tracking-wider">
+          {/* Right Indicator: VORTEIL Badge at the far right in place of the removed dots */}
+          <div className="shrink-0 flex items-center">
+            <span className="text-[10px] font-black uppercase bg-[#F28611] text-white px-2.5 py-0.5 rounded-full shadow-2xs tracking-wider">
               VORTEIL
             </span>
-            {/* Subtle Progress Dots */}
-            <div className="flex items-center gap-1">
-              {REASSURANCE_ITEMS.map((_, i) => (
-                <span 
-                  key={i} 
-                  className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${
-                    i === tickerIndex ? 'bg-[#F28611] w-3' : 'bg-orange-200'
-                  }`}
-                />
-              ))}
-            </div>
           </div>
         </div>
 

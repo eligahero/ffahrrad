@@ -228,6 +228,117 @@ export const getCachedRelatedProducts = async (categoryIds: string[], excludePro
 };
 
 // ============================================================================
+// COLOR SISTER VARIANTS CACHE (Matches sister bike models sharing base name)
+// ============================================================================
+export interface ColorVariantItem {
+  id: string;
+  title: string;
+  slug: string;
+  colorName: string;
+  image: string | null;
+  price: number;
+  compareAtPrice?: number | null;
+  isCurrent?: boolean;
+}
+
+export function extractColorFromTitle(title: string): string {
+  const clean = title.replace(/[´`’]/g, "'");
+  const cubeColorMatch = clean.match(/([a-zA-Z0-9]+'n'[a-zA-Z0-9]+)/i);
+  if (cubeColorMatch) return cubeColorMatch[1];
+
+  const finishMatch = clean.match(/\b(blackline|greylime|goldorange|whitenblack|allroad|desertstone|titanium|raw|neomint)\b/i);
+  if (finishMatch) return finishMatch[1];
+
+  const dashMatch = clean.match(/-\s*([A-Za-z0-9' ]+)$/);
+  if (dashMatch) {
+    const candidate = dashMatch[1].trim();
+    if (!/^\d+\s*cm$/i.test(candidate) && !/^\d+\s*zoll$/i.test(candidate) && !/^\d{4}$/.test(candidate)) {
+      return candidate;
+    }
+  }
+
+  const words = clean.split(/\s+/);
+  if (words.length >= 3) {
+    const lastWord = words[words.length - 1];
+    if (/^(black|white|grey|silver|blue|red|green|orange|yellow|mint|purple|bronze)$/i.test(lastWord)) {
+      return lastWord;
+    }
+  }
+
+  return '';
+}
+
+export function getBaseModelName(title: string): string {
+  const color = extractColorFromTitle(title);
+  if (color) {
+    const clean = title.replace(/[´`’]/g, "'");
+    const idx = clean.toLowerCase().indexOf(color.toLowerCase());
+    if (idx !== -1) {
+      return clean.slice(0, idx).trim().replace(/[-\s]+$/, '');
+    }
+  }
+  const parts = title.split(' - ');
+  if (parts.length > 1) {
+    return parts[0].trim();
+  }
+  const words = title.split(' ');
+  return words.slice(0, Math.min(words.length, 3)).join(' ');
+}
+
+export const getCachedColorVariants = async (
+  title: string, 
+  currentProductId: string, 
+  brandId?: string | null
+): Promise<ColorVariantItem[]> => {
+  return unstable_cache(
+    async () => {
+      try {
+        const baseModel = getBaseModelName(title);
+        if (!baseModel || baseModel.length < 4) return [];
+
+        const matches = await prisma.product.findMany({
+          where: {
+            isDeleted: false,
+            title: { startsWith: baseModel },
+            ...(brandId ? { brandId } : {})
+          },
+          take: 6,
+          select: {
+            id: true,
+            title: true,
+            slug: true,
+            images: true,
+            price: true,
+            compareAtPrice: true,
+          }
+        });
+
+        if (matches.length <= 1) return [];
+
+        return matches.map(m => {
+          const colorName = extractColorFromTitle(m.title) || m.title.replace(baseModel, '').trim().replace(/^[-–\s]+/, '') || 'Standard';
+          return {
+            id: m.id,
+            title: m.title,
+            slug: m.slug,
+            colorName,
+            image: m.images?.[0] || null,
+            price: m.price,
+            compareAtPrice: m.compareAtPrice,
+            isCurrent: m.id === currentProductId,
+          };
+        });
+      } catch (err) {
+        console.error('Error fetching color variants:', err);
+        return [];
+      }
+    },
+    ['color-variants', currentProductId],
+    { tags: ['products'], revalidate: 3600 }
+  )();
+};
+
+// ============================================================================
 // BEST SELLERS & LATEST PRODUCTS (Cards only)
 // ============================================================================
 export const getCachedBestSellers = unstable_cache(

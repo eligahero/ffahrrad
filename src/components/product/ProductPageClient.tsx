@@ -35,6 +35,16 @@ interface ProductPageClientProps {
     gtin?: string | null;
     [key: string]: any;
   };
+  colorVariants?: Array<{
+    id: string;
+    title: string;
+    slug: string;
+    colorName: string;
+    image: string | null;
+    price: number;
+    compareAtPrice?: number | null;
+    isCurrent?: boolean;
+  }>;
   enableBuyNow?: boolean;
   storeName?: string;
   translations?: {
@@ -52,6 +62,7 @@ interface ProductPageClientProps {
 
 export default function ProductPageClient({ 
   product, 
+  colorVariants = [],
   enableBuyNow = false, 
   shippingInfo, 
   contactSlug = 'contact' 
@@ -104,6 +115,7 @@ export default function ProductPageClient({
         <div className="w-full lg:w-5/12 flex flex-col">
           <ProductActions
             product={product as any}
+            colorVariants={colorVariants}
             enableBuyNow={enableBuyNow}
             onVariationChange={(image: string | null) => setVariationImage(image)}
             shippingInfo={shippingInfo}

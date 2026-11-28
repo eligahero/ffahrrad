@@ -10,7 +10,7 @@ import { safeJsonLd } from '@/lib/security';
 
 import { Metadata } from 'next';
 
-import { getCachedProductBySlug, getCachedSettings, getCachedRelatedProducts, getCachedDefaultShippingRate } from '@/lib/cache';
+import { getCachedProductBySlug, getCachedSettings, getCachedRelatedProducts, getCachedDefaultShippingRate, getCachedColorVariants } from '@/lib/cache';
 import { getCategoryCanonicalPath } from '@/lib/categories';
 import { SITE_URL } from '@/lib/site';
 import Image from "next/image";
@@ -65,6 +65,9 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   // Related products (same category)
   const categoryIds = (product as any).categories?.map((c: any) => c.id) || [];
   const relatedProducts = await getCachedRelatedProducts(categoryIds, product.id);
+
+  // Sister color variants (sharing base model name & brand)
+  const colorVariants = await getCachedColorVariants(product.title, product.id, (product as any).brandId);
 
   // Lowest shipping rate for DE (cached Anti-CPU/Anti-Egress)
   const lowestShippingRate = await getCachedDefaultShippingRate();
@@ -239,6 +242,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
           {/* Main Hero (Title + Gallery + Buy Box Card) */}
           <ProductPageClient
             product={product as any}
+            colorVariants={colorVariants}
             enableBuyNow={enableBuyNow}
             storeName={storeName}
             shippingInfo={shippingInfo}
