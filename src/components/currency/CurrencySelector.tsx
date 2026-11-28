@@ -28,7 +28,6 @@ export default function CurrencySelector() {
         aria-label="Währung auswählen"
         className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full bg-[#0F1B2A]/90 hover:bg-[#1A2E44] border border-white/15 text-white text-xs font-bold transition shadow-sm cursor-pointer select-none"
       >
-        <span className="text-sm leading-none">{currencyDefinition.flag}</span>
         <span className="tracking-wider">{currencyDefinition.code}</span>
         <svg
           className={`w-3 h-3 text-stone-300 transition-transform duration-200 ${
@@ -66,9 +65,8 @@ export default function CurrencySelector() {
                   }`}
                 >
                   <div className="flex items-center gap-2">
-                    <span className="text-base">{curr.flag}</span>
-                    <span>{curr.code}</span>
-                    <span className={`text-[10px] ${isSelected ? 'text-stone-900' : 'text-stone-400'}`}>
+                    <span className="font-bold">{curr.code}</span>
+                    <span className={`text-[11px] ${isSelected ? 'text-stone-900 font-semibold' : 'text-stone-400'}`}>
                       ({curr.symbol})
                     </span>
                   </div>

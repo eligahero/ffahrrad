@@ -17,6 +17,13 @@ const WishlistDrawer = dynamic(() => import('@/components/wishlist/WishlistDrawe
 const MobileBottomNav = dynamic(() => import('@/components/layout/MobileBottomNav'), { ssr: false });
 const MobileSidebar = dynamic(() => import('@/components/layout/MobileSidebar'), { ssr: false });
 
+const MAIN_NAV_ITEMS = [
+  { label: 'STARTSEITE', href: '/' },
+  { label: 'VERSAND', href: '/versand' },
+  { label: 'IMPRESSUM', href: '/impressum' },
+  { label: 'KONTAKT', href: '/contact' },
+];
+
 type HeaderProps = {
   announcement?: string;
   logoImage?: string;
@@ -143,35 +150,24 @@ export default function Header({
             <div className="flex items-center gap-3">
               {/* Main Pill Capsule Container */}
               <div className="rounded-full bg-[#182535]/80 hover:bg-[#182535]/95 border border-white/10 backdrop-blur-xl px-4 sm:px-6 py-2 sm:py-2.5 flex items-center gap-4 sm:gap-6 shadow-xl transition-all duration-300">
-                {/* Desktop Nav Links (Accueil, Nos Offres / Angebote, Services, Contact / Kontakt) */}
-                <nav className="hidden md:flex items-center space-x-5 lg:space-x-7 text-xs sm:text-sm font-medium text-stone-200">
-                  <Link
-                    href="/"
-                    className={`transition-colors py-1 ${isHome
-                      ? 'text-white font-bold'
-                      : 'text-stone-300 hover:text-white'
-                      }`}
-                  >
-                    Accueil
-                  </Link>
-                  <Link
-                    href="/shop"
-                    className="text-stone-300 hover:text-white transition-colors py-1"
-                  >
-                    Nos Offres
-                  </Link>
-                  <Link
-                    href="/shop?category=e-bike"
-                    className="text-stone-300 hover:text-white transition-colors py-1"
-                  >
-                    Services
-                  </Link>
-                  <Link
-                    href="/contact"
-                    className="text-stone-300 hover:text-white transition-colors py-1"
-                  >
-                    Contact
-                  </Link>
+                {/* Desktop Nav Links (STARTSEITE, VERSAND, IMPRESSUM, KONTAKT) with mustard zoom effect */}
+                <nav className="hidden md:flex items-center space-x-5 lg:space-x-7 text-xs sm:text-sm">
+                  {MAIN_NAV_ITEMS.map((item) => {
+                    const isActive = item.href === '/' ? pathname === '/' : pathname.startsWith(item.href);
+                    return (
+                      <Link
+                        key={item.label}
+                        href={item.href}
+                        className={`inline-block py-1 tracking-wider uppercase transition-all duration-200 ease-out transform hover:scale-110 active:scale-95 hover:text-[#F59E0B] cursor-pointer select-none ${
+                          isActive
+                            ? 'text-white font-bold drop-shadow-xs'
+                            : 'text-stone-300 font-semibold hover:text-[#F59E0B]'
+                        }`}
+                      >
+                        {item.label}
+                      </Link>
+                    );
+                  })}
                 </nav>
 
                 {/* Vertical Divider on Desktop */}

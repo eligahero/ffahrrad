@@ -41,13 +41,19 @@ export async function generateMetadata({
   // 1. Single-segment: Check Contact and CMS Pages first
   if (slug.length === 1) {
     const singleSlug = slug[0];
-
     const contactSettings = await getContactSettings();
-    if (singleSlug === contactSettings.slug) {
+
+    const slugAliases: Record<string, string> = {
+      versand: 'versandpolitik',
+      kontakt: contactSettings.slug || 'contact',
+    };
+    const resolvedSlug = slugAliases[singleSlug] || singleSlug;
+
+    if (resolvedSlug === contactSettings.slug) {
       return { title: contactSettings.title };
     }
 
-    const { data: page } = await getPageBySlug(singleSlug);
+    const { data: page } = await getPageBySlug(resolvedSlug);
     if (page && page.isPublished) {
       return {
         title: page.metaTitle ? page.metaTitle : `${page.title} - ${storeName}`,
@@ -105,15 +111,21 @@ export default async function CatchAllPage({
   // 1. Single-segment: Check Contact and CMS Pages
   if (slug.length === 1) {
     const singleSlug = slug[0];
-
     const contactSettings = await getContactSettings();
-    if (singleSlug === contactSettings.slug) {
+
+    const slugAliases: Record<string, string> = {
+      versand: 'versandpolitik',
+      kontakt: contactSettings.slug || 'contact',
+    };
+    const resolvedSlug = slugAliases[singleSlug] || singleSlug;
+
+    if (resolvedSlug === contactSettings.slug) {
       return <ContactPageContent />;
     }
 
-    const { data: page, success } = await getPageBySlug(singleSlug);
+    const { data: page, success } = await getPageBySlug(resolvedSlug);
     if (success && page && page.isPublished) {
-      const currentSlug = singleSlug;
+      const currentSlug = resolvedSlug;
       const isLegalSlug = LEGAL_NAV.some(item =>
         item.slug === currentSlug ||
         (currentSlug.startsWith('politica-de-') && item.slug.includes(currentSlug.replace('politica-de-', '')))

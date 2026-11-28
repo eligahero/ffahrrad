@@ -174,13 +174,13 @@ const REASSURANCE_ITEMS = [
   }
 ];
 
-export default function ProductActions({ 
-  product, 
+export default function ProductActions({
+  product,
   colorVariants = [],
-  enableBuyNow = false, 
-  onVariationChange, 
-  shippingInfo, 
-  contactSlug = 'contact' 
+  enableBuyNow = false,
+  onVariationChange,
+  shippingInfo,
+  contactSlug = 'contact'
 }: ProductActionsProps) {
   const [quantity, setQuantity] = useState(1);
   const router = useRouter();
@@ -228,7 +228,7 @@ export default function ProductActions({
     observer.observe(actionButtonsRef.current);
     return () => observer.disconnect();
   }, []);
-  
+
   const cartStore = useCartStore();
   const wishlistStore = useWishlistStore();
   const isWishlisted = wishlistStore.hasItem(product.id);
@@ -240,12 +240,12 @@ export default function ProductActions({
 
   // Determine size options for dropdown
   const sizeAttribute = attributes.find(a => /größe|size|rahmen/i.test(a.name)) || attributes[0];
-  const sizeOptions = sizeAttribute 
+  const sizeOptions = sizeAttribute
     ? sizeAttribute.options.map(opt => ({ value: opt, label: opt }))
     : DEFAULT_FRAME_SIZES;
 
-  const currentSelectedSize = sizeAttribute 
-    ? (selectedAttributes[sizeAttribute.name] || sizeOptions[0]?.value) 
+  const currentSelectedSize = sizeAttribute
+    ? (selectedAttributes[sizeAttribute.name] || sizeOptions[0]?.value)
     : selectedFallbackSize;
 
   const handleSizeChange = (val: string) => {
@@ -306,9 +306,9 @@ export default function ProductActions({
     return [];
   })();
 
-  const defaultColorName = availableColors.find(c => c.isCurrent)?.name 
-    || availableColors[0]?.name 
-    || detectedTitleColor 
+  const defaultColorName = availableColors.find(c => c.isCurrent)?.name
+    || availableColors[0]?.name
+    || detectedTitleColor
     || '';
 
   const [selectedColor, setSelectedColor] = useState<string>(defaultColorName);
@@ -360,7 +360,7 @@ export default function ProductActions({
     if (onVariationChange) {
       onVariationChange(currentVariation?.image || null);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentVariation?.id]);
 
   const currentPrice = currentVariation ? parseFloat(currentVariation.price) : product.price;
@@ -398,10 +398,10 @@ export default function ProductActions({
 
     const mainItem = getCartItemBase(product, currentPrice, quantity, currentVariation, activeCartAttributes);
     const linkedItems = getLinkedItemsForCart(quantity);
-    
+
     cartStore.addItem(mainItem, linkedItems);
     cartStore.setIsOpen(true);
-    
+
     setAddedItemName(product.title);
     setTimeout(() => {
       setAddedItemName(null);
@@ -416,7 +416,7 @@ export default function ProductActions({
 
     const mainItem = getCartItemBase(product, currentPrice, quantity, currentVariation, activeCartAttributes);
     const linkedItems = getLinkedItemsForCart(quantity);
-    
+
     cartStore.addItem(mainItem, linkedItems);
     router.push('/checkout');
   };
@@ -426,7 +426,7 @@ export default function ProductActions({
   const handleToggleWishlist = () => {
     const wasWishlisted = wishlistStore.hasItem(product.id);
     wishlistStore.toggleItem(product.id);
-    
+
     if (!wasWishlisted) {
       setWishlistedItemName(product.title);
       wishlistStore.setIsOpen(true);
@@ -473,16 +473,16 @@ export default function ProductActions({
           BUY BOX CARD — MATCHING CAPTURE 2 EXACT LAYOUT
           ========================================================================= */}
       <div className="bg-white border border-gray-200 rounded-2xl p-6 sm:p-7 shadow-xs flex flex-col h-full justify-between">
-        
+
         {/* 1. Brand Header: Fixed display container (h-12) to prevent any layout shift */}
         <div className="h-12 w-full max-w-[200px] mx-auto flex items-center justify-center mb-2.5">
           {brandLogo ? (
-            <Image 
-              width={180} 
-              height={48} 
-              src={brandLogo} 
-              alt={brandName || 'Brand Logo'} 
-              className="max-h-12 max-w-full object-contain" 
+            <Image
+              width={180}
+              height={48}
+              src={brandLogo}
+              alt={brandName || 'Brand Logo'}
+              className="max-h-12 max-w-full object-contain"
             />
           ) : brandName ? (
             <span className="text-xl sm:text-2xl font-black tracking-widest text-[#0B131E] uppercase truncate">
@@ -532,14 +532,13 @@ export default function ProductActions({
                     type="button"
                     onClick={() => handleColorSelect(col)}
                     title={`Farbe: ${col.name}`}
-                    className={`group flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-bold transition-all cursor-pointer ${
-                      isSelected
+                    className={`group flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-bold transition-all cursor-pointer ${isSelected
                         ? 'border-[#F28611] bg-orange-50/70 text-gray-900 ring-2 ring-[#F28611]/30 shadow-2xs'
                         : 'border-gray-200 bg-white text-gray-700 hover:border-gray-300 hover:bg-gray-50'
-                    }`}
+                      }`}
                   >
-                    <span 
-                      className="w-3.5 h-3.5 rounded-full border border-gray-300/80 shrink-0 shadow-2xs group-hover:scale-105 transition-transform" 
+                    <span
+                      className="w-3.5 h-3.5 rounded-full border border-gray-300/80 shrink-0 shadow-2xs group-hover:scale-105 transition-transform"
                       style={{ background: swatch.bg }}
                     />
                     <span className="truncate max-w-[130px]">{col.name}</span>
@@ -566,11 +565,10 @@ export default function ProductActions({
                         key={opt}
                         type="button"
                         onClick={() => setSelectedAttributes(prev => ({ ...prev, [attr.name]: opt }))}
-                        className={`px-3 py-1 text-xs rounded-lg border font-semibold transition cursor-pointer ${
-                          isSelected 
-                            ? 'border-[#F28611] bg-orange-50 text-[#F28611] ring-1 ring-[#F28611]' 
+                        className={`px-3 py-1 text-xs rounded-lg border font-semibold transition cursor-pointer ${isSelected
+                            ? 'border-[#F28611] bg-orange-50 text-[#F28611] ring-1 ring-[#F28611]'
                             : 'border-gray-200 text-gray-700 hover:border-gray-300'
-                        }`}
+                          }`}
                       >
                         {opt}
                       </button>
@@ -589,20 +587,20 @@ export default function ProductActions({
             onClick={() => setIsSizeModalOpen(true)}
             className="text-[11px] sm:text-xs text-[#F28611] hover:text-[#D97706] transition flex items-center gap-1.5 cursor-pointer font-bold group"
           >
-            <svg 
-              className="w-3.5 h-3.5 text-[#F28611] group-hover:scale-110 transition-transform shrink-0" 
-              viewBox="0 0 24 24" 
-              fill="none" 
-              stroke="currentColor" 
-              strokeWidth={2.2} 
-              strokeLinecap="round" 
+            <svg
+              className="w-3.5 h-3.5 text-[#F28611] group-hover:scale-110 transition-transform shrink-0"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={2.2}
+              strokeLinecap="round"
               strokeLinejoin="round"
             >
-              <path d="M21.3 8.7 8.7 21.3a1 1 0 0 1-1.4 0L2.7 16.7a1 1 0 0 1 0-1.4L15.3 2.7a1 1 0 0 1 1.4 0l4.6 4.6a1 1 0 0 1 0 1.4Z"/>
-              <path d="m14.5 4.5-2 2"/>
-              <path d="m11.5 7.5-3 3"/>
-              <path d="m8.5 10.5-2 2"/>
-              <path d="m5.5 13.5-3 3"/>
+              <path d="M21.3 8.7 8.7 21.3a1 1 0 0 1-1.4 0L2.7 16.7a1 1 0 0 1 0-1.4L15.3 2.7a1 1 0 0 1 1.4 0l4.6 4.6a1 1 0 0 1 0 1.4Z" />
+              <path d="m14.5 4.5-2 2" />
+              <path d="m11.5 7.5-3 3" />
+              <path d="m8.5 10.5-2 2" />
+              <path d="m5.5 13.5-3 3" />
             </svg>
             <span className="underline underline-offset-2 decoration-[#F28611]/60 group-hover:decoration-[#F28611]">
               Größentabelle ansehen
@@ -648,11 +646,10 @@ export default function ProductActions({
             type="button"
             onClick={handleAddToCart}
             disabled={isVariable && !currentVariation}
-            className={`h-10 font-bold text-xs sm:text-sm px-4 sm:px-5 rounded-xl flex items-center justify-center gap-1.5 shadow-sm transition-all cursor-pointer whitespace-nowrap active:scale-95 ${
-              isVariable && !currentVariation
+            className={`h-10 font-bold text-xs sm:text-sm px-4 sm:px-5 rounded-xl flex items-center justify-center gap-1.5 shadow-sm transition-all cursor-pointer whitespace-nowrap active:scale-95 ${isVariable && !currentVariation
                 ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
                 : 'bg-[#16A34A] hover:bg-[#15803D] text-white'
-            }`}
+              }`}
           >
             <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
@@ -663,7 +660,7 @@ export default function ProductActions({
 
         {/* Instant Buy Button (optional from settings) */}
         {enableBuyNow && (
-          <button 
+          <button
             type="button"
             onClick={handleBuyNow}
             className="w-full mb-3 bg-[#F28611] hover:bg-orange-600 active:scale-98 text-white font-bold rounded-xl py-2.5 transition shadow-xs text-xs sm:text-sm cursor-pointer"
@@ -676,7 +673,7 @@ export default function ProductActions({
             6. PROMINENT THEME-COLOR INTERMITTENT TICKER
             Highlighted with brand theme orange (#F28611) gradient, high contrast & badge!
             ===================================================================== */}
-        <div 
+        <div
           onClick={() => setIsServiceDrawerOpen(true)}
           title="Klicken für alle Service-Vorteile"
           className="w-full bg-gradient-to-r from-orange-50/95 via-amber-50 to-orange-50/95 border-2 border-[#F28611] rounded-xl py-2.5 px-3.5 mb-3.5 shadow-xs flex items-center justify-between gap-2.5 cursor-pointer hover:shadow-md transition-all select-none group"
@@ -687,10 +684,9 @@ export default function ProductActions({
               {currentTickerItem.icon}
             </div>
             <div className="min-w-0 flex-1">
-              <span 
-                className={`text-xs sm:text-[13px] font-black text-[#0B131E] tracking-tight leading-tight block truncate transition-all duration-300 ${
-                  tickerFade ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-1'
-                }`}
+              <span
+                className={`text-xs sm:text-[13px] font-black text-[#0B131E] tracking-tight leading-tight block truncate transition-all duration-300 ${tickerFade ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-1'
+                  }`}
               >
                 {currentTickerItem.title}
               </span>
@@ -825,7 +821,7 @@ export default function ProductActions({
           <div className="space-y-2.5">
             {product.saleTogether.map(st => (
               <label key={st.id} className="flex items-center gap-3 cursor-pointer p-2 hover:bg-white rounded-lg transition border border-transparent hover:border-gray-200">
-                <input 
+                <input
                   type="checkbox"
                   checked={selectedSaleTogether.includes(st.id)}
                   onChange={(e) => {
@@ -846,9 +842,9 @@ export default function ProductActions({
       )}
 
       {/* Frame Size Guide Interactive Modal */}
-      <SizeGuideModal 
-        isOpen={isSizeModalOpen} 
-        onClose={() => setIsSizeModalOpen(false)} 
+      <SizeGuideModal
+        isOpen={isSizeModalOpen}
+        onClose={() => setIsSizeModalOpen(false)}
       />
 
       {/* Service Guarantees & Reassurance Right Slide-over Drawer (Triggered by ? button) */}
@@ -859,7 +855,7 @@ export default function ProductActions({
 
       {/* Mobile Sticky Bottom Add-to-Cart Bar */}
       {showStickyBar && (
-        <aside 
+        <aside
           aria-label="Schnellkauf"
           className="lg:hidden fixed bottom-[52px] left-0 right-0 bg-white/95 backdrop-blur-md border-t border-stone-200 z-50 p-2.5 px-4 shadow-[0_-4px_15px_rgba(0,0,0,0.1)] flex items-center justify-between gap-3 animate-in slide-in-from-bottom duration-200 pb-safe"
         >
@@ -885,11 +881,10 @@ export default function ProductActions({
             type="button"
             onClick={handleAddToCart}
             disabled={isVariable && !currentVariation}
-            className={`font-extrabold text-xs py-2.5 px-4 rounded-xl shrink-0 shadow-md transition-all cursor-pointer ${
-              isVariable && !currentVariation
+            className={`font-extrabold text-xs py-2.5 px-4 rounded-xl shrink-0 shadow-md transition-all cursor-pointer ${isVariable && !currentVariation
                 ? 'bg-stone-300 text-stone-500 cursor-not-allowed'
                 : 'bg-[#16A34A] hover:bg-[#15803D] active:scale-95 text-white'
-            }`}
+              }`}
           >
             In den Warenkorb
           </button>
