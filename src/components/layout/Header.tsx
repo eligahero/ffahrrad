@@ -1,37 +1,36 @@
 'use client';
-import Image from 'next/image';
 
+import React, { useEffect, useState, useRef } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
+import dynamic from 'next/dynamic';
 import { useCartStore } from '@/store/cartStore';
 import { useWishlistStore } from '@/store/wishlistStore';
-import { useEffect, useState, useRef } from 'react';
-import dynamic from 'next/dynamic';
+import { getUserRole } from '@/actions/auth';
+import { searchProducts } from '@/actions/public';
+import Price from '@/components/Price';
+
 const LoginModal = dynamic(() => import('@/components/auth/LoginModal'), { ssr: false });
 const CartDrawer = dynamic(() => import('@/components/cart/CartDrawer'), { ssr: false });
 const WishlistDrawer = dynamic(() => import('@/components/wishlist/WishlistDrawer'), { ssr: false });
-import { searchProducts } from '@/actions/public';
-import MobileBottomNav from '@/components/layout/MobileBottomNav';
+const MobileBottomNav = dynamic(() => import('@/components/layout/MobileBottomNav'), { ssr: false });
 const MobileSidebar = dynamic(() => import('@/components/layout/MobileSidebar'), { ssr: false });
 const MobileSearchOverlay = dynamic(() => import('@/components/layout/MobileSearchOverlay'), { ssr: false });
-const NotificationBell = dynamic(() => import('@/components/layout/NotificationBell'), { ssr: false });
-import { useTranslations } from 'next-intl';
-import Price from '@/components/Price';
-import { getUserRole } from '@/actions/auth';
 
 type HeaderProps = {
   announcement?: string;
   logoImage?: string;
   headerLogoHeight?: string;
   mobileLogoHeight?: string;
-  menuLinks?: Array<{ label: string, url: string }>;
-  topBarLinks?: Array<{ label: string, icon: string, url: string }>;
+  menuLinks?: Array<{ label: string; url: string }>;
+  topBarLinks?: Array<{ label: string; icon: string; url: string }>;
   loginText?: string;
   myAccountText?: string;
   adminDashboardText?: string;
   topBarBgColor?: string;
   topBarTextColor?: string;
-  categories?: Array<{ id: string, name: string, slug: string | null, parentId?: string | null }>;
+  categories?: Array<{ id: string; name: string; slug: string | null; parentId?: string | null }>;
   searchBorderColor?: string;
   searchPlaceholder?: string;
   searchBtnText?: string;
@@ -42,7 +41,7 @@ type HeaderProps = {
   showSale?: boolean;
   mobileAboutTitle?: string;
   mobileAboutDesc?: string;
-  mobileMenuLinks?: Array<{ label: string, url: string }>;
+  mobileMenuLinks?: Array<{ label: string; url: string }>;
   mobileContactAddress?: string;
   mobileContactPhone?: string;
   mobileContactEmail?: string;
@@ -53,565 +52,470 @@ type HeaderProps = {
   userRole?: 'ADMIN' | 'CUSTOMER' | null;
 };
 
-export default function Header({ 
-  announcement = 'Kostenloser Speditionsversand ab 150 € • 30 Tage Rückgaberecht', 
+export default function Header({
+  announcement = 'Kostenloser Speditionsversand ab 150 € • 30 Tage Rückgaberecht',
   logoImage = '',
-  headerLogoHeight = '65',
-  mobileLogoHeight = '50',
   menuLinks = [],
   topBarLinks = [
     { label: 'Sendung verfolgen', icon: 'truck', url: '/order-tracking' }
   ],
-  loginText,
-  myAccountText,
-  adminDashboardText,
-  topBarBgColor = '#ffffff',
-  topBarTextColor = '#4b5563',
   categories = [],
-  searchBorderColor = '#d1d5db',
-  searchPlaceholder = 'Search products...',
-  searchBtnText = 'Search',
-  searchBtnBgColor = '#F28611',
-  searchBtnTextColor = '#ffffff',
-  showNew = true,
-  showHot = true,
-  showSale = true,
-  mobileAboutTitle = '',
-  mobileAboutDesc = '',
+  searchPlaceholder = 'Fahrräder, E-Bikes oder Zubehör suchen...',
+  mobileAboutTitle = 'Fahrrad Franke',
+  mobileAboutDesc = 'Ihr Fachhändler für E-Bikes, Mountainbikes, Gravel- und Cityräder mit persönlicher Beratung.',
   mobileMenuLinks = [],
   mobileContactAddress = '',
   mobileContactPhone = '',
   mobileContactEmail = '',
   mobileContactWebsite = '',
-  mobileHeaderBorderColor = '#d1d5db',
-  allCategoriesBgColor = '#0B131E',
-  allCategoriesTextColor = '#ffffff',
   userRole = null,
 }: HeaderProps) {
   const router = useRouter();
+  const pathname = usePathname();
+  const isHome = pathname === '/';
+
   const [mounted, setMounted] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [actualUserRole, setActualUserRole] = useState<'ADMIN' | 'CUSTOMER' | null>(userRole);
+
   const cartStore = useCartStore();
   const wishlistStore = useWishlistStore();
-  
+
   const cartItems = cartStore.getTotalItems();
   const cartTotal = cartStore.getTotalPrice();
   const wishlistItems = wishlistStore.items.length;
+
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
-  const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false);
-  const [isWishlistDrawerOpen, setIsWishlistDrawerOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
-  
-  const [actualUserRole, setActualUserRole] = useState<'ADMIN' | 'CUSTOMER' | null>(userRole);
-  
-  useEffect(() => {
-    // Always check if we need to fetch userRole
-    getUserRole().then(role => {
-      setActualUserRole(role as 'ADMIN' | 'CUSTOMER' | null);
-    });
-  }, []);
-  
-  const t = useTranslations('Header');
 
-  // Search state
+  // Desktop search popover state
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('all');
-  const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false);
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [isSearching, setIsSearching] = useState(false);
-  const [showSearchResults, setShowSearchResults] = useState(false);
   const searchContainerRef = useRef<HTMLDivElement>(null);
 
-  // Helper to render icons
-  const renderIcon = (iconName: string) => {
-    switch (iconName) {
-      case 'location':
-        return <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.243-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>;
-      case 'truck':
-        return <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" /></svg>;
-      case 'phone':
-        return <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" /></svg>;
-      case 'mail':
-        return <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>;
-      case 'star':
-      default:
-        return <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" /></svg>;
-    }
-  };
-
-  // Bottom categories dropdown
-  const [isBottomCategoryOpen, setIsBottomCategoryOpen] = useState(false);
-  const bottomCategoryRef = useRef<HTMLDivElement>(null);
-
-  // Close dropdowns on outside click
   useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (searchContainerRef.current && !searchContainerRef.current.contains(event.target as Node)) {
-        setShowSearchResults(false);
-        setIsCategoryDropdownOpen(false);
-      }
-      if (bottomCategoryRef.current && !bottomCategoryRef.current.contains(event.target as Node)) {
-        setIsBottomCategoryOpen(false);
-      }
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    
-    // Close mobile menu on resize to desktop
-    const handleResize = () => {
-      if (window.innerWidth >= 1024) {
-        setIsMobileMenuOpen(false);
-      }
+    setMounted(true);
+    getUserRole().then((role) => {
+      setActualUserRole(role as 'ADMIN' | 'CUSTOMER' | null);
+    });
+
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 40);
     };
-    window.addEventListener("resize", handleResize);
-    
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-      window.removeEventListener("resize", handleResize);
-    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Debounced Search Effect
+  // Search debouncing
   useEffect(() => {
     const timer = setTimeout(async () => {
       if (searchQuery.trim().length > 1) {
         setIsSearching(true);
-        setShowSearchResults(true);
         try {
-          const results = await searchProducts(searchQuery, selectedCategory, 5);
+          const results = await searchProducts(searchQuery, 'all', 6);
           setSearchResults(results);
         } catch (error) {
-          console.error("Search error", error);
+          console.error('Search error', error);
           setSearchResults([]);
         } finally {
           setIsSearching(false);
         }
       } else {
         setSearchResults([]);
-        setShowSearchResults(false);
       }
-    }, 400);
+    }, 350);
 
     return () => clearTimeout(timer);
-  }, [searchQuery, selectedCategory]);
+  }, [searchQuery]);
+
+  // Click outside to close search popover
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (searchContainerRef.current && !searchContainerRef.current.contains(event.target as Node)) {
+        setIsSearchOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (searchQuery.trim() || selectedCategory !== 'all') {
-      setShowSearchResults(false);
-      const params = new URLSearchParams();
-      if (searchQuery.trim()) {
-        params.append('q', searchQuery.trim());
-      }
-      if (selectedCategory !== 'all') {
-        params.append('category', selectedCategory);
-      }
-      router.push(`/search?${params.toString()}`);
+    if (searchQuery.trim()) {
+      setIsSearchOpen(false);
+      router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
     }
   };
 
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setMounted(true);
-  }, []);
-
-  // Hydration mismatch preventer for cart/wishlist icons
-  if (!mounted) {
-    // Return early or provide a skeleton if needed. Here we just let it mount without numbers first.
-  }
+  // Header position & style classes:
+  // On Homepage:
+  // - at top: absolute top-0, transparent, merged directly into Hero banner
+  // - on scroll: fixed top-0, blurred dark glassmorphic background
+  // On Internal pages:
+  // - sticky top-0, sleek dark background so page titles are not covered
+  const headerContainerClass = isHome
+    ? isScrolled
+      ? 'fixed top-0 left-0 right-0 z-50 bg-[#0B131E]/95 backdrop-blur-md shadow-2xl border-b border-white/10 transition-all duration-300 py-3 text-white'
+      : 'absolute top-0 left-0 right-0 z-50 bg-gradient-to-b from-black/85 via-black/35 to-transparent border-b border-transparent transition-all duration-300 py-4 sm:py-5 text-white'
+    : 'sticky top-0 left-0 right-0 z-50 bg-[#0B131E] border-b border-stone-800 shadow-xl transition-all duration-300 py-3 text-white';
 
   return (
     <>
-      <style>{`
-        @media (max-width: 1023px) {
-          .mobile-header-border {
-            border-bottom-color: ${mobileHeaderBorderColor} !important;
-          }
-          .custom-logo-height {
-            height: ${mobileLogoHeight}px !important;
-          }
-        }
-        @media (min-width: 1024px) {
-          .custom-logo-height {
-            height: ${headerLogoHeight}px !important;
-          }
-        }
-      `}</style>
-      <header className="mobile-header-border w-full bg-white border-b border-gray-300 lg:border-gray-200 shadow-sm lg:shadow-none font-sans relative z-50">
-      {/* Top Bar */}
-      <div 
-        className="hidden md:flex justify-between items-center px-4 py-2.5 text-xs border-b border-gray-200 max-w-7xl mx-auto w-full transition-colors text-gray-600"
-        style={{ backgroundColor: topBarBgColor, color: topBarTextColor }}
-      >
-        <div className="flex items-center space-x-2">
-          <span>{announcement || ''}</span>
-        </div>
-        <div className="flex items-center space-x-6 text-xs">
-          {topBarLinks && topBarLinks.length > 0 && (
-            <div className="hidden lg:flex items-center space-x-5">
-              {topBarLinks
-                .filter(link => !link.label.toLowerCase().includes('store') && !link.url.includes('store-locator'))
-                .map(link => {
-                  if (link.label.toLowerCase().includes('order') || link.label.toLowerCase().includes('track') || link.url.includes('order-tracking')) {
-                    return { ...link, label: 'Sendung verfolgen' };
-                  }
-                  return link;
-                })
-                .map((link, idx) => (
-                  <Link 
-                    key={idx} 
-                    href={link.url} 
-                    className="flex items-center hover:opacity-75 transition font-medium"
-                  >
-                    {renderIcon(link.icon)}
-                    <span>{link.label}</span>
-                  </Link>
-                ))}
+      <header className={headerContainerClass}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+          <div className="flex items-center justify-between gap-4 md:gap-8">
+            {/* 1. Left: Brand Logo (Transparent Franke Fahrrad) */}
+            <div className="flex-shrink-0 flex items-center">
+              <Link href="/" className="flex items-center group gap-3">
+                <div className="relative h-11 sm:h-13 w-auto flex items-center">
+                  <Image
+                    src="/franke-logo.png"
+                    alt="Franke Fahrrad"
+                    width={220}
+                    height={60}
+                    className="h-10 sm:h-12 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+                    priority
+                  />
+                </div>
+              </Link>
             </div>
-          )}
-        </div>
-      </div>
 
-      {/* Middle Bar: Logo, Search, User, Wishlist, Cart */}
-      <div className="py-4 px-4 max-w-7xl mx-auto w-full flex flex-nowrap items-center justify-between gap-4 md:gap-8 lg:gap-10">
-        {/* Logo */}
-        <div className="flex-shrink-0 flex items-center">
-          <Link href="/" className="flex items-center group">
-            {logoImage && logoImage !== '/logo.png' && logoImage !== '/logo.jpg' && !logoImage.includes('logo-flame') ? (
-              <Image 
-                src={logoImage} 
-                alt="Fahrrad Franke" 
-                width={260} 
-                height={75} 
-                className="object-contain custom-logo-height w-auto max-w-[200px] md:max-w-[260px] group-hover:scale-102 transition-transform" 
-                priority 
-              />
-            ) : (
-              <div className="relative h-12 sm:h-14 w-auto flex items-center">
-                <Image
-                  src="/franke-logo.png"
-                  alt="Fahrrad Franke"
-                  width={240}
-                  height={65}
-                  className="h-11 sm:h-13 w-auto object-contain group-hover:scale-102 transition-transform"
-                  priority
-                />
+            {/* 2. Center: Navigation Links (Matching Mockup Composition) */}
+            <nav className="hidden lg:flex items-center space-x-7 xl:space-x-8 text-sm font-medium">
+              {/* Startseite / Accueil */}
+              <Link
+                href="/"
+                className={`transition-colors py-2 ${
+                  isHome
+                    ? 'text-white font-bold border-b-2 border-[#F59E0B]'
+                    : 'text-stone-200 hover:text-[#F59E0B]'
+                }`}
+              >
+                Startseite
+              </Link>
+
+              {/* Fahrräder ⌵ (Dropdown with Categories) */}
+              <div className="relative group/bikes py-2">
+                <Link
+                  href="/shop"
+                  className="flex items-center gap-1.5 text-stone-200 hover:text-[#F59E0B] transition-colors cursor-pointer"
+                >
+                  <span>Fahrräder</span>
+                  <svg
+                    className="w-3.5 h-3.5 opacity-70 group-hover/bikes:rotate-180 transition-transform duration-200"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </Link>
+
+                {/* Dropdown Menu */}
+                <div className="absolute top-full left-0 w-64 bg-[#0B131E]/95 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl p-2.5 opacity-0 invisible group-hover/bikes:opacity-100 group-hover/bikes:visible transition-all duration-200 -translate-y-2 group-hover/bikes:translate-y-0 z-50">
+                  <Link
+                    href="/shop"
+                    className="flex items-center justify-between px-3.5 py-2.5 rounded-xl hover:bg-white/10 text-white font-bold text-xs transition"
+                  >
+                    <span>Alle Fahrräder</span>
+                    <span className="text-[10px] text-stone-400">Katalog →</span>
+                  </Link>
+                  <div className="h-px bg-white/10 my-1" />
+                  <Link
+                    href="/shop?category=e-bike"
+                    className="flex items-center justify-between px-3.5 py-2 rounded-xl hover:bg-white/10 text-stone-200 hover:text-[#F59E0B] text-xs transition"
+                  >
+                    <span>⚡ E-Bikes &amp; Pedelecs</span>
+                    <span className="text-[9px] bg-[#F59E0B]/20 text-[#F59E0B] px-1.5 py-0.5 rounded font-black">
+                      TOP
+                    </span>
+                  </Link>
+                  <Link
+                    href="/shop?category=mountainbike"
+                    className="flex items-center px-3.5 py-2 rounded-xl hover:bg-white/10 text-stone-200 hover:text-[#F59E0B] text-xs transition"
+                  >
+                    <span>🚵 Mountainbikes (MTB)</span>
+                  </Link>
+                  <Link
+                    href="/shop?category=gravel"
+                    className="flex items-center px-3.5 py-2 rounded-xl hover:bg-white/10 text-stone-200 hover:text-[#F59E0B] text-xs transition"
+                  >
+                    <span>🚴 Gravel- &amp; Rennräder</span>
+                  </Link>
+                  <Link
+                    href="/shop?category=trekking"
+                    className="flex items-center px-3.5 py-2 rounded-xl hover:bg-white/10 text-stone-200 hover:text-[#F59E0B] text-xs transition"
+                  >
+                    <span>🏙️ Trekking- &amp; Cityräder</span>
+                  </Link>
+                  <Link
+                    href="/shop?category=cargo"
+                    className="flex items-center px-3.5 py-2 rounded-xl hover:bg-white/10 text-stone-200 hover:text-[#F59E0B] text-xs transition"
+                  >
+                    <span>📦 Lastenräder &amp; Cargo</span>
+                  </Link>
+                </div>
               </div>
-            )}
-          </Link>
-        </div>
 
-        {/* Search Bar */}
-        <div className="hidden lg:flex flex-1 w-full max-w-2xl flex-col relative" ref={searchContainerRef}>
-          <form onSubmit={handleSearchSubmit} className="flex items-center w-full rounded-md border border-gray-300 bg-white h-11 relative z-20 focus-within:border-gray-400 shadow-sm">
-            <input 
-              type="text" 
-              placeholder={searchPlaceholder || t('search_placeholder')} 
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              onFocus={() => { if (searchQuery.length > 1) setShowSearchResults(true); }}
-              className="flex-1 px-4 h-full outline-none text-sm text-gray-700 placeholder-gray-400 bg-transparent"
-            />
-            
-            <button 
-              type="submit" 
-              aria-label="Search"
-              className="bg-[#F28611] hover:bg-[#D97706] text-white w-12 h-full flex items-center justify-center transition-colors rounded-r-md cursor-pointer flex-shrink-0"
-            >
-              {isSearching ? (
-                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-              ) : (
-                <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-              )}
-            </button>
-          </form>
+              {/* Zubehör ⌵ (Dropdown with Accessories) */}
+              <div className="relative group/acc py-2">
+                <Link
+                  href="/shop?category=zubehoer"
+                  className="flex items-center gap-1.5 text-stone-200 hover:text-[#F59E0B] transition-colors cursor-pointer"
+                >
+                  <span>Zubehör</span>
+                  <svg
+                    className="w-3.5 h-3.5 opacity-70 group-hover/acc:rotate-180 transition-transform duration-200"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </Link>
 
-          {/* Search Results Dropdown */}
-          {showSearchResults && searchQuery.length > 1 && (
-            <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 shadow-xl rounded-md z-50 overflow-hidden">
-              {isSearching && searchResults.length === 0 ? (
-                <div className="p-4 text-center text-gray-500 text-sm">{t('searching')}</div>
-              ) : searchResults.length > 0 ? (
-                <div>
-                  <ul className="max-h-80 overflow-y-auto py-2">
-                    {searchResults.map((product) => (
-                      <li key={product.id}>
-                        <Link 
-                          href={`/produto/${product.slug}`} 
-                          onClick={() => {
-                            setShowSearchResults(false);
-                            setSearchQuery('');
-                          }}
-                          className="flex items-center px-4 py-2.5 hover:bg-yellow-50 transition border-b border-gray-100 last:border-0"
-                        >
-                          <div className="w-10 h-10 flex-shrink-0 bg-gray-50 rounded overflow-hidden mr-3">
-                            {product.images && product.images.length > 0 ? (
-                              <Image width={100} height={100} src={product.images[0]} alt={product.title} title={product.title} className="w-full h-full object-contain p-1" />
-                            ) : (
-                              <div className="w-full h-full flex items-center justify-center text-gray-300">
-                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-                              </div>
-                            )}
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <h4 className="text-sm font-semibold text-gray-900 truncate">{product.title}</h4>
-                            <div className="flex items-center gap-2 mt-0.5">
-                              <Price amount={product.price} showTax={false} className="text-red-600 font-bold text-sm" />
-                              {product.compareAtPrice && product.compareAtPrice > product.price && (
-                                <Price amount={product.compareAtPrice} showTax={false} className="text-gray-400 line-through text-xs" />
+                {/* Dropdown Menu */}
+                <div className="absolute top-full left-0 w-64 bg-[#0B131E]/95 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl p-2.5 opacity-0 invisible group-hover/acc:opacity-100 group-hover/acc:visible transition-all duration-200 -translate-y-2 group-hover/acc:translate-y-0 z-50">
+                  <Link
+                    href="/shop?category=anhaenger"
+                    className="flex items-center px-3.5 py-2 rounded-xl hover:bg-white/10 text-stone-200 hover:text-[#F59E0B] text-xs transition"
+                  >
+                    <span>🛒 Fahrradanhänger &amp; Transport</span>
+                  </Link>
+                  <Link
+                    href="/shop?category=bekleidung"
+                    className="flex items-center px-3.5 py-2 rounded-xl hover:bg-white/10 text-stone-200 hover:text-[#F59E0B] text-xs transition"
+                  >
+                    <span>🪖 Helme &amp; Bekleidung</span>
+                  </Link>
+                  <Link
+                    href="/shop?category=sicherheit"
+                    className="flex items-center px-3.5 py-2 rounded-xl hover:bg-white/10 text-stone-200 hover:text-[#F59E0B] text-xs transition"
+                  >
+                    <span>🔦 Beleuchtung &amp; Schlösser</span>
+                  </Link>
+                  <Link
+                    href="/shop?category=komponenten"
+                    className="flex items-center px-3.5 py-2 rounded-xl hover:bg-white/10 text-stone-200 hover:text-[#F59E0B] text-xs transition"
+                  >
+                    <span>⚙️ Komponenten &amp; Werkzeuge</span>
+                  </Link>
+                </div>
+              </div>
+
+              {/* Über uns */}
+              <Link
+                href="/shop"
+                className="text-stone-200 hover:text-[#F59E0B] transition-colors py-2"
+              >
+                Über uns
+              </Link>
+
+              {/* Kontakt */}
+              <Link
+                href="/contact"
+                className="text-stone-200 hover:text-[#F59E0B] transition-colors py-2"
+              >
+                Kontakt
+              </Link>
+            </nav>
+
+            {/* 3. Right: Search, Wishlist, Account, Cart & Gold Pill Button */}
+            <div className="flex items-center space-x-3 sm:space-x-4">
+              {/* Search Toggle Icon */}
+              <div className="relative" ref={searchContainerRef}>
+                <button
+                  type="button"
+                  onClick={() => setIsSearchOpen(!isSearchOpen)}
+                  aria-label="Suche öffnen"
+                  className="w-10 h-10 rounded-full flex items-center justify-center text-stone-200 hover:text-white hover:bg-white/10 transition cursor-pointer"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                    />
+                  </svg>
+                </button>
+
+                {/* Desktop Search Overlay Box */}
+                {isSearchOpen && (
+                  <div className="absolute right-0 top-full mt-2 w-80 sm:w-96 bg-[#0B131E]/95 backdrop-blur-xl border border-white/15 rounded-2xl p-3 shadow-2xl z-50">
+                    <form onSubmit={handleSearchSubmit} className="relative flex items-center">
+                      <input
+                        type="text"
+                        autoFocus
+                        placeholder={searchPlaceholder}
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="w-full bg-stone-900 border border-stone-700 rounded-xl px-4 py-2.5 text-xs text-white placeholder-stone-400 outline-none focus:border-[#F59E0B]"
+                      />
+                      <button
+                        type="submit"
+                        aria-label="Suchen"
+                        className="absolute right-1.5 px-3 py-1.5 bg-[#F59E0B] text-stone-950 font-bold rounded-lg text-xs hover:bg-[#d97706] transition"
+                      >
+                        {isSearching ? '...' : 'Los'}
+                      </button>
+                    </form>
+
+                    {/* Instant Search Results */}
+                    {searchResults.length > 0 && (
+                      <div className="mt-3 max-h-64 overflow-y-auto divide-y divide-white/10">
+                        {searchResults.map((product) => (
+                          <Link
+                            key={product.id}
+                            href={`/produto/${product.slug}`}
+                            onClick={() => setIsSearchOpen(false)}
+                            className="flex items-center gap-3 p-2 hover:bg-white/10 rounded-xl transition"
+                          >
+                            <div className="w-9 h-9 bg-stone-800 rounded-lg p-1 shrink-0 flex items-center justify-center">
+                              {product.images && product.images[0] ? (
+                                <Image
+                                  src={product.images[0]}
+                                  alt={product.title}
+                                  width={40}
+                                  height={40}
+                                  className="object-contain"
+                                />
+                              ) : (
+                                <span className="text-xs">🚲</span>
                               )}
                             </div>
-                          </div>
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ) : (
-                <div className="p-4 text-center text-sm text-gray-500 bg-white">
-                  {t('no_results')} &quot;<span className="font-semibold">{searchQuery}</span>&quot;
-                </div>
-              )}
-            </div>
-          )}
-        </div>
-
-        {/* Action Icons: User, Wishlist, Red Cart */}
-        <div className="flex items-center flex-shrink-0 space-x-3 md:space-x-4">
-          {/* User Account Icon */}
-          <button 
-            onClick={() => {
-              if (actualUserRole) {
-                router.push(actualUserRole === 'ADMIN' ? '/admin' : '/account');
-              } else {
-                setIsLoginModalOpen(true);
-              }
-            }}
-            className="hidden sm:flex items-center justify-center w-11 h-11 rounded-md border border-gray-200 text-gray-700 hover:text-gray-900 hover:border-gray-300 transition"
-            title="Account"
-            aria-label="Account"
-          >
-            <svg className="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-            </svg>
-          </button>
-
-          {/* Wishlist Button */}
-          <button 
-            onClick={() => wishlistStore.setIsOpen(true)}
-            className="hidden sm:flex items-center justify-center w-11 h-11 rounded-md border border-gray-200 text-gray-700 hover:text-gray-900 hover:border-gray-300 transition relative"
-            title="Wishlist"
-            aria-label="Wishlist"
-          >
-            <svg className="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-            </svg>
-            {mounted && wishlistItems > 0 && (
-              <span className="absolute -top-1.5 -right-1.5 bg-[#F28611] text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center border-2 border-white shadow-sm">
-                {wishlistItems}
-              </span>
-            )}
-          </button>
-
-          {/* Red Cart Box with White Badge */}
-          <div 
-            onClick={() => cartStore.setIsOpen(true)}
-            className="relative flex items-center bg-[#F28611] hover:bg-[#D97706] text-white rounded-md px-3 sm:px-4 py-2 cursor-pointer transition shadow-sm h-10 sm:h-11 select-none shrink-0"
-          >
-            {/* Counter Bubble */}
-            <span className="absolute -top-2 left-4 sm:left-5 bg-stone-900 text-white text-[11px] sm:text-xs font-black w-5 h-5 rounded-full flex items-center justify-center border-2 border-white shadow-sm">
-              {mounted ? cartItems : 0}
-            </span>
-
-            {/* Trash/Bag icon */}
-            <div className="mr-1.5 sm:mr-3 flex items-center justify-center">
-              <svg 
-                className="w-5 h-5 text-white" 
-                viewBox="0 0 64 64" 
-                fill="none" 
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                {/* Anses du panier en diagonale */}
-                <path d="M18 10 L30 24" stroke="currentColor" strokeWidth="4.5" strokeLinecap="round" />
-                <path d="M46 10 L34 24" stroke="currentColor" strokeWidth="4.5" strokeLinecap="round" />
-                
-                {/* Rebord supérieur arrondi du panier */}
-                <rect x="6" y="22" width="52" height="7" rx="3.5" fill="currentColor" />
-                
-                {/* Corps trapézoïdal du panier */}
-                <path 
-                  d="M10 29 L15 54 C15.4 56.2 17.3 58 19.5 58 L44.5 58 C46.7 58 48.6 56.2 49 54 L54 29 Z" 
-                  fill="currentColor" 
-                />
-                
-                {/* Les 5 fentes verticales blanches caractéristiques */}
-                <rect x="18" y="34" width="3.5" height="18" rx="1.75" fill="#F28611" />
-                <rect x="25" y="34" width="3.5" height="18" rx="1.75" fill="#F28611" />
-                <rect x="32" y="34" width="3.5" height="18" rx="1.75" fill="#F28611" />
-                <rect x="39" y="34" width="3.5" height="18" rx="1.75" fill="#F28611" />
-                <rect x="46" y="34" width="3.5" height="18" rx="1.75" fill="#F28611" />
-              </svg>
-            </div>
-
-            {/* Price & Caret */}
-            <div className="hidden sm:flex items-center space-x-1 font-bold text-sm md:text-base">
-              <span>{mounted ? <Price amount={cartTotal} showTax={false} /> : <Price amount={0} showTax={false} />}</span>
-              <svg className="w-3.5 h-3.5 ml-1 opacity-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
-              </svg>
-            </div>
-          </div>
-
-          {/* Mobile menu toggle */}
-          <button 
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            aria-label="Menu"
-            className="lg:hidden p-2 text-gray-700 hover:text-gray-900 transition"
-          >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" /></svg>
-          </button>
-        </div>
-      </div>
-
-      {/* Navigation Bar (Bottom Bar) */}
-      <div className="hidden lg:block bg-[#F28611] w-full shadow-inner">
-        <div className="max-w-7xl mx-auto px-4 w-full flex items-center h-12">
-          
-          {/* ALL CATEGORIES BUTTON (Black block on the left) */}
-          <div className="relative shrink-0" ref={bottomCategoryRef}>
-            <button 
-              type="button"
-              onClick={() => setIsBottomCategoryOpen(!isBottomCategoryOpen)}
-              className="bg-[#0B131E] hover:bg-[#162032] text-white px-6 h-12 border-r border-orange-400/30 flex items-center gap-3 font-extrabold text-[13px] tracking-wider uppercase transition-colors shadow-sm cursor-pointer select-none"
-            >
-              <svg className="w-5 h-5 text-white shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-              <span>KATEGORIEN</span>
-              <svg className={`w-3.5 h-3.5 ml-1 transition-transform duration-200 ${isBottomCategoryOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
-              </svg>
-            </button>
-
-            {/* Dropdown Menu */}
-            {isBottomCategoryOpen && (
-              <div className="absolute top-full left-0 w-72 bg-white border border-stone-200 shadow-2xl rounded-b-xl z-50 py-2 divide-y divide-stone-100 normal-case font-medium max-h-[75vh] overflow-y-auto">
-                {categories && categories.length > 0 ? (
-                  categories.map((cat) => (
-                    <Link 
-                      key={cat.id} 
-                      href={`/product-category/${cat.slug || cat.id}`}
-                      className={`flex items-center justify-between px-5 py-2.5 hover:bg-orange-50 hover:text-[#F28611] transition ${!cat.parentId ? 'font-bold text-stone-900 text-xs bg-stone-50/60' : 'text-stone-600 pl-8 text-xs'}`}
-                      onClick={() => setIsBottomCategoryOpen(false)}
-                    >
-                      <span>{cat.name}</span>
-                      <svg className="w-3.5 h-3.5 text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7"/></svg>
-                    </Link>
-                  ))
-                ) : (
-                  [
-                    { name: 'Mountainbikes (MTB)', slug: 'mountainbike', icon: '🚵' },
-                    { name: 'E-Bikes & Pedelecs', slug: 'e-bike', icon: '⚡' },
-                    { name: 'Rennräder & Gravel', slug: 'gravel', icon: '🚴' },
-                    { name: 'Trekking- & Cityräder', slug: 'trekking', icon: '🏙️' },
-                    { name: 'Fahrradanhänger & Transport', slug: 'anhaenger', icon: '🛒' },
-                    { name: 'Komponenten & Pedale', slug: 'komponenten', icon: '⚙️' },
-                    { name: 'Helme & Bekleidung', slug: 'bekleidung', icon: '🪖' },
-                    { name: 'Zubehör & Beleuchtung', slug: 'zubehoer', icon: '🔦' },
-                  ].map((cat, idx) => (
-                    <Link
-                      key={idx}
-                      href={`/shop?category=${cat.slug}`}
-                      className="flex items-center justify-between px-5 py-2.5 hover:bg-orange-50 hover:text-[#F28611] text-stone-800 text-xs font-semibold transition"
-                      onClick={() => setIsBottomCategoryOpen(false)}
-                    >
-                      <span className="flex items-center gap-2.5">
-                        <span>{cat.icon}</span>
-                        <span>{cat.name}</span>
-                      </span>
-                      <svg className="w-3.5 h-3.5 text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7"/></svg>
-                    </Link>
-                  ))
+                            <div className="min-w-0 flex-1">
+                              <p className="text-xs font-semibold text-white truncate">{product.title}</p>
+                              <Price amount={product.price} showTax={false} className="text-[#F59E0B] font-bold text-xs" />
+                            </div>
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 )}
               </div>
-            )}
+
+              {/* Wishlist Button */}
+              <button
+                type="button"
+                onClick={() => wishlistStore.setIsOpen(true)}
+                aria-label="Wunschliste"
+                className="hidden sm:flex relative w-10 h-10 rounded-full items-center justify-center text-stone-200 hover:text-white hover:bg-white/10 transition cursor-pointer"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={1.8}
+                    d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                  />
+                </svg>
+                {mounted && wishlistItems > 0 && (
+                  <span className="absolute -top-0.5 -right-0.5 bg-[#F59E0B] text-stone-950 text-[10px] font-black w-4 h-4 rounded-full flex items-center justify-center shadow-sm">
+                    {wishlistItems}
+                  </span>
+                )}
+              </button>
+
+              {/* User Account Button */}
+              <button
+                type="button"
+                onClick={() => {
+                  if (actualUserRole) {
+                    router.push(actualUserRole === 'ADMIN' ? '/admin' : '/account');
+                  } else {
+                    setIsLoginModalOpen(true);
+                  }
+                }}
+                aria-label="Konto"
+                className="hidden sm:flex w-10 h-10 rounded-full items-center justify-center text-stone-200 hover:text-white hover:bg-white/10 transition cursor-pointer"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={1.8}
+                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                  />
+                </svg>
+              </button>
+
+              {/* Shopping Cart Icon (Minimalist White Icon with Gold Badge) */}
+              <button
+                type="button"
+                onClick={() => cartStore.setIsOpen(true)}
+                aria-label="Warenkorb"
+                className="relative w-10 h-10 rounded-full flex items-center justify-center text-white hover:bg-white/10 transition cursor-pointer"
+              >
+                <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
+                  />
+                </svg>
+                {mounted && cartItems > 0 && (
+                  <span className="absolute -top-0.5 -right-0.5 bg-[#F59E0B] text-stone-950 text-[10px] font-black w-4 h-4 rounded-full flex items-center justify-center shadow-md animate-pulse">
+                    {cartItems}
+                  </span>
+                )}
+              </button>
+
+              {/* Golden Pill CTA Button: "Fahrräder entdecken →" (Exact Mockup Match) */}
+              <Link
+                href="/shop"
+                className="hidden md:inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full bg-[#F59E0B] hover:bg-[#d97706] text-stone-950 font-bold text-xs tracking-wider uppercase transition-all duration-200 shadow-md shadow-amber-500/25 hover:scale-105 active:scale-95 shrink-0"
+              >
+                <span>Fahrräder entdecken</span>
+                <span>→</span>
+              </Link>
+
+              {/* Mobile Menu Hamburger Toggle */}
+              <button
+                type="button"
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                aria-label="Navigation öffnen"
+                className="lg:hidden p-2 text-stone-200 hover:text-white transition cursor-pointer"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              </button>
+            </div>
           </div>
-
-          {/* Horizontal Menu Links */}
-          <nav className="flex items-center space-x-1 font-extrabold text-[13px] tracking-wide text-white uppercase ml-3 flex-1 overflow-x-auto no-scrollbar">
-            {menuLinks && menuLinks.length > 0 ? (
-              menuLinks.map((link, idx) => (
-                <div key={idx} className="relative group shrink-0">
-                  <Link 
-                    href={link.url} 
-                    className="flex items-center px-4 py-3 hover:bg-black/15 rounded transition font-black text-white"
-                  >
-                    <span>{link.label}</span>
-                  </Link>
-                </div>
-              ))
-            ) : (
-              <>
-                <Link href="/" className="flex items-center px-4 py-3 hover:bg-black/15 rounded transition font-black text-white">
-                  <span>STARTSEITE</span>
-                </Link>
-                <Link href="/shop" className="flex items-center px-4 py-3 hover:bg-black/15 rounded transition font-black text-white">
-                  <span>FAHRRÄDER &amp; SHOP</span>
-                </Link>
-                <Link href="/shop?category=anhaenger" className="flex items-center px-4 py-3 hover:bg-black/15 rounded transition font-black text-white">
-                  <span>ANHÄNGER</span>
-                </Link>
-                <Link href="/envios-e-entregas" className="flex items-center px-4 py-3 hover:bg-black/15 rounded transition font-black text-white">
-                  <span>VERSAND &amp; LIEFERUNG</span>
-                </Link>
-                <Link href="/devolucoes" className="flex items-center px-4 py-3 hover:bg-black/15 rounded transition font-black text-white">
-                  <span>30 TAGE RÜCKGABE</span>
-                </Link>
-                <Link href="/contact" className="flex items-center px-4 py-3 hover:bg-black/15 rounded transition font-black text-white">
-                  <span>KONTAKT &amp; BERATUNG</span>
-                </Link>
-              </>
-            )}
-          </nav>
         </div>
-      </div>
+      </header>
 
+      {/* Global Modals & Drawers */}
+      <LoginModal isOpen={isLoginModalOpen} onClose={() => setIsLoginModalOpen(false)} />
+      <CartDrawer isOpen={cartStore.isOpen} onClose={() => cartStore.setIsOpen(false)} />
+      <WishlistDrawer isOpen={wishlistStore.isOpen} onClose={() => wishlistStore.setIsOpen(false)} />
 
-
-      <LoginModal 
-        isOpen={isLoginModalOpen} 
-        onClose={() => setIsLoginModalOpen(false)} 
-      />
-      
-      <CartDrawer 
-        isOpen={cartStore.isOpen}
-        onClose={() => cartStore.setIsOpen(false)}
-      />
-
-      <WishlistDrawer 
-        isOpen={wishlistStore.isOpen}
-        onClose={() => wishlistStore.setIsOpen(false)}
-      />
-
-      <MobileBottomNav 
+      <MobileBottomNav
         onSearchClick={() => setIsMobileSearchOpen(true)}
         onLoginClick={() => setIsLoginModalOpen(true)}
         userRole={actualUserRole}
         onCartClick={() => cartStore.setIsOpen(true)}
       />
 
-      <MobileSearchOverlay 
+      <MobileSearchOverlay
         isOpen={isMobileSearchOpen}
         onClose={() => setIsMobileSearchOpen(false)}
         placeholder={searchPlaceholder}
       />
 
-      <MobileSidebar 
+      <MobileSidebar
         isOpen={isMobileMenuOpen}
         onClose={() => setIsMobileMenuOpen(false)}
         logoImage={logoImage}
-        logoHeight={mobileLogoHeight}
         aboutTitle={mobileAboutTitle}
         aboutDesc={mobileAboutDesc}
         menuLinks={menuLinks && menuLinks.length > 0 ? menuLinks : mobileMenuLinks}
@@ -621,7 +525,6 @@ export default function Header({
         contactWebsite={mobileContactWebsite}
         categories={categories}
       />
-    </header>
     </>
   );
 }

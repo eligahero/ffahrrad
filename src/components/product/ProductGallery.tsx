@@ -12,13 +12,13 @@ type ProductGalleryProps = {
   activeVariationImage?: string | null;
 };
 
-export default function ProductGallery({ 
-  images = [], 
-  title, 
-  discountLabel, 
-  compareAtPrice, 
-  price, 
-  activeVariationImage 
+export default function ProductGallery({
+  images = [],
+  title,
+  discountLabel,
+  compareAtPrice,
+  price,
+  activeVariationImage
 }: ProductGalleryProps) {
   const hasImages = Array.isArray(images) && images.length > 0;
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -218,7 +218,7 @@ export default function ProductGallery({
             </button>
 
             {/* Thumbnail Cards Container */}
-            <div 
+            <div
               ref={thumbnailsContainerRef}
               className="flex gap-2 sm:gap-3 overflow-x-auto no-scrollbar py-1 px-0.5 max-w-full scroll-smooth"
             >
@@ -230,11 +230,10 @@ export default function ProductGallery({
                     key={idx}
                     onClick={() => handleSelectThumbnail(idx)}
                     aria-label={`Bild ${idx + 1} auswählen`}
-                    className={`h-16 w-16 sm:h-20 sm:w-20 rounded-xl bg-white p-1.5 flex items-center justify-center transition-all cursor-pointer shrink-0 overflow-hidden ${
-                      isSelected
+                    className={`h-16 w-16 sm:h-20 sm:w-20 rounded-xl bg-white p-1.5 flex items-center justify-center transition-all cursor-pointer shrink-0 overflow-hidden ${isSelected
                         ? 'border-2 border-[#F28611] ring-2 ring-[#F28611]/30 shadow-xs scale-102'
                         : 'border border-gray-200 hover:border-gray-400 opacity-75 hover:opacity-100'
-                    }`}
+                      }`}
                   >
                     <Image
                       width={100}
@@ -265,7 +264,7 @@ export default function ProductGallery({
 
       {/* LIGHTBOX MODAL */}
       {isLightboxOpen && mainImage && (
-        <div 
+        <div
           className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex flex-col items-center justify-center p-4 select-none animate-in fade-in duration-200"
           onClick={() => setIsLightboxOpen(false)}
         >
@@ -326,10 +325,9 @@ export default function ProductGallery({
           )}
 
           {/* Lightbox Center Image */}
-          <div 
-            className={`relative max-w-5xl max-h-[85vh] w-full h-full flex items-center justify-center overflow-auto ${
-              isModalZoomed ? 'cursor-zoom-out' : 'cursor-zoom-in'
-            }`}
+          <div
+            className={`relative max-w-5xl max-h-[85vh] w-full h-full flex items-center justify-center overflow-auto ${isModalZoomed ? 'cursor-zoom-out' : 'cursor-zoom-in'
+              }`}
             onClick={(e) => {
               e.stopPropagation();
               setIsModalZoomed(!isModalZoomed);
@@ -340,9 +338,8 @@ export default function ProductGallery({
               height={1600}
               src={mainImage}
               alt={title}
-              className={`max-w-full max-h-full object-contain transition-transform duration-200 ${
-                isModalZoomed ? 'scale-175 sm:scale-200' : 'scale-100'
-              }`}
+              className={`max-w-full max-h-full object-contain transition-transform duration-200 ${isModalZoomed ? 'scale-175 sm:scale-200' : 'scale-100'
+                }`}
             />
           </div>
 

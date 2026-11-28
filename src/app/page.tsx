@@ -1,4 +1,4 @@
-import ThermalHero from '@/components/home/ThermalHero';
+import MergedHeroSlider from '@/components/home/MergedHeroSlider';
 import Newsletter from '@/components/home/Newsletter';
 import PromoBanners from '@/components/home/PromoBanners';
 import FullWidthBanner from '@/components/home/FullWidthBanner';
@@ -43,7 +43,7 @@ export default async function Home() {
       case 'Hero':
         return (
           <div key={section.id}>
-            <ThermalHero config={section.settings} showcaseProducts={heroShowcaseProducts} />
+            <MergedHeroSlider config={section.settings} />
             <TrustBar />
             <CategoryExplorer />
           </div>
