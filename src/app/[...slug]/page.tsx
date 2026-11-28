@@ -182,11 +182,10 @@ export default async function CatchAllPage({
                       <Link
                         key={item.slug}
                         href={`/${item.slug}`}
-                        className={`inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl text-xs sm:text-xs font-bold whitespace-nowrap transition-all shadow-xs ${
-                          isActive
+                        className={`inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl text-xs sm:text-xs font-bold whitespace-nowrap transition-all shadow-xs ${isActive
                             ? 'bg-red-600 text-white shadow-red-600/30 ring-2 ring-red-400/50'
                             : 'bg-white text-stone-700 hover:bg-stone-100 hover:text-stone-900 border border-stone-200/90'
-                        }`}
+                          }`}
                       >
                         <span className="text-sm sm:text-base">{item.icon}</span>
                         <span>{item.label}</span>
@@ -275,8 +274,8 @@ export default async function CatchAllPage({
   const category = await getCategoryByPathSegments(slug);
   if (category) {
     const resolvedSearchParams = await searchParams;
-    const activeCategory = resolvedSearchParams.category !== undefined 
-      ? resolvedSearchParams.category 
+    const activeCategory = resolvedSearchParams.category !== undefined
+      ? resolvedSearchParams.category
       : (category.slug || category.id);
 
     const newSearchParams = Promise.resolve({
