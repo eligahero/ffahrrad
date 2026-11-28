@@ -72,7 +72,49 @@ export default function MergedHeroSlider({ config }: MergedHeroSliderProps) {
   const [isPaused, setIsPaused] = useState(false);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
-  const totalSlides = SLIDES.length;
+  const slides: HeroSlide[] = React.useMemo(() => [
+    {
+      id: 'slide-1',
+      image: config?.slide1_image || '/images/slides/slide-1.png',
+      eyebrow: config?.slide1_eyebrow || 'DISCOVER YOUR NEXT RIDE · 2026',
+      titleWhite: config?.slide1_titleWhite || 'RIDE BEYOND.',
+      titleGold: config?.slide1_titleGold || 'LIVE FREEDOM.',
+      description: config?.slide1_description || 'Entdecken Sie eine neue Art des Fahrens. Außergewöhnliche Fahrräder, entwickelt um Grenzen zu verschieben.',
+      primaryCtaText: config?.slide1_cta1Text || 'Fahrräder entdecken',
+      primaryCtaLink: config?.slide1_cta1Link || '/shop',
+      secondaryCtaText: config?.slide1_cta2Text || 'Unsere Welt',
+      secondaryCtaLink: config?.slide1_cta2Link || '/shop',
+      tags: config?.slide1_tags || 'PERFORMANCE · DESIGN · FREIHEIT',
+    },
+    {
+      id: 'slide-2',
+      image: config?.slide2_image || '/images/slides/slide-2.jpg',
+      eyebrow: config?.slide2_eyebrow || 'POWER & REVOLUTION · E-BIKES',
+      titleWhite: config?.slide2_titleWhite || 'EXPLORE MORE.',
+      titleGold: config?.slide2_titleGold || 'CONQUER PEAKS.',
+      description: config?.slide2_description || 'Kraftvolle Bosch- & Shimano-Antriebe, grenzenlose Reichweite und maximale Souveränität auf jedem Trail.',
+      primaryCtaText: config?.slide2_cta1Text || 'E-Bikes ansehen',
+      primaryCtaLink: config?.slide2_cta1Link || '/shop?category=e-bike',
+      secondaryCtaText: config?.slide2_cta2Text || 'Kaufberatung',
+      secondaryCtaLink: config?.slide2_cta2Link || '/contact',
+      tags: config?.slide2_tags || 'KRAFT · INNOVATION · REICHWEITE',
+    },
+    {
+      id: 'slide-3',
+      image: config?.slide3_image || '/images/slides/slide-3.jpg',
+      eyebrow: config?.slide3_eyebrow || 'PRECISION ENGINEERING · GRAVEL & MTB',
+      titleWhite: config?.slide3_titleWhite || 'PURE SPEED.',
+      titleGold: config?.slide3_titleGold || 'EVERY ROAD.',
+      description: config?.slide3_description || 'Vom Großstadtdschungel bis zum anspruchsvollen Singletrack – entwickelt für kompromisslose Präzision und Agilität.',
+      primaryCtaText: config?.slide3_cta1Text || 'Gravel & MTB entdecken',
+      primaryCtaLink: config?.slide3_cta1Link || '/shop?category=gravel',
+      secondaryCtaText: config?.slide3_cta2Text || 'Zubehör ansehen',
+      secondaryCtaLink: config?.slide3_cta2Link || '/shop?category=zubehoer',
+      tags: config?.slide3_tags || 'PRÄZISION · AGILITÄT · KONTROLLE',
+    },
+  ], [config]);
+
+  const totalSlides = slides.length;
 
   const nextSlide = () => {
     setCurrentIndex((prev) => (prev + 1) % totalSlides);
@@ -99,7 +141,7 @@ export default function MergedHeroSlider({ config }: MergedHeroSliderProps) {
     };
   }, [isPaused, totalSlides, currentIndex]);
 
-  const activeSlide = SLIDES[currentIndex];
+  const activeSlide = slides[currentIndex] || slides[0];
 
   return (
     <section
@@ -109,7 +151,7 @@ export default function MergedHeroSlider({ config }: MergedHeroSliderProps) {
       aria-label="Hero Fahrrad Franke"
     >
       {/* Background Slides with Crossfade and Subtle Zoom */}
-      {SLIDES.map((slide, index) => {
+      {slides.map((slide, index) => {
         const isActive = index === currentIndex;
         return (
           <div
@@ -232,7 +274,7 @@ export default function MergedHeroSlider({ config }: MergedHeroSliderProps) {
 
             {/* Quick-Jump Dots */}
             <div className="hidden sm:flex items-center gap-1.5 ml-1">
-              {SLIDES.map((_, idx) => (
+              {slides.map((_, idx) => (
                 <button
                   key={idx}
                   type="button"

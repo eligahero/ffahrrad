@@ -147,11 +147,10 @@ export default function Header({
                 <nav className="hidden md:flex items-center space-x-5 lg:space-x-7 text-xs sm:text-sm font-medium text-stone-200">
                   <Link
                     href="/"
-                    className={`transition-colors py-1 ${
-                      isHome
-                        ? 'text-white font-bold'
-                        : 'text-stone-300 hover:text-white'
-                    }`}
+                    className={`transition-colors py-1 ${isHome
+                      ? 'text-white font-bold'
+                      : 'text-stone-300 hover:text-white'
+                      }`}
                   >
                     Accueil
                   </Link>
