@@ -1,0 +1,392 @@
+[
+    {
+        "id":  "824a61e7-05ae-4183-9d76-2c305aeeeb86",
+        "title":  "KTM Macina City 610 Belt - 625 Wh - 28 Zoll - Diamant",
+        "slug":  "ktm-macina-city-610-belt-625-wh-28-zoll-diamant",
+        "price":  2099.99,
+        "compareAtPrice":  2414.99,
+        "images":  [
+                       "https://res.cloudinary.com/ih3hdf0k/image/upload/v1794813594/lenha/woocommerce-import/mbdo02qlcq8uc12unml9.jpg"
+                   ],
+        "categorySlug":  "trekking",
+        "categoryName":  "Trekking- \u0026 Cityräder",
+        "discountLabel":  "KOMFORT TOUR"
+    },
+    {
+        "id":  "21e9b9aa-5e9b-4a56-b300-8985b44732cd",
+        "title":  "KTM Macina Superbelt SX - 400 Wh - 28 Zoll - Diamant - 2026",
+        "slug":  "ktm-macina-superbelt-sx-400-wh-28-zoll-diamant-2026",
+        "price":  2364.87,
+        "compareAtPrice":  2719.60,
+        "images":  [
+                       "https://res.cloudinary.com/ih3hdf0k/image/upload/v1794813588/lenha/woocommerce-import/w0n9vaon2kni5zqfybxs.jpg"
+                   ],
+        "categorySlug":  "trekking",
+        "categoryName":  "Trekking- \u0026 Cityräder",
+        "discountLabel":  "KOMFORT TOUR"
+    },
+    {
+        "id":  "1dbe6381-79c9-4343-8e5b-b69674e2831e",
+        "title":  "KTM Macina Style 820 XL - 800 Wh - 28 Zoll - Tiefeinsteiger - 2026",
+        "slug":  "ktm-macina-style-820-xl-800-wh-28-zoll-tiefeinsteiger-2026",
+        "price":  2973.89,
+        "compareAtPrice":  3419.97,
+        "images":  [
+                       "https://res.cloudinary.com/ih3hdf0k/image/upload/v1794813578/lenha/woocommerce-import/hnvuqgzva4h8zp6zxqot.jpg"
+                   ],
+        "categorySlug":  "trekking",
+        "categoryName":  "Trekking- \u0026 Cityräder",
+        "discountLabel":  "KOMFORT TOUR"
+    },
+    {
+        "id":  "3f9680e4-5e87-457f-997a-7b4546a0dfcb",
+        "title":  "KTM Macina Style 820 XL - 800 Wh - 28 Zoll - Diamant - 2026",
+        "slug":  "ktm-macina-style-820-xl-800-wh-28-zoll-diamant-2026",
+        "price":  2973.89,
+        "compareAtPrice":  3419.97,
+        "images":  [
+                       "https://res.cloudinary.com/ih3hdf0k/image/upload/v1794813572/lenha/woocommerce-import/xnkopuuarvjtrpfjykth.jpg"
+                   ],
+        "categorySlug":  "trekking",
+        "categoryName":  "Trekking- \u0026 Cityräder",
+        "discountLabel":  "KOMFORT TOUR"
+    },
+    {
+        "id":  "0220710d-eda3-4510-8667-d86b7515d395",
+        "title":  "KTM Macina Tour CX 510 - 500 Wh - 28 Zoll - Tiefeinsteiger",
+        "slug":  "ktm-macina-tour-cx-510-500-wh-28-zoll-tiefeinsteiger",
+        "price":  1649.94,
+        "compareAtPrice":  1897.43,
+        "images":  [
+                       "https://res.cloudinary.com/ih3hdf0k/image/upload/v1794813564/lenha/woocommerce-import/wh264zigeibfiyagsbel.jpg"
+                   ],
+        "categorySlug":  "trekking",
+        "categoryName":  "Trekking- \u0026 Cityräder",
+        "discountLabel":  "KOMFORT TOUR"
+    },
+    {
+        "id":  "74684e0d-f6a6-4a48-ae54-50ab8fbcf951",
+        "title":  "KTM X-Strada Prime - 28 Zoll - Diamant",
+        "slug":  "ktm-x-strada-prime-28-zoll-diamant",
+        "price":  2282.87,
+        "compareAtPrice":  2625.30,
+        "images":  [
+                       "https://res.cloudinary.com/ih3hdf0k/image/upload/v1794813558/lenha/woocommerce-import/pizztlfkikijv9k3sb6d.jpg"
+                   ],
+        "categorySlug":  "trekking",
+        "categoryName":  "Trekking- \u0026 Cityräder",
+        "discountLabel":  "KOMFORT TOUR"
+    },
+    {
+        "id":  "faee5e3d-b03f-466e-ba72-4d290b0e6d66",
+        "title":  "KTM X-Life Road - 28 Zoll - Diamant",
+        "slug":  "ktm-x-life-road-28-zoll-diamant",
+        "price":  359.95,
+        "compareAtPrice":  413.94,
+        "images":  [
+                       "https://res.cloudinary.com/ih3hdf0k/image/upload/v1794813548/lenha/woocommerce-import/q5ovkxsnwvoopttdjyd5.jpg"
+                   ],
+        "categorySlug":  "gravel",
+        "categoryName":  "Gravel- \u0026 Rennräder",
+        "discountLabel":  "GRAVEL \u0026 CROSS"
+    },
+    {
+        "id":  "98cbceb9-8d0d-4fe7-8eae-5632c29ddf1f",
+        "title":  "KTM Macina Cross P510 - 500 Wh - 28 Zoll - Trapez",
+        "slug":  "ktm-macina-cross-p510-500-wh-28-zoll-trapez",
+        "price":  1368.54,
+        "compareAtPrice":  1573.82,
+        "images":  [
+                       "https://res.cloudinary.com/ih3hdf0k/image/upload/v1794813533/lenha/woocommerce-import/usf8pcmofkklyigftxww.jpg"
+                   ],
+        "categorySlug":  "gravel",
+        "categoryName":  "Gravel- \u0026 Rennräder",
+        "discountLabel":  "GRAVEL \u0026 CROSS"
+    },
+    {
+        "id":  "7d335432-2e2c-46c3-9db7-782b71e82b1d",
+        "title":  "KTM Macina Gravelator SX Elite - 400 Wh - 28 Zoll - Diamant - 2026",
+        "slug":  "ktm-macina-gravelator-sx-elite-400-wh-28-zoll-diamant-2026",
+        "price":  3263.32,
+        "compareAtPrice":  3752.82,
+        "images":  [
+                       "https://res.cloudinary.com/ih3hdf0k/image/upload/v1794813468/lenha/woocommerce-import/qd2m0xr2kiont9ynehst.jpg"
+                   ],
+        "categorySlug":  "gravel",
+        "categoryName":  "Gravel- \u0026 Rennräder",
+        "discountLabel":  "GRAVEL \u0026 CROSS"
+    },
+    {
+        "id":  "4faecfbb-1122-4bd1-a0d2-65403902ac98",
+        "title":  "KTM Macina Cross P510 Street - 500 Wh - 28 Zoll - Tiefeinsteiger",
+        "slug":  "ktm-macina-cross-p510-street-500-wh-28-zoll-tiefeinsteiger",
+        "price":  1189.99,
+        "compareAtPrice":  1368.49,
+        "images":  [
+                       "https://res.cloudinary.com/ih3hdf0k/image/upload/v1794813462/lenha/woocommerce-import/sozgnv0hv5sjvqwuquvk.jpg"
+                   ],
+        "categorySlug":  "gravel",
+        "categoryName":  "Gravel- \u0026 Rennräder",
+        "discountLabel":  "GRAVEL \u0026 CROSS"
+    },
+    {
+        "id":  "a554e9ec-ca43-49e9-9f3e-644b9f6b9fa7",
+        "title":  "KTM Macina Cross 710 - 750 Wh - 28 Zoll - Diamant",
+        "slug":  "ktm-macina-cross-710-750-wh-28-zoll-diamant",
+        "price":  2107.99,
+        "compareAtPrice":  2424.19,
+        "images":  [
+                       "https://res.cloudinary.com/ih3hdf0k/image/upload/v1794813420/lenha/woocommerce-import/c2mtwfxiupqnbtiavnqj.jpg"
+                   ],
+        "categorySlug":  "gravel",
+        "categoryName":  "Gravel- \u0026 Rennräder",
+        "discountLabel":  "GRAVEL \u0026 CROSS"
+    },
+    {
+        "id":  "97aaaf1d-096b-49ee-9083-b7ae87a4db89",
+        "title":  "KTM X-Life Road - 28 Zoll - Trapez",
+        "slug":  "ktm-x-life-road-28-zoll-trapez",
+        "price":  352.95,
+        "compareAtPrice":  405.89,
+        "images":  [
+                       "https://res.cloudinary.com/ih3hdf0k/image/upload/v1794813404/lenha/woocommerce-import/atom8levo6mjdp9hqnyh.jpg"
+                   ],
+        "categorySlug":  "gravel",
+        "categoryName":  "Gravel- \u0026 Rennräder",
+        "discountLabel":  "GRAVEL \u0026 CROSS"
+    },
+    {
+        "id":  "90966ed1-dff6-4507-b39f-e97acd4de041",
+        "title":  "KTM Macina Scarp SX Master - 400 Wh - 29 Zoll - Fully",
+        "slug":  "ktm-macina-scarp-sx-master-400-wh-29-zoll-fully",
+        "price":  4073.79,
+        "compareAtPrice":  4684.86,
+        "images":  [
+                       "https://res.cloudinary.com/ih3hdf0k/image/upload/v1794813306/lenha/woocommerce-import/mmhesogv7fqx671lsflx.jpg"
+                   ],
+        "categorySlug":  "mtb",
+        "categoryName":  "Mountainbikes (MTB)",
+        "discountLabel":  "MTB DEAL"
+    },
+    {
+        "id":  "3a23d8fc-d945-4107-a96f-68a5a2b7268e",
+        "title":  "KTM Macina Chacana 792 - 750 Wh - 29 Zoll - Fully",
+        "slug":  "ktm-macina-chacana-792-750-wh-29-zoll-fully",
+        "price":  3123.99,
+        "compareAtPrice":  3592.59,
+        "images":  [
+                       "https://res.cloudinary.com/ih3hdf0k/image/upload/v1794813250/lenha/woocommerce-import/ysnkopwymxuw28ivvnq0.jpg"
+                   ],
+        "categorySlug":  "mtb",
+        "categoryName":  "Mountainbikes (MTB)",
+        "discountLabel":  "MTB DEAL"
+    },
+    {
+        "id":  "8f45d0b9-bd27-4aec-9e72-37a6a49b6a71",
+        "title":  "KTM Macina Scarp SX Prime - 400 Wh - 29 Zoll - Fully",
+        "slug":  "ktm-macina-scarp-sx-prime-400-wh-29-zoll-fully",
+        "price":  4199.99,
+        "compareAtPrice":  4829.99,
+        "images":  [
+                       "https://res.cloudinary.com/ih3hdf0k/image/upload/v1794813189/lenha/woocommerce-import/ezfuofumgpo2tpj4xf0a.jpg"
+                   ],
+        "categorySlug":  "mtb",
+        "categoryName":  "Mountainbikes (MTB)",
+        "discountLabel":  "MTB DEAL"
+    },
+    {
+        "id":  "f3a12183-a8f6-4b66-8cf1-0fe0d4e4970d",
+        "title":  "KTM Macina Lycan 771 - 750 Wh - 27,5 Zoll - Fully",
+        "slug":  "ktm-macina-lycan-771-750-wh-275-zoll-fully",
+        "price":  2049.97,
+        "compareAtPrice":  2357.47,
+        "images":  [
+                       "https://res.cloudinary.com/ih3hdf0k/image/upload/v1794813139/lenha/woocommerce-import/kgpx2dzpnjkmlcfzacxv.jpg"
+                   ],
+        "categorySlug":  "mtb",
+        "categoryName":  "Mountainbikes (MTB)",
+        "discountLabel":  "MTB DEAL"
+    },
+    {
+        "id":  "819d067c-63ca-43bc-a3e1-db80777a4928",
+        "title":  "KTM Macina Fold 20 - 500 Wh - 20 Zoll - Faltrahmen - 2026",
+        "slug":  "15818",
+        "price":  2828.31,
+        "compareAtPrice":  3252.56,
+        "images":  [
+                       "https://res.cloudinary.com/ih3hdf0k/image/upload/v1794812964/lenha/woocommerce-import/ev0ysqn0upuqmx8gooot.png"
+                   ],
+        "categorySlug":  "ebike",
+        "categoryName":  "E-Bikes \u0026 Pedelecs",
+        "discountLabel":  "TOP E-BIKE"
+    },
+    {
+        "id":  "12b0561e-3176-422b-ab0d-1e0fbf4fdf5f",
+        "title":  "KTM Macina Scarp SX Exonic - 400 Wh - 29 Zoll - Fully",
+        "slug":  "ktm-macina-scarp-sx-exonic-400-wh-29-zoll-fully",
+        "price":  6911.79,
+        "compareAtPrice":  7948.56,
+        "images":  [
+                       "https://res.cloudinary.com/ih3hdf0k/image/upload/v1794812794/lenha/woocommerce-import/qkycucgebqylpbcoxnxp.jpg"
+                   ],
+        "categorySlug":  "mtb",
+        "categoryName":  "Mountainbikes (MTB)",
+        "discountLabel":  "MTB DEAL"
+    },
+    {
+        "id":  "f0707d3b-bbbe-406a-a501-46b9f999af27",
+        "title":  "KTM Macina Scarp SX Elite - 400 Wh - 29 Zoll - Fully",
+        "slug":  "ktm-macina-scarp-sx-elite-400-wh-29-zoll-fully",
+        "price":  3109.75,
+        "compareAtPrice":  3576.21,
+        "images":  [
+                       "https://res.cloudinary.com/ih3hdf0k/image/upload/v1794812751/lenha/woocommerce-import/vtnc16xgfuhglmnezfq7.jpg"
+                   ],
+        "categorySlug":  "mtb",
+        "categoryName":  "Mountainbikes (MTB)",
+        "discountLabel":  "MTB DEAL"
+    },
+    {
+        "id":  "58431995-07cd-4ae6-98d0-e9b283057b36",
+        "title":  "Carqon Cruise E2 - 500 Wh - 27,5 Zoll - Long John",
+        "slug":  "carqon-cruise-e2-500-wh-275-zoll-long-john",
+        "price":  3399.95,
+        "compareAtPrice":  3909.94,
+        "images":  [
+                       "https://res.cloudinary.com/ih3hdf0k/image/upload/v1794812738/lenha/woocommerce-import/frgcxxvutal9pgfuprfg.jpg"
+                   ],
+        "categorySlug":  "cargo",
+        "categoryName":  "Fahrradanhänger \u0026 Cargo",
+        "discountLabel":  "CARGO DEAL"
+    },
+    {
+        "id":  "d01178a2-35ae-4c8d-92db-506035360b8e",
+        "title":  "Hercules Rob Family F360 - 1000 Wh - 24 Zoll - Longtail",
+        "slug":  "hercules-rob-family-f360-1000-wh-24-zoll-longtail",
+        "price":  2789.95,
+        "compareAtPrice":  3208.44,
+        "images":  [
+                       "https://res.cloudinary.com/ih3hdf0k/image/upload/v1794812732/lenha/woocommerce-import/g5sihsa23wxon8eczvpv.jpg"
+                   ],
+        "categorySlug":  "ebike",
+        "categoryName":  "E-Bikes \u0026 Pedelecs",
+        "discountLabel":  "TOP E-BIKE"
+    },
+    {
+        "id":  "f30308c7-d9a3-484b-9dda-4fa472530230",
+        "title":  "Babboe Carve Mountain - 400 Wh - 26 Zoll - Dreirad",
+        "slug":  "babboe-carve-mountain-400-wh-26-zoll-dreirad",
+        "price":  2659.55,
+        "compareAtPrice":  3058.48,
+        "images":  [
+                       "https://res.cloudinary.com/ih3hdf0k/image/upload/v1794812724/lenha/woocommerce-import/aws6xhoeti2erozkqxqz.jpg"
+                   ],
+        "categorySlug":  "cargo",
+        "categoryName":  "Fahrradanhänger \u0026 Cargo",
+        "discountLabel":  "CARGO DEAL"
+    },
+    {
+        "id":  "756f9724-86ac-49cf-b077-b2dd63ce70f2",
+        "title":  "Cube Cargo Sport Hybrid 500 - 500 Wh - 27,5 Zoll - Long John",
+        "slug":  "cube-cargo-sport-hybrid-500-500-wh-275-zoll-long-john",
+        "price":  2979.95,
+        "compareAtPrice":  3426.94,
+        "images":  [
+                       "https://res.cloudinary.com/ih3hdf0k/image/upload/v1794812720/lenha/woocommerce-import/flpbuaalghmbfshdjkqr.jpg"
+                   ],
+        "categorySlug":  "cargo",
+        "categoryName":  "Fahrradanhänger \u0026 Cargo",
+        "discountLabel":  "CARGO DEAL"
+    },
+    {
+        "id":  "2ea0be3f-56a6-4fa0-b61f-98386ea27b9a",
+        "title":  "Cube Trike Cargo Hybrid 750 - 750 Wh - 24 Zoll - Dreirad - 2026",
+        "slug":  "cube-trike-cargo-hybrid-750-750-wh-24-zoll-dreirad-2026",
+        "price":  4059.95,
+        "compareAtPrice":  4668.94,
+        "images":  [
+                       "https://res.cloudinary.com/ih3hdf0k/image/upload/v1794812713/lenha/woocommerce-import/otunkgx0nxhiwqtavrfm.jpg"
+                   ],
+        "categorySlug":  "cargo",
+        "categoryName":  "Fahrradanhänger \u0026 Cargo",
+        "discountLabel":  "CARGO DEAL"
+    },
+    {
+        "id":  "61e24f60-8eed-434a-8cdd-1f7cbf50e132",
+        "title":  "Riese und MÃ¼ller Packster 70 vario - 625 Wh - 20 Zoll - Long John",
+        "slug":  "riese-und-mueller-packster-70-vario-625-wh-20-zoll-long-john",
+        "price":  6002.1,
+        "compareAtPrice":  6902.42,
+        "images":  [
+                       "https://res.cloudinary.com/ih3hdf0k/image/upload/v1794812709/lenha/woocommerce-import/rftbhzlpvxltll7lm2qu.jpg"
+                   ],
+        "categorySlug":  "cargo",
+        "categoryName":  "Fahrradanhänger \u0026 Cargo",
+        "discountLabel":  "CARGO DEAL"
+    },
+    {
+        "id":  "ff03135e-8f91-4b8b-9dda-1c76d61d4175",
+        "title":  "Winora F.U.B. 2W - 500 Wh - 20 Zoll - Long John",
+        "slug":  "winora-f-u-b-2w-500-wh-20-zoll-long-john",
+        "price":  3158.99,
+        "compareAtPrice":  3632.84,
+        "images":  [
+                       "https://res.cloudinary.com/ih3hdf0k/image/upload/v1794812701/lenha/woocommerce-import/idrsztezpsmzxtvvq9zv.jpg"
+                   ],
+        "categorySlug":  "cargo",
+        "categoryName":  "Fahrradanhänger \u0026 Cargo",
+        "discountLabel":  "CARGO DEAL"
+    },
+    {
+        "id":  "2ef9d6ac-e4bc-4019-9616-61c8455f6e37",
+        "title":  "KTM Macina Multi CX - 725 Wh - 24 Zoll - Longtail",
+        "slug":  "ktm-macina-multi-cx-725-wh-24-zoll-longtail",
+        "price":  3173.37,
+        "compareAtPrice":  3649.38,
+        "images":  [
+                       "https://res.cloudinary.com/ih3hdf0k/image/upload/v1794812696/lenha/woocommerce-import/nun4t67bycnxnresetzc.jpg"
+                   ],
+        "categorySlug":  "ebike",
+        "categoryName":  "E-Bikes \u0026 Pedelecs",
+        "discountLabel":  "TOP E-BIKE"
+    },
+    {
+        "id":  "17a183f6-b23e-4428-b973-073812cf3f71",
+        "title":  "Convercycle Electric - Nexus - 396 Wh - 28 Zoll - Longtail",
+        "slug":  "convercycle-electric-nexus-396-wh-28-zoll-longtail",
+        "price":  2159.95,
+        "compareAtPrice":  2483.94,
+        "images":  [
+                       "https://res.cloudinary.com/ih3hdf0k/image/upload/v1794812651/lenha/woocommerce-import/uykjnnegvjuxdjlxiq9z.jpg"
+                   ],
+        "categorySlug":  "ebike",
+        "categoryName":  "E-Bikes \u0026 Pedelecs",
+        "discountLabel":  "TOP E-BIKE"
+    },
+    {
+        "id":  "acecaa0d-edaa-4dfd-9c26-3118215deea9",
+        "title":  "Urban Arrow Breeze - 800 Wh - 26 Zoll - Longtail - 2026",
+        "slug":  "urban-arrow-breeze-800-wh-26-zoll-longtail-2026",
+        "price":  5541.95,
+        "compareAtPrice":  6373.24,
+        "images":  [
+                       "https://res.cloudinary.com/ih3hdf0k/image/upload/v1794812645/lenha/woocommerce-import/kkv2ahtucysrqb7ayimd.jpg"
+                   ],
+        "categorySlug":  "ebike",
+        "categoryName":  "E-Bikes \u0026 Pedelecs",
+        "discountLabel":  "TOP E-BIKE"
+    },
+    {
+        "id":  "93e81b98-9087-4741-b827-cabbb245705d",
+        "title":  "Benno Bikes RemiDemi XL 9D CX EVO 2 + Family Package - 545 Wh - 20 Zoll - Longtail - 2026",
+        "slug":  "benno-bikes-remidemi-xl-9d-cx-evo-2-family-package-545-wh-20-zoll-longtail-2026",
+        "price":  4319.55,
+        "compareAtPrice":  4967.48,
+        "images":  [
+                       "https://res.cloudinary.com/ih3hdf0k/image/upload/v1794812637/lenha/woocommerce-import/bfiqkevukqvhow9e1qyd.jpg"
+                   ],
+        "categorySlug":  "ebike",
+        "categoryName":  "E-Bikes \u0026 Pedelecs",
+        "discountLabel":  "TOP E-BIKE"
+    }
+]
