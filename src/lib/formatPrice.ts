@@ -1,3 +1,81 @@
+export type CurrencyCode = 'EUR' | 'DKK' | 'HUF' | 'SEK' | 'CHF';
+
+export type CurrencyDefinition = {
+  code: CurrencyCode;
+  symbol: string;
+  label: string;
+  shortLabel: string;
+  flag: string;
+  rate: number;
+  position: 'left' | 'right' | 'left-space' | 'right-space';
+  thousandSeparator: string;
+  decimalSeparator: string;
+  decimals: number;
+};
+
+export const SUPPORTED_CURRENCIES: Record<CurrencyCode, CurrencyDefinition> = {
+  EUR: {
+    code: 'EUR',
+    symbol: '€',
+    label: 'EUR (€)',
+    shortLabel: 'EUR',
+    flag: '🇪🇺',
+    rate: 1.0,
+    position: 'right-space',
+    thousandSeparator: '.',
+    decimalSeparator: ',',
+    decimals: 2,
+  },
+  DKK: {
+    code: 'DKK',
+    symbol: 'kr.',
+    label: 'DKK (kr.)',
+    shortLabel: 'DKK',
+    flag: '🇩🇰',
+    rate: 7.46,
+    position: 'right-space',
+    thousandSeparator: '.',
+    decimalSeparator: ',',
+    decimals: 2,
+  },
+  HUF: {
+    code: 'HUF',
+    symbol: 'Ft',
+    label: 'HUF (Forint)',
+    shortLabel: 'HUF',
+    flag: '🇭🇺',
+    rate: 395.0,
+    position: 'right-space',
+    thousandSeparator: ' ',
+    decimalSeparator: ',',
+    decimals: 0,
+  },
+  SEK: {
+    code: 'SEK',
+    symbol: 'kr',
+    label: 'SEK (kr)',
+    shortLabel: 'SEK',
+    flag: '🇸🇪',
+    rate: 11.20,
+    position: 'right-space',
+    thousandSeparator: ' ',
+    decimalSeparator: ',',
+    decimals: 2,
+  },
+  CHF: {
+    code: 'CHF',
+    symbol: 'CHF',
+    label: 'CHF (Fr.)',
+    shortLabel: 'CHF',
+    flag: '🇨🇭',
+    rate: 0.95,
+    position: 'left-space',
+    thousandSeparator: "'",
+    decimalSeparator: '.',
+    decimals: 2,
+  },
+};
+
 export type CurrencyOptions = {
   currencySymbol: string;
   currencyPosition: 'left' | 'right' | 'left-space' | 'right-space';
@@ -5,30 +83,45 @@ export type CurrencyOptions = {
   decimalSeparator: string;
   taxIncludedInPrice?: boolean;
   defaultVatRate?: number;
+  rate?: number;
+  decimals?: number;
+  code?: CurrencyCode;
 };
 
 export const defaultCurrencyOptions: CurrencyOptions = {
-  currencySymbol: '$',
-  currencyPosition: 'left',
-  thousandSeparator: ',',
-  decimalSeparator: '.',
+  currencySymbol: '€',
+  currencyPosition: 'right-space',
+  thousandSeparator: '.',
+  decimalSeparator: ',',
   taxIncludedInPrice: true,
-  defaultVatRate: 20,
+  defaultVatRate: 19,
+  rate: 1.0,
+  decimals: 2,
+  code: 'EUR',
 };
 
 export function formatPriceNumber(
   amount: number,
   options: CurrencyOptions = defaultCurrencyOptions
 ): string {
-  // Convert amount to string with 2 decimal places
-  const amountStr = amount.toFixed(2);
-  const [integerPart, decimalPart] = amountStr.split('.');
+  if (isNaN(amount) || amount === null || amount === undefined) {
+    return `0,00 ${options.currencySymbol || '€'}`;
+  }
 
-  // Format integer part with thousand separator
-  const formattedInteger = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, options.thousandSeparator);
+  const rate = options.rate !== undefined ? options.rate : 1.0;
+  const convertedAmount = amount * rate;
+  const decimals = options.decimals !== undefined ? options.decimals : 2;
 
-  // Combine with decimal separator
-  const formattedNumber = `${formattedInteger}${options.decimalSeparator}${decimalPart}`;
+  let formattedNumber = '';
+  if (decimals === 0) {
+    const rounded = Math.round(convertedAmount).toString();
+    formattedNumber = rounded.replace(/\B(?=(\d{3})+(?!\d))/g, options.thousandSeparator);
+  } else {
+    const amountStr = convertedAmount.toFixed(decimals);
+    const [integerPart, decimalPart] = amountStr.split('.');
+    const formattedInteger = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, options.thousandSeparator);
+    formattedNumber = `${formattedInteger}${options.decimalSeparator}${decimalPart}`;
+  }
 
   // Apply currency symbol position
   switch (options.currencyPosition) {
@@ -41,21 +134,16 @@ export function formatPriceNumber(
     case 'right-space':
       return `${formattedNumber} ${options.currencySymbol}`;
     default:
-      return `${options.currencySymbol}${formattedNumber}`;
+      return `${formattedNumber} ${options.currencySymbol}`;
   }
 }
 
-/**
- * Calculates the tax-inclusive price if the base price is tax-exclusive, and formats the complete string.
- * If 'taxIncludedInPrice' is true: simply displays the price (ex: 120€ incl. tax)
- * If false: the base price is tax exclusive, we display "Price excl. tax (Price incl. tax)" (ex: 100$ excl. tax (120$ incl. tax))
- */
 export function formatPriceWithTax(
   amount: number,
   options: CurrencyOptions = defaultCurrencyOptions
 ): string {
   const isIncluded = options.taxIncludedInPrice !== false;
-  const vatRate = options.defaultVatRate || 20;
+  const vatRate = options.defaultVatRate || 19;
 
   if (isIncluded) {
     return formatPriceNumber(amount, options);
@@ -63,6 +151,6 @@ export function formatPriceWithTax(
     const amountTTC = amount * (1 + vatRate / 100);
     const formattedHT = formatPriceNumber(amount, options);
     const formattedTTC = formatPriceNumber(amountTTC, options);
-    return `${formattedHT} excl. tax (${formattedTTC} incl. tax)`;
+    return `${formattedHT} (inkl. MwSt. ${formattedTTC})`;
   }
 }

@@ -130,14 +130,7 @@ export default function MergedHeroSlider({ config }: MergedHeroSliderProps) {
                 sizes="100vw"
                 quality={90}
               />
-
-              {/* Master Gradient Overlays calibrated for optimal contrast matching the mockup */}
-              {/* Top gradient for transparent header fusion */}
-              <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/30 to-transparent pointer-events-none" />
-              {/* Left gradient for headlines text clarity */}
-              <div className="absolute inset-0 bg-gradient-to-r from-stone-950/85 via-stone-950/45 to-transparent pointer-events-none" />
-              {/* Bottom gradient for tags & navigation bar */}
-              <div className="absolute inset-0 bg-gradient-to-t from-stone-950/90 via-stone-950/30 to-transparent pointer-events-none" />
+              {/* Overlays removed per user request for direct visual analysis */}
             </div>
           </div>
         );
@@ -149,13 +142,13 @@ export default function MergedHeroSlider({ config }: MergedHeroSliderProps) {
         <div className="max-w-2xl lg:max-w-3xl my-auto">
           {/* Eyebrow / Tag */}
           <div className="inline-flex items-center gap-2 mb-3 sm:mb-4">
-            <span className="text-[#F59E0B] font-bold tracking-[0.25em] text-xs sm:text-sm uppercase drop-shadow-md">
+            <span className="text-[#F59E0B] font-bold tracking-[0.25em] text-xs sm:text-sm uppercase drop-shadow-[0_2px_8px_rgba(0,0,0,0.95)]">
               {activeSlide.eyebrow}
             </span>
           </div>
 
           {/* Giant Impact Headline */}
-          <h1 className="font-black italic tracking-tight uppercase leading-[0.95] text-5xl sm:text-6xl md:text-7xl lg:text-[80px] drop-shadow-2xl">
+          <h1 className="font-black italic tracking-tight uppercase leading-[0.95] text-5xl sm:text-6xl md:text-7xl lg:text-[80px] drop-shadow-[0_4px_20px_rgba(0,0,0,0.95)]">
             <span className="block text-white transition-all duration-700 transform">
               {activeSlide.titleWhite}
             </span>
@@ -165,7 +158,7 @@ export default function MergedHeroSlider({ config }: MergedHeroSliderProps) {
           </h1>
 
           {/* Subtitle / Description */}
-          <p className="mt-4 sm:mt-6 text-stone-200 text-sm sm:text-base md:text-lg max-w-xl font-normal leading-relaxed drop-shadow-md">
+          <p className="mt-4 sm:mt-6 text-stone-100 text-sm sm:text-base md:text-lg max-w-xl font-normal leading-relaxed drop-shadow-[0_2px_10px_rgba(0,0,0,0.95)]">
             {activeSlide.description}
           </p>
 
